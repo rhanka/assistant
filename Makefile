@@ -1,4 +1,18 @@
-.PHONY: dev up down ui api workers ai db.init db.migrate db.reset scripts.i18n check
+.PHONY: dev up down ui api workers ai db.init db.migrate db.reset scripts.i18n check prod.deploy prod.status prod.logs dev.build dev.clean
+
+# Environment variables (with defaults)
+export DATABASE_URL ?= postgresql://postgres:postgres@postgres:5432/assistant?schema=public
+export REDIS_URL ?= redis://redis:6379
+export API_PORT ?= 3001
+export UI_PORT ?= 5173
+export AI_PORT ?= 8000
+export GITHUB_TOKEN ?= your-github-token-here
+export GITHUB_OWNER ?= your-org-or-user
+export GITHUB_REPO ?= your-repo
+
+# Ensure .env file exists (for secrets/overrides only)
+.env:
+	@touch .env
 
 # Docker compose (db/cache + optional services)
 up:
@@ -11,31 +25,49 @@ dev:
 	docker compose up -d
 	npm install
 
-# Services
+# Services (Docker-based development)
 ui:
-	cd packages/ui && npm run dev
+	docker compose exec ui npm run dev
 
 api:
-	cd packages/api && npm run dev
+	docker compose exec api npm run dev
 
 workers:
-	cd packages/workers && npm run dev
+	docker compose exec workers npm run dev
 
 ai:
-	cd packages/ai && poetry run uvicorn app.main:app --reload --port $${AI_PORT:-8000}
+	docker compose exec ai poetry run uvicorn app.main:app --reload --port $(AI_PORT)
 
-# DB (Prisma via API package)
+# DB (Prisma via API package in Docker)
 db.init:
-	cd packages/api && npx prisma generate
+	docker compose exec api npx prisma generate
 
 db.migrate:
-	cd packages/api && npx prisma migrate dev --name init
+	docker compose exec api npx prisma migrate dev --name init
 
 db.reset:
-	cd packages/api && npx prisma migrate reset -f
+	docker compose exec api npx prisma migrate reset -f
 
-# Scripts
+# Scripts (Docker-based)
 scripts.i18n:
-	cd packages/scripts && npm run i18n:check
+	docker compose exec api npm run -w packages/scripts i18n:check
 
 check: scripts.i18n
+
+# Production environment (Kubernetes)
+prod.deploy:
+	kubectl apply -f k8s/
+
+prod.status:
+	kubectl get pods -n assistant
+
+prod.logs:
+	kubectl logs -f -l app=assistant -n assistant
+
+# Development environment helpers
+dev.build:
+	docker compose build
+
+dev.clean:
+	docker compose down -v
+	docker system prune -f
