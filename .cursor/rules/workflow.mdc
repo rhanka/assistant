@@ -9,7 +9,8 @@ tags: [workflow, repository, guardrails]
 ## Principles
 - Always read `README.md`, `RELEASE.md` (target version) and `TODO.md` (priorities).
 - Propose a short action plan before coding. Request human approval when "⚠ approval".
-- One PR per objective. Use Conventional Commits (feat:, fix:, chore:, refactor:, docs:, test:).
+- apply `conventions.mdc`for coding practice
+- be conform to `architecture.mdc`architecture directives
 
 ## BOOT (first run)
 1. Open `TODO.md` and focus on **Now** items.
@@ -21,7 +22,8 @@ tags: [workflow, repository, guardrails]
 1. Read the target `TODO.md` item (**Next** or **Now**).
 2. Post a 3–6 step plan as the first PR comment.
 3. Implement with guardrails (preview, dry-run, logs).
-4. Update `TODO.md` (check item, reference PR) and `RELEASE.md` (scope).
+4. **Test before commit** - ensure all changes work as expected.
+5. Update `TODO.md` (check item, reference PR) and `RELEASE.md` (scope).
 
 ## MAINTENANCE
 - Small chores/refactors/docs. Same flow as FEATURE.
@@ -35,3 +37,4 @@ tags: [workflow, repository, guardrails]
 ## Guardrails
 - Never perform destructive DB/system actions without "⚠ approval".
 - For Playwright/Cursor, always **simulate** before executing a critical action.
+- **Always test before commit** - no exceptions to this rule.
