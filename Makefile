@@ -37,6 +37,42 @@ down.api:
 
 rebuild.api: build.api up.api
 
+# Scheduler-specific targets
+build.scheduler:
+	docker compose build scheduler
+
+up.scheduler:
+	docker compose up -d scheduler
+
+down.scheduler:
+	docker compose stop scheduler
+
+rebuild.scheduler: build.scheduler up.scheduler
+
+# Workers-specific targets
+build.workers:
+	docker compose build workers
+
+up.workers:
+	docker compose up -d workers
+
+down.workers:
+	docker compose stop workers
+
+rebuild.workers: build.workers up.workers
+
+# AI-specific targets
+build.ai:
+	docker compose build ai
+
+up.ai:
+	docker compose up -d ai
+
+down.ai:
+	docker compose stop ai
+
+rebuild.ai: build.ai up.ai
+
 # Services (Docker-based development)
 ui:
 	docker compose exec ui npm run dev
@@ -91,9 +127,9 @@ check: scripts.i18n scripts.validate-guides scripts.check-branch-files
 
 # Testing (Docker-based)
 test.unit:
-	docker compose exec scheduler npm run test:unit
-	docker compose exec workers npm run test:unit
-	docker compose exec ai pytest tests/unit
+	docker compose run --rm scheduler npm run test:unit
+	docker compose run --rm workers npm run test:unit
+	docker compose run --rm ai pytest tests/unit
 
 test.integration:
 	docker compose exec api npm run test:integration

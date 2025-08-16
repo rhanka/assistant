@@ -11,9 +11,7 @@
     "test:unit": "jest --testPathPattern=src/.*\\.test\\.ts"
   },
   "dependencies": {
-    "bullmq": "^5.7.0",
-    "@repo/integrations-github": "0.1.0",
-    "@repo/integrations-cursor": "0.1.0"
+    "bullmq": "^5.7.0"
   },
   "devDependencies": {
     "typescript": "^5.5.4",
