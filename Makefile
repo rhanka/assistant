@@ -71,9 +71,33 @@ db.reset:
 
 # Scripts (Docker-based)
 scripts.i18n:
-	docker compose exec api npm run -w packages/scripts i18n:check
+	docker compose exec api npm run -w @repo/scripts i18n:check
 
-check: scripts.i18n
+scripts.validate-guides:
+	./packages/scripts/src/validate_guides.sh
+
+check: scripts.i18n scripts.validate-guides
+
+# Testing (Docker-based)
+test.unit:
+	docker compose exec scheduler npm run test:unit
+	docker compose exec workers npm run test:unit
+	docker compose exec ai pytest tests/unit
+
+test.integration:
+	docker compose exec api npm run test:integration
+	docker compose exec ai pytest tests/integration
+
+test.e2e:
+	docker compose exec ui npm run test:e2e
+
+test.i18n:
+	docker compose exec api npm run -w @repo/scripts i18n:check
+
+test.i18n.coverage:
+	docker compose exec api npm run -w @repo/scripts i18n:coverage
+
+test.all: test.unit test.integration test.e2e test.i18n test.i18n.coverage
 
 # Production environment (Kubernetes)
 prod.deploy:
