@@ -59,6 +59,21 @@ tags: [workflow, repository, guardrails]
 - **Before major work** : Commit current progress
 - **Commit message format** : `type: concise description`
 
+### Commit Workflow (MANDATORY)
+1. **Check status first** : Always run `git status` before committing
+2. **Selective staging** : Use `git add <specific-files>` for files you know you modified
+3. **Remove deleted files** : Use `git rm <deleted-files>` for files you know you deleted
+4. **Verify staging** : Run `git status` again to confirm what's staged
+5. **ABSOLUTELY NO git add .** : Never use `git add .` - always stage files individually
+6. **Commit with context** : Include clear description of what changed and why
+
+### Next Step Proposal (MANDATORY)
+After completing any task, **ALWAYS propose the next step** by following the workflow:
+1. **Check current status** : What was just completed
+2. **Identify next priority** : What comes next according to TODO.md or current context
+3. **Propose specific action** : Clear, actionable next step
+4. **Wait for approval** : Do not proceed without user confirmation
+
 ## Quality Gates
 - **Before commit**: Run `make test.unit` (enforced by testing.mdc)
 - **Before PR**: Run `make check` to validate consistency
