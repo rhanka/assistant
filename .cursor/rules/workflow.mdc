@@ -67,6 +67,11 @@ tags: [workflow, repository, guardrails]
 5. **ABSOLUTELY NO git add .** : Never use `git add .` - always stage files individually
 6. **Commit with context** : Include clear description of what changed and why
 7. **ONE task per commit** : Complete ONE logical task, then commit. Do NOT chain multiple tasks without committing.
+8. **Consolidate CI debug commits (MANDATORY)**: When experimenting with CI workflows (e.g., tweaking `.github/workflows/*.yml`), avoid piling multiple temporary `fix:`/`test:` commits.
+   - Small last-commit adjustments: prefer `git commit --amend --no-edit` (or edit message as needed).
+   - Multiple debug commits: use `git reset --soft HEAD~N`, stage intentionally with `git add <files>`, and create ONE clean commit.
+   - After amending or soft reset (history rewrite), you MUST push with `git push --force-with-lease` to update the remote safely.
+   This keeps the history readable and compliant with atomic commit rules.
 
 ### Next Step Proposal (MANDATORY)
 After completing any task, **ALWAYS propose the next step** by following the workflow:
@@ -74,6 +79,17 @@ After completing any task, **ALWAYS propose the next step** by following the wor
 2. **Identify next priority** : What comes next according to TODO.md or current context
 3. **Propose specific action** : Clear, actionable next step
 4. **Wait for approval** : Do not proceed without user confirmation
+
+### CI Monitoring (MANDATORY)
+- After any push to a feature branch or PR update, automatically verify GitHub Actions runs.
+- Preferred: use GitHub API via curl (gh CLI optional). Minimal, non-interactive checks:
+  - Latest run for current branch:
+    - `curl -s "https://api.github.com/repos/<ORG>/<REPO>/actions/runs?branch=$BRANCH&per_page=1" | grep -E '"event"|"status"|"conclusion"'`
+  - Job list for a specific run id:
+    - `curl -s "https://api.github.com/repos/<ORG>/<REPO>/actions/runs/<RUN_ID>/jobs" | grep -E '"name"|"conclusion"'`
+- If status is "skipped" unexpectedly, inspect workflow conditions/filters; for path-based workflows, ensure common files (Makefile, docker-compose.yml, packages/config, packages/schemas, CI files) are included in filters.
+- If quick tweaks are needed, prefer `git commit --amend --no-edit` and push with `git push --force-with-lease`.
+- If multiple debug commits were created, consolidate with `git reset --soft HEAD~N`, commit once, then `git push --force-with-lease`.
 
 ## Quality Gates
 - **Before commit**: Run `make test.unit` (enforced by testing.mdc)

@@ -1,14 +1,49 @@
 name: CI
 
 on:
+  push:
+    branches-ignore: [main]
   pull_request:
     branches: [main]
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      global: ${{ steps.filter.outputs.global }}
+      api: ${{ steps.filter.outputs.api }}
+      scheduler: ${{ steps.filter.outputs.scheduler }}
+      workers: ${{ steps.filter.outputs.workers }}
+      ui: ${{ steps.filter.outputs.ui }}
+      ai: ${{ steps.filter.outputs.ai }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            global:
+              - 'Makefile'
+              - 'docker-compose.yml'
+              - 'packages/config/**'
+              - 'packages/schemas/**'
+              - '.github/workflows/ci.yml'
+            api:
+              - 'packages/api/**'
+              - 'packages/schemas/**'
+            scheduler:
+              - 'packages/scheduler/**'
+            workers:
+              - 'packages/workers/**'
+            ui:
+              - 'packages/ui/**'
+            ai:
+              - 'packages/ai/**'
   # Tests unitaires (conditionnels selon les fichiers modifiés)
   test-api-unit:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/api/') || contains(github.event.pull_request.files.*.name, 'packages/schemas/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    needs: [changes]
+    if: needs.changes.outputs.api == 'true' || needs.changes.outputs.global == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Docker
@@ -20,7 +55,8 @@ jobs:
 
   test-scheduler-unit:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/scheduler/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    needs: [changes]
+    if: needs.changes.outputs.scheduler == 'true' || needs.changes.outputs.global == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Docker
@@ -32,7 +68,8 @@ jobs:
 
   test-workers-unit:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/workers/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    needs: [changes]
+    if: needs.changes.outputs.workers == 'true' || needs.changes.outputs.global == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Docker
@@ -44,7 +81,8 @@ jobs:
 
   test-ui-unit:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/ui/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    needs: [changes]
+    if: needs.changes.outputs.ui == 'true' || needs.changes.outputs.global == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Docker
@@ -56,7 +94,8 @@ jobs:
 
   test-ai-unit:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/ai/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    needs: [changes]
+    if: needs.changes.outputs.ai == 'true' || needs.changes.outputs.global == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Docker
@@ -69,8 +108,8 @@ jobs:
   # Tests d'intégration P2P (dépendent des tests unitaires)
   test-scheduler-api:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/scheduler/') || contains(github.event.pull_request.files.*.name, 'packages/api/') || contains(github.event.pull_request.files.*.name, 'packages/schemas/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
-    needs: [test-scheduler-unit, test-api-unit]
+    needs: [changes, test-scheduler-unit, test-api-unit]
+    if: needs.changes.outputs.scheduler == 'true' || needs.changes.outputs.api == 'true' || needs.changes.outputs.global == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Docker
@@ -82,8 +121,8 @@ jobs:
 
   test-scheduler-workers:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/scheduler/') || contains(github.event.pull_request.files.*.name, 'packages/workers/') || contains(github.event.pull_request.files.*.name, 'packages/api/') || contains(github.event.pull_request.files.*.name, 'packages/schemas/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
-    needs: [test-scheduler-unit, test-workers-unit, test-api-unit]
+    needs: [changes, test-scheduler-unit, test-workers-unit, test-api-unit]
+    if: needs.changes.outputs.scheduler == 'true' || needs.changes.outputs.workers == 'true' || needs.changes.outputs.api == 'true' || needs.changes.outputs.global == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Docker
@@ -95,8 +134,8 @@ jobs:
 
   test-workers-api:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/workers/') || contains(github.event.pull_request.files.*.name, 'packages/api/') || contains(github.event.pull_request.files.*.name, 'packages/schemas/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
-    needs: [test-workers-unit, test-api-unit, test-scheduler-workers]
+    needs: [changes, test-workers-unit, test-api-unit, test-scheduler-workers]
+    if: needs.changes.outputs.workers == 'true' || needs.changes.outputs.api == 'true' || needs.changes.outputs.global == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Docker
@@ -108,8 +147,8 @@ jobs:
 
   test-ui-api:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/ui/') || contains(github.event.pull_request.files.*.name, 'packages/api/') || contains(github.event.pull_request.files.*.name, 'packages/schemas/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
-    needs: [test-ui-unit, test-api-unit]
+    needs: [changes, test-ui-unit, test-api-unit]
+    if: needs.changes.outputs.ui == 'true' || needs.changes.outputs.api == 'true' || needs.changes.outputs.global == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Docker
@@ -122,8 +161,8 @@ jobs:
   # Tests P2P avec AI
   test-scheduler-ai:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/scheduler/') || contains(github.event.pull_request.files.*.name, 'packages/ai/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
-    needs: [test-scheduler-unit, test-ai-unit]
+    needs: [changes, test-scheduler-unit, test-ai-unit]
+    if: needs.changes.outputs.scheduler == 'true' || needs.changes.outputs.ai == 'true' || needs.changes.outputs.global == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Docker
@@ -135,8 +174,8 @@ jobs:
 
   test-workers-ai:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/workers/') || contains(github.event.pull_request.files.*.name, 'packages/ai/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
-    needs: [test-workers-unit, test-ai-unit]
+    needs: [changes, test-workers-unit, test-ai-unit]
+    if: needs.changes.outputs.workers == 'true' || needs.changes.outputs.ai == 'true' || needs.changes.outputs.global == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Docker
