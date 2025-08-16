@@ -14,10 +14,8 @@ jobs:
           node-version: 20
       - name: Install
         run: npm install
-      - name: i18n check
-        run: npm run -w @repo/scripts i18n:check
-      - name: Validate guide consistency
-        run: ./scripts/validate_guides.sh
+      - name: Run consistency checks
+        run: make check
       - name: Build TypeScript packages
         run: |
           npm run -w @repo/plan-kernel build || true

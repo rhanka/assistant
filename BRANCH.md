@@ -1,0 +1,41 @@
+# Feature: Test Strategy Implementation
+
+## Objective
+Implement comprehensive testing strategy with make commands, unit tests, E2E tests, and CI integration to ensure all testing goes through the Makefile (Docker-first approach).
+
+## Plan / Todo
+- [x] Consolidate AI directives into core .mdc files
+- [x] Add testing infrastructure configurations (Jest, pytest, Playwright)
+- [x] Implement unit tests for core services (scheduler, workers, API, AI)
+- [x] Add UI pages and E2E tests (plans, runs)
+- [x] Update Makefile and CI with test commands
+- [x] Update documentation and package dependencies
+- [x] Add BRANCH.md validation to prevent merge with branch files
+- [ ] Ensure make test.unit works correctly
+- [ ] Validate all test commands through make
+- [ ] Test CI workflow with make commands
+
+## Commits & Progress
+- [x] **Commit 1** (4ac4bfb): Consolidate AI directives into core .mdc files
+- [x] **Commit 2** (9c98adf): Add testing infrastructure configurations
+- [x] **Commit 3** (273fbc7): Implement unit tests for core services
+- [x] **Commit 4** (2e8a329): Add UI pages and E2E tests
+- [x] **Commit 5** (24dfec3): Update Makefile and CI with test commands
+- [x] **Commit 6** (1f0206f): Update documentation and package dependencies
+- [x] **Commit 7**: Add BRANCH.md validation to prevent merge with branch files
+
+## Status
+- **Progress**: 7/9 tasks completed (78%)
+- **Current**: BRANCH.md validation added to CI pipeline
+- **Next**: Test and validate make test.unit functionality
+
+## Notes
+- All commits follow atomic commit guidelines (max 10-15 files per commit)
+- Testing infrastructure is in place but needs validation
+- Make commands are defined but need to be tested
+- Documentation is updated to reflect current state
+
+## Remaining Work
+1. **Test make test.unit** - Ensure Docker services can run tests
+2. **Validate test commands** - Verify all make test.* work correctly
+3. **Test CI workflow** - Ensure GitHub Actions use make commands properly
