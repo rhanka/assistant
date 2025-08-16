@@ -7,10 +7,13 @@ tags: [workflow, repository, guardrails]
 # WORKFLOW
 
 ## Principles
-- Always read `README.md`, `RELEASE.md` (target version) and `TODO.md` (priorities).
+- **FIRST**: Read `.cursor/rules/MASTER.mdc` for consolidated rules overview
+- **SECOND**: Read `README.md` for project overview and setup
+- **THIRD**: Read `TODO.md` for current priorities and items
+- **FOURTH**: Read `RELEASE.md` for target version and scope
 - Propose a short action plan before coding. Request human approval when "⚠ approval".
-- apply `conventions.mdc`for coding practice
-- be conform to `architecture.mdc`architecture directives
+- apply `conventions.mdc` for coding practice and `testing.mdc` for testing practice
+- be conform to `architecture.mdc` architecture directives
 
 ## BOOT (first run)
 1. Open `TODO.md` and focus on **Now** items.
@@ -38,3 +41,61 @@ tags: [workflow, repository, guardrails]
 - Never perform destructive DB/system actions without "⚠ approval".
 - For Playwright/Cursor, always **simulate** before executing a critical action.
 - **Always test before commit** - no exceptions to this rule.
+- **Use Make for testing** - always run `make test.unit` before commit (see `testing.mdc`)
+
+## Development Conventions
+- **Commits**: Conventional Commits (feat:, fix:, chore:, refactor:, docs:, test:)
+- **Branches**: `feat/<slug>`, `fix/<slug>`, `boot/<slug>`, `release/x.y.z`. Open only one at once
+- **PR**: one capability per PR; checklist; clear description (objective + short plan)
+- **Never proceed more than one item of `TODO.md`**
+- **Be minimalist in changes** (don't refacto the whole to avoid regressions)
+- **Commit messages and PR descriptions MUST be in English**
+
+## Commit Guidelines
+- **Atomic commits** : One logical change per commit
+- **File count limit** : Maximum 10-15 files per commit
+- **Commit frequency** : Commit every 2-3 logical changes
+- **Before major work** : Commit current progress
+- **Commit message format** : `type: concise description`
+
+## Quality Gates
+- **Before commit**: Run `make test.unit` (enforced by testing.mdc)
+- **Before PR**: Run `make check` to validate consistency
+- **CI/CD**: All tests must pass, guides must be consistent
+- **Architecture**: Verify `make` commands work before any changes
+
+## Guide Maintenance
+**IMPORTANT**: When updating documentation, follow this hierarchy:
+
+### Update Order (MANDATORY)
+1. **`.mdc` files FIRST** - Update rules when constraints change
+2. **Documentation SECOND** - Update `.md` files to match rules
+3. **Implementation THIRD** - Update code to follow rules
+
+### Consistency Validation
+- **Before commit**: Run `make check` to validate consistency
+- **CI/CD**: GitHub Actions validates guide consistency automatically
+- **Manual check**: Use `make scripts.validate-guides` for specific validation
+
+### File Responsibilities
+- **`.mdc` files**: Define rules and constraints (AI source of truth)
+- **`.md` files**: Explain how to follow rules (user guides)
+- **Both must be consistent** - no contradictions allowed
+
+## Maintenance Workflow
+
+### When Rules Change
+1. **Update `.mdc` file FIRST** - Update rules when constraints change
+2. **Update documentation SECOND** - Update `.md` files to match rules
+3. **Verify consistency** - Run `make check` to validate
+
+### When Documentation Improves
+1. **Check if it's a rule change**
+   - If YES → Update `.mdc` file FIRST, then documentation
+   - If NO → Update documentation only
+2. **Verify rule compliance** - All documentation must reflect current `.mdc` rules
+
+### Validation Commands
+- **Automatic**: `make check` (i18n + guide validation)
+- **Individual**: `make scripts.i18n`, `make scripts.validate-guides`
+- **Manual**: `./scripts/validate_guides.sh`

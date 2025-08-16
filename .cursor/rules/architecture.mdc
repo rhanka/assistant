@@ -17,3 +17,15 @@ tags: [architecture, boundaries]
 - Dev environnement: docker compose
 - Prod environement: Kubernetes (bare yaml configuration, NO Helm)
 - Target Cloud: Scaleway (Kubernetes)
+
+## UI Framework (SvelteKit)
+- Routing with language prefix: `/[lang=en|fr]`
+- Use `svelte-i18n`; no hard-coded UI strings
+- Minimal state; prefer local stores
+- Tests: basic smoke via Playwright on `/en` and `/fr`
+
+## Language Policy
+- All code, comments, commit messages, PR titles/descriptions, API schemas and server errors MUST be in **English**
+- All Markdown and MDC files MUST be in **English**
+- The UI MUST support **English and French** locales (`/en`, `/fr`) with `en` as fallback
+- Any UI copy change MUST update both `en/*.json` and `fr/*.json` and keep keys stable

@@ -1,0 +1,153 @@
+# MASTER RULES - Consolidated AI Development Rules
+
+## Overview
+This file consolidates all development rules into a single source of truth for AI assistants. All other `.mdc` files provide detailed specifications for specific domains.
+
+## Core Architecture Principles
+
+### Make-First Architecture
+- **ALL development commands MUST go through Make** - no exceptions
+- **Docker-based execution** for consistency
+- **Same commands work locally and in CI** - no drift allowed
+
+### Rule Hierarchy
+1. **`.mdc` files** = Source of truth (AI rules)
+2. **Documentation** = User guides (derived from rules)
+3. **Implementation** = Code (follows rules)
+
+## Development Workflow
+
+### BOOT Phase (First Run)
+1. **FIRST**: Read this file (MASTER.mdc) for rules overview
+2. **SECOND**: Read `README.md` for project context
+3. **THIRD**: Read `TODO.md` for **Now** items
+4. Create `boot/<slug>` branches
+5. Follow Make-first architecture
+6. Implement tests via `make test.*` commands
+
+### FEATURE Phase
+1. Follow `workflow.mdc` process
+2. **ALWAYS test before commit** (`make test.unit`)
+3. Use `conventions.mdc` for commits/PRs
+4. Ensure `make` commands work
+
+### MAINTENANCE Phase
+1. Same flow as FEATURE
+2. Follow `testing.mdc` for test updates
+3. Maintain `make` command consistency
+
+### RELEASE Phase
+1. Follow `workflow.mdc` release process
+2. Use `make` commands for deployment
+3. Ensure all tests pass (`make test.all`)
+
+## Testing Requirements
+
+### Test Commands (MANDATORY)
+- `make test.unit` - Unit tests (REQUIRED before commit)
+- `make test.integration` - Integration tests
+- `make test.e2e` - E2E tests (Playwright)
+- `make test.i18n` - i18n validation
+- `make test.i18n.coverage` - Full i18n coverage
+- `make test.all` - Complete test suite
+
+### Test Enforcement
+- **ALL test execution MUST go through Make commands**
+- **Forbidden**: `npm test`, `python -m pytest`, direct package commands
+- **Required**: Always use `make test.*` commands
+
+### Quality Gates
+- All tests must pass before merge
+- i18n coverage must be 100% (EN/FR parity)
+- Unit test coverage: minimum 80%
+- No critical security vulnerabilities
+
+## Guide Maintenance
+
+### Update Workflow (MANDATORY)
+1. **Rules change** → Update `.mdc` file FIRST
+2. **Documentation** → Update `.md` file SECOND
+3. **Verify consistency** → Run `make check`
+
+### Consistency Rules
+- Commands must match exactly between `.mdc` and `.md`
+- Terminology must convey same meaning
+- Structure must be logically equivalent
+
+### Validation Commands
+- `make check` - Full consistency validation
+- `make scripts.validate-guides` - Guide consistency check
+- `make scripts.i18n.coverage` - i18n coverage validation
+
+## Security & Compliance
+
+### Human Approval Required (⚠ approval)
+- Destructive DB/system actions
+- Production deployments
+- Security-sensitive changes
+
+### Default Behaviors
+- **Dry-run by default** for critical operations
+- **Full journaling** of all actions
+- **Least privilege** access model
+
+## Language Policy
+
+### Code & Rules
+- **ALL code, comments, rules in English**
+- **API schemas in English**
+- **Error messages in English**
+
+### UI Localization
+- **UI supports EN/FR** with `/en` and `/fr` routes
+- **i18n coverage enforced** by CI
+- **Keys must be stable** across locales
+
+## File Structure
+
+### `.mdc` Files (AI Rules)
+- `architecture.mdc` - Core architecture principles + UI framework + Language policy
+- `workflow.mdc` - Development process + conventions + maintenance workflow
+- `testing.mdc` - Testing strategy + E2E testing + implementation guide
+- `security.mdc` - Security practices
+
+### Documentation Files (User Guides)
+- `README.md` - Project overview and setup
+- `RELEASE.md` - Release process (derived from workflow.mdc)
+- `TODO.md` - Current priorities and items
+
+## Quick Reference
+
+### Essential Commands
+```bash
+make up              # Start infrastructure
+make dev             # Install dependencies
+make test.unit       # Run unit tests (REQUIRED before commit)
+make test.all        # Run all tests
+make check           # Validate consistency
+```
+
+### Before Any Commit
+1. ✅ Run `make test.unit`
+2. ✅ Verify `make` commands work
+3. ✅ Check i18n coverage if UI changed
+
+### Before Any PR
+1. ✅ All tests pass (`make test.all`)
+2. ✅ Consistency validated (`make check`)
+3. ✅ Architecture compliance verified
+
+## Summary
+
+**This file consolidates all rules. For detailed specifications, see individual `.mdc` files:**
+
+- **architecture.mdc** → Core principles and boundaries
+- **workflow.mdc** → Development process and maintenance
+- **testing.mdc** → Testing strategy and enforcement
+- **conventions.mdc** → Standards and quality gates
+
+**Remember**: When in doubt, use `make` - it's the law of the land! 🚀
+description:
+globs:
+alwaysApply: false
+---
