@@ -142,7 +142,7 @@ Build a principal assistant that can plan, delegate, and safely execute work acr
 - **.cursor/rules** (workflow/architecture/sveltekit/playwright/conventions/security/language) in English.  
 - GitHub integration (create Issue via REST); Cursor Web Agents open via Playwright (dry‑run).  
 - Scripts (`db:init`, `db:migrate`, `db:reset`, `i18n_check`, `release_prepare`).  
-- CI (build + i18n check).  
+- CI (unified workflow with conditional testing + i18n check).  
 - **Plans‑first** data model and DAG validation.
 
 **Increment B — Planning & Sync**
@@ -168,6 +168,38 @@ Build a principal assistant that can plan, delegate, and safely execute work acr
 - **AI service**: Python FastAPI (inside `packages/ai`).
 - **GitHub**: REST (Issues/PR) + GraphQL (Projects v2).
 - **Cursor**: Web Agents piloted via **Playwright** (rules in `.cursor/rules/*.mdc`).
+
+## Testing Strategy
+Our CI/CD pipeline uses a unified workflow with conditional job execution based on file changes:
+
+### **Test Types**
+- **Unit Tests**: Individual component testing (`make test.unit.<component>`)
+- **Integration Tests**: Component-to-component testing (`make test.integration.<component1>-<component2>`)
+- **E2E Tests**: Full user workflow testing (`make test.e2e.<scenario>`)
+
+### **CI Workflow**
+- **Path-based triggers**: Jobs execute only when relevant files change
+- **Dependency-aware**: Tests run in correct order (unit → integration → E2E)
+- **Docker-first**: All tests run in containers via `make` commands
+- **Parallel execution**: Independent jobs run simultaneously
+
+### **Make Commands**
+```bash
+# Unit tests
+make test.unit.api      # Test API component
+make test.unit.ui       # Test UI component
+make test.unit.scheduler # Test Scheduler component
+make test.unit.workers  # Test Workers component
+make test.unit.ai       # Test AI component
+
+# Integration tests
+make test.integration.scheduler-api    # Test Scheduler-API integration
+make test.integration.workers-api      # Test Workers-API integration
+make test.integration.scheduler-workers # Test Scheduler-Workers integration
+
+# E2E tests
+make test.e2e.ui-api    # Test UI-API end-to-end workflow
+```
 
 ## Quick start (dev)
 1. `cp .env.example .env` and edit values.
@@ -204,7 +236,7 @@ Build a principal assistant that can plan, delegate, and safely execute work acr
 │  └─ scripts/            # DB init/migrate/reset, i18n check, release prep
 ├─ .github/
 │  └─ workflows/
-│     └─ ci.yml           # CI (build + i18n check)
+│     └─ ci.yml           # Unified CI with conditional testing
 ├─ docker-compose.yml     # Postgres, Redis, services
 ├─ Makefile               # dev, db, services, checks
 ├─ package.json           # npm workspaces (no Nx)
