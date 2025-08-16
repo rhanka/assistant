@@ -1,10 +1,12 @@
 # TODO (Now / Next / Later)
 
+Note: Always read `.cursor/rules/MASTER.mdc` first, then `README.md`, then this file
+
 ## Now
-- [x] AI directives : ensure that all .md and .mdc enable a proper developpement lifecycle (PR: boot/ai-directives)
+- [x] AI directives : ensure that all .md and .mdc enable a proper development lifecycle (PR: boot/ai-directives)
 - [x] Makefile: apply architecture (e.g dev in docker, python or npm run or npx for db migration must be in docker if local or kube if in production env) (PR: feat/makefile-architecture)
 - [x] API: GraphQL schema (Plan/Task/Step) + REST /health + OpenAPI (PR: feat/api-graphql-schema)
-- [ ] Test: Write down test strategy in a .mvc; implement test in Make then GitHub Actions (build + i18n check)
+- [ ] Test: Write down test strategy in .mdc; implement test in Make then GitHub Actions
 - [ ] Scheduler: compile Plan → DAG and enqueue jobs
 - [ ] Workers: job "sync:github" (issues + Projects v2) scaffold
 - [ ] UI: SvelteKit layout with /en and /fr, i18n switching
@@ -16,3 +18,56 @@
 
 ## Later
 - [ ] Data import (CSV/JSON) for Plans/Tasks
+
+## Note on Status
+**IMPORTANT**: Only features with merged PRs are marked as [x]. 
+Features marked as [ ] are planned but not yet developed.
+Check Git history with `git log --oneline --grep="feat:"` to verify actual development status.
+
+## Update Guidelines for TODO.md
+
+### Marking Feature as Complete [x]
+- ✅ **REQUIRED**: Feature must have merged PR with conventional commit
+- ✅ **VERIFY**: Check Git history with `git log --oneline --grep="feat:"`
+- ✅ **FORMAT**: `[x] Description (PR: type/name)`
+- ✅ **REFERENCE**: Include PR reference for traceability
+
+### Adding New Feature to Now
+- ✅ **SCOPE**: Feature aligns with current release scope
+- ✅ **PRIORITY**: Feature is next logical step
+- ✅ **FORMAT**: `[ ] Description (planned)`
+- ✅ **MOVE**: Move from Next/Later when starting development
+
+### Moving Features Between Sections
+- **Now → Next**: Feature started but not yet complete
+- **Next → Now**: Feature development beginning
+- **Later → Next**: Feature prioritized for next iteration
+- **Now → Complete**: Feature merged and verified
+
+### Update Workflow
+1. **Feature started** → Move from Next/Later to Now
+2. **Before merge** → Update TODO.md and RELEASE.md with feature status
+3. **Feature merged** → Verify PR reference and commit hash are correct
+4. **New feature planned** → Add to appropriate section
+5. **Before commit** → Verify status reflects Git reality
+
+### Git Verification Commands
+```bash
+# Check recent feature commits
+git log --oneline --since="1 month ago" | grep -E "(feat|fix|boot)"
+
+# Verify specific feature status
+git log --oneline --grep="feat:"
+
+# Check PR merge commits
+git log --oneline --grep="Merge pull request"
+
+# Verify feature files changed
+git show --name-only <commit-hash>
+```
+
+### Quality Gates
+- **Before marking [x]**: PR must be merged and feature must work
+- **Before adding to Now**: Feature must be actively developed
+- **Before moving sections**: Verify current status in Git
+- **Consistency check**: Run `make check` to validate guides

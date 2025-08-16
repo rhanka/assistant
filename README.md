@@ -1,7 +1,7 @@
 # Assistant is a toolset to enable to maximise use of AI in daily work
 
-## Developement directives (for AI)
-See `.cursor/rules/architecture.mdc`, `.cursor/rules/workflow.mdc`, `.cursor/rules/conventions.mdc`, `.cursor/rules/*.mdc`
+## Development directives (for AI)
+See `.cursor/rules/MASTER.mdc` for consolidated rules, then relevant sub `.mdc` files
 
 ## Project Goals
 Build a principal assistant that can plan, delegate, and safely execute work across your devices and tools. The system must support multimodal, multi‑device interaction and cleanly separate **planning** from **execution**.

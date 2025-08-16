@@ -4,5 +4,19 @@
   "nav.plans": "Plans",
   "nav.runs": "Runs",
   "lang.switch": "Français",
-  "home.welcome": "Welcome! This is the (very) first SvelteKit page."
+  "home.welcome": "Welcome! This is the (very) first SvelteKit page.",
+  "plans.title": "Plans",
+  "plans.create": "Create New Plan",
+  "plans.titlePlaceholder": "Enter plan title...",
+  "plans.createButton": "Create",
+  "plans.list": "Your Plans",
+  "plans.status": "Status",
+  "plans.tasks": "Tasks",
+  "runs.title": "Task Runs",
+  "runs.active": "Active Runs",
+  "runs.run": "Run",
+  "runs.plan": "Plan",
+  "runs.status": "Status",
+  "runs.progress": "Progress",
+  "runs.tasks": "Tasks"
 }
