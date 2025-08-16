@@ -11,6 +11,7 @@ Implement comprehensive testing strategy with make commands, unit tests, E2E tes
 - [x] Update Makefile and CI with test commands
 - [x] Update documentation and package dependencies
 - [x] Add BRANCH.md validation to prevent merge with branch files
+- [ ] Remove root package.json (everything must be driven by make)
 - [ ] Ensure make test.unit works correctly
 - [ ] Validate all test commands through make
 - [ ] Test CI workflow with make commands
@@ -25,9 +26,9 @@ Implement comprehensive testing strategy with make commands, unit tests, E2E tes
 - [x] **Commit 7**: Add BRANCH.md validation to prevent merge with branch files
 
 ## Status
-- **Progress**: 7/9 tasks completed (78%)
+- **Progress**: 7/10 tasks completed (70%)
 - **Current**: BRANCH.md validation added to CI pipeline
-- **Next**: Test and validate make test.unit functionality
+- **Next**: Remove root package.json to enforce make-first approach
 
 ## Notes
 - All commits follow atomic commit guidelines (max 10-15 files per commit)
@@ -36,6 +37,7 @@ Implement comprehensive testing strategy with make commands, unit tests, E2E tes
 - Documentation is updated to reflect current state
 
 ## Remaining Work
-1. **Test make test.unit** - Ensure Docker services can run tests
-2. **Validate test commands** - Verify all make test.* work correctly
-3. **Test CI workflow** - Ensure GitHub Actions use make commands properly
+1. **Remove root package.json** - Enforce make-first approach, no direct npm commands
+2. **Test make test.unit** - Ensure Docker services can run tests
+3. **Validate test commands** - Verify all make test.* work correctly
+4. **Test CI workflow** - Ensure GitHub Actions use make commands properly
