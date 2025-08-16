@@ -1,9 +1,10 @@
 FROM node:20
 WORKDIR /app
-COPY package.json tsconfig.json ./
+COPY packages/api/package.json packages/api/tsconfig.json ./
+COPY tsconfig.base.json ./
 RUN npm install
-COPY prisma ./prisma
+COPY packages/api/prisma ./prisma
 RUN npx prisma generate
-COPY src ./src
+COPY packages/api/src ./src
 EXPOSE 3001
 CMD ["npm", "run", "dev"]
