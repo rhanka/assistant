@@ -1,0 +1,15 @@
+---
+description: Architecture directives
+alwaysApply: true
+tags: [architecture, boundaries]
+---
+
+# ARCHITECTURE
+- UI : SvelteKit (`packages/ui`) — bilingual EN/FR with `/en` and `/fr`.
+- API : NestJS GraphQL + REST/OpenAPI (`packages/api`) with Prisma + PostgreSQL.
+- Scheduler : Plan→DAG compilation, priorities/budgets/scopes (`packages/scheduler`).
+- Workers : BullMQ (Redis) for GitHub, Cursor/Playwright, sync (`packages/workers`).
+- AI : FastAPI Python (`packages/ai`) — called over HTTP by API/Workers.
+- Scripts : `packages/scripts` (DB/migrations/recoveries, i18n checks, release).
+- Data : PostgreSQL (dev/prod), Redis (job queue).
+- Security : human approval on ⚠ actions; full journaling; dry-run by default.

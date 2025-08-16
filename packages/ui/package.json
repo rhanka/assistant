@@ -1,0 +1,17 @@
+{
+  "name": "@repo/ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev --port $UI_PORT",
+    "build": "vite build",
+    "preview": "vite preview --port $UI_PORT"
+  },
+  "dependencies": {
+    "@sveltejs/kit": "^2.5.0",
+    "svelte": "^4.2.0",
+    "svelte-i18n": "^3.8.5",
+    "vite": "^5.3.0"
+  }
+}

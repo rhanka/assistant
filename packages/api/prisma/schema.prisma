@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PlanMethodology {
+  AGILE_SCRUM
+  KANBAN
+  WATERFALL
+  HYBRID
+}
+
+enum PlanStatus {
+  DRAFT
+  IN_PROGRESS
+  BLOCKED
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskType {
+  EPIC
+  STORY
+  TASK
+  BUG
+  SPIKE
+  CHORE
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  BLOCKED
+  REVIEW
+  DONE
+  CANCELLED
+}
+
+model Plan {
+  id           String   @id @default(cuid())
+  title        String
+  objective    String?
+  methodology  PlanMethodology
+  status       PlanStatus @default(DRAFT)
+  constraints  Json?
+  customFields Json?
+  linksGithubProject String?
+  linksGithubMilestone Int?
+  tasks        Task[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Task {
+  id        String   @id @default(cuid())
+  planId    String
+  plan      Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+  title     String
+  type      TaskType?
+  status    TaskStatus @default(TODO)
+  assignee  String?
+  labels    String[]
+  estimate  Float?
+  dueDate   DateTime?
+  dependencies String[]
+  steps     Json?
+  linksGithubIssue String?
+  linksGithubPR String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([planId])
+}

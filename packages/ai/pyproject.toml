@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "assistant-ai"
+version = "0.1.0"
+description = "AI microservice (FastAPI)"
+authors = ["you <you@example.com>"]
+packages = [{ include = "app" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.112.0"
+uvicorn = "^0.30.0"
+pydantic = "^2.7.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"

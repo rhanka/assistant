@@ -1,0 +1,10 @@
+---
+description: Security guardrails
+alwaysApply: true
+tags: [security, approvals]
+---
+
+# SECURITY
+- Forbidden actions: destructive operations in production; secrets in plain text.
+- Require "⚠ approval" for: DB migrations in prod, merges, release publishing.
+- Always produce a **preview** (diff/plan) before acting.

@@ -1,0 +1,37 @@
+---
+description: Standard repository workflow (boot/feature/maintenance/release)
+alwaysApply: true
+tags: [workflow, repository, guardrails]
+---
+
+# WORKFLOW
+
+## Principles
+- Always read `README.md`, `RELEASE.md` (target version) and `TODO.md` (priorities).
+- Propose a short action plan before coding. Request human approval when "⚠ approval".
+- One PR per objective. Use Conventional Commits (feat:, fix:, chore:, refactor:, docs:, test:).
+
+## BOOT (first run)
+1. Open `TODO.md` and focus on **Now** items.
+2. For each **Now** item, create a branch `boot/<slug>`.
+3. Generate missing skeleton files or services.
+4. Open a PR with a checklist. Wait for approval.
+
+## FEATURE
+1. Read the target `TODO.md` item (**Next** or **Now**).
+2. Post a 3–6 step plan as the first PR comment.
+3. Implement with guardrails (preview, dry-run, logs).
+4. Update `TODO.md` (check item, reference PR) and `RELEASE.md` (scope).
+
+## MAINTENANCE
+- Small chores/refactors/docs. Same flow as FEATURE.
+
+## RELEASE
+1. Collect merged PRs since last tag (Conventional Commits).
+2. Update `RELEASE.md` (notes, risks, rollback).
+3. Open `release/x.y.z` PR with release checklist.
+4. Tag + publish after human approval.
+
+## Guardrails
+- Never perform destructive DB/system actions without "⚠ approval".
+- For Playwright/Cursor, always **simulate** before executing a critical action.

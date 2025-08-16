@@ -1,0 +1,8 @@
+{
+  "app.title": "Assistant — Plans & Tasks",
+  "nav.home": "Home",
+  "nav.plans": "Plans",
+  "nav.runs": "Runs",
+  "lang.switch": "Français",
+  "home.welcome": "Welcome! This is the (very) first SvelteKit page."
+}

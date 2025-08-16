@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Plan",
+  "type": "object",
+  "required": ["id", "title", "methodology", "tasks"],
+  "properties": {
+    "id": { "type": "string" },
+    "title": { "type": "string" },
+    "objective": { "type": "string" },
+    "owner": { "type": "string" },
+    "methodology": { "type": "string", "enum": ["agile-scrum", "kanban", "waterfall", "hybrid"] },
+    "status": { "type": "string", "enum": ["draft", "in-progress", "blocked", "completed", "cancelled"] },
+    "constraints": { "type": "object", "additionalProperties": true },
+    "customFields": { "type": "object", "additionalProperties": true },
+    "tasks": { "type": "array", "items": { "$ref": "task.schema.json" } }
+  }
+}

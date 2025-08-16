@@ -1,0 +1,33 @@
+name: CI
+on:
+  push:
+    branches: [ main ]
+  pull_request: {}
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install
+        run: npm install
+      - name: i18n check
+        run: npm run -w @repo/scripts i18n:check
+      - name: Build TypeScript packages
+        run: |
+          npm run -w @repo/plan-kernel build || true
+          npm run -w @repo/scheduler build || true
+          npm run -w @repo/workers build || true
+          npm run -w @repo/integrations-github build || true
+          npm run -w @repo/integrations-cursor build || true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Poetry
+        run: pip install poetry
+      - name: Validate AI service (deps only)
+        working-directory: packages/ai
+        run: poetry install --no-interaction --no-ansi

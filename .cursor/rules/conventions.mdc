@@ -1,0 +1,11 @@
+---
+description: Commit/PR/branch conventions
+alwaysApply: true
+tags: [conventions, pr, commits]
+---
+
+# CONVENTIONS
+- Commits: Conventional Commits (feat:, fix:, chore:, refactor:, docs:, test:).
+- Branches: `feat/<slug>`, `fix/<slug>`, `boot/<slug>`, `release/x.y.z`.
+- PR: one capability per PR; checklist; clear description (objective + short plan).
+- Commit messages and PR descriptions MUST be in English.
