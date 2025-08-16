@@ -29,17 +29,29 @@ services:
     ports: ["${UI_PORT:-5173}:5173"]
     depends_on: [api]
   ai:
-    build: ./packages/ai
+    build:
+      context: .
+      dockerfile: ./packages/ai/Dockerfile
     environment:
       - AI_PORT=${AI_PORT}
     ports: ["${AI_PORT:-8000}:8000"]
   workers:
-    build: ./packages/workers
+    build:
+      context: .
+      dockerfile: ./packages/workers/Dockerfile
     environment:
       - REDIS_URL=${REDIS_URL}
       - GITHUB_TOKEN=${GITHUB_TOKEN}
       - GITHUB_OWNER=${GITHUB_OWNER}
       - GITHUB_REPO=${GITHUB_REPO}
     depends_on: [redis, api]
+  scheduler:
+    build:
+      context: .
+      dockerfile: ./packages/scheduler/Dockerfile
+    environment:
+      - REDIS_URL=${REDIS_URL}
+    depends_on: [redis]
+    ports: ["3002:3002"]
 volumes:
   pgdata:

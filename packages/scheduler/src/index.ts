@@ -46,7 +46,7 @@ export function topoOrder(tasks: TaskNode[]): string[] {
   return order;
 }
 
-export async function enqueuePlan(plan: Plan, queueName = 'jobs:sync-github', redisUrl = process.env.REDIS_URL || 'redis://localhost:6379') {
+export async function enqueuePlan(plan: Plan, queueName = 'jobs-sync-github', redisUrl = process.env.REDIS_URL || 'redis://localhost:6379') {
   const queue = new Queue(queueName, { connection: { url: redisUrl } });
   const order = topoOrder(plan.tasks);
   for (const id of order) {
