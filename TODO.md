@@ -2,7 +2,8 @@
 
 ## Now
 - [x] AI directives : ensure that all .md and .mdc enable a proper developpement lifecycle (PR: boot/ai-directives)
-- [ ] API: GraphQL schema (Plan/Task/Step) + REST /health + OpenAPI
+- [x] Makefile: apply architecture (e.g dev in docker, python or npm run or npx for db migration must be in docker if local or kube if in production env) (PR: feat/makefile-architecture)
+- [x] API: GraphQL schema (Plan/Task/Step) + REST /health + OpenAPI (PR: feat/api-graphql-schema)
 - [ ] Scheduler: compile Plan → DAG and enqueue jobs
 - [ ] Workers: job "sync:github" (issues + Projects v2) scaffold
 - [ ] UI: SvelteKit layout with /en and /fr, i18n switching
