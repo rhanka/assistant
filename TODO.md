@@ -1,6 +1,7 @@
 # TODO (Now / Next / Later)
 
 ## Now
+- [ ] AI directives : ensure that all .md and .mdc enable a proper developpement lifecycle
 - [ ] API: GraphQL schema (Plan/Task/Step) + REST /health + OpenAPI
 - [ ] Scheduler: compile Plan → DAG and enqueue jobs
 - [ ] Workers: job "sync:github" (issues + Projects v2) scaffold

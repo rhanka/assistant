@@ -1,6 +1,9 @@
-# Assistant Monorepo (scheduler + workers + AI) — Skeleton
+# Assistant is a toolset to enable to maximise use of AI in daily work
 
-**Decisions locked:**
+## Developement directives (for AI)
+See `.cursor/rules/architecture.mdc`, `.cursor/rules/workflow.mdc`, `.cursor/rules/conventions.mdc`, `.cursor/rules/*.mdc`
+
+## Decisions locked
 - **Package manager**: npm workspaces (no Nx).
 - **UI**: SvelteKit (English + French).
 - **API**: NestJS (GraphQL code‑first + REST/OpenAPI) with **Prisma** (PostgreSQL).

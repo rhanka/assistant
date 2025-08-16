@@ -13,3 +13,7 @@ tags: [architecture, boundaries]
 - Scripts : `packages/scripts` (DB/migrations/recoveries, i18n checks, release).
 - Data : PostgreSQL (dev/prod), Redis (job queue).
 - Security : human approval on ⚠ actions; full journaling; dry-run by default.
+- CI/CD: use Make for all local CI/CD directives and Github Action for automation
+- Dev environnement: docker compose
+- Prod environement: Kubernetes (bare yaml configuration, NO Helm)
+- Target Cloud: Scaleway (Kubernetes)
