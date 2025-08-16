@@ -11,7 +11,7 @@ Implement comprehensive testing strategy with make commands, unit tests, E2E tes
 - [x] Update Makefile and CI with test commands
 - [x] Update documentation and package dependencies
 - [x] Add BRANCH.md validation to prevent merge with branch files
-- [ ] Remove root package.json (everything must be driven by make)
+- [x] Remove root package.json (everything must be driven by make)
 - [ ] Ensure make test.unit works correctly
 - [ ] Validate all test commands through make
 - [ ] Test CI workflow with make commands
@@ -23,12 +23,13 @@ Implement comprehensive testing strategy with make commands, unit tests, E2E tes
 - [x] **Commit 4** (2e8a329): Add UI pages and E2E tests
 - [x] **Commit 5** (24dfec3): Update Makefile and CI with test commands
 - [x] **Commit 6** (1f0206f): Update documentation and package dependencies
-- [x] **Commit 7**: Add BRANCH.md validation to prevent merge with branch files
+- [x] **Commit 7** (0c01c66): Add BRANCH.md validation to prevent merge with branch files
+- [x] **Commit 8** (3998943): Enforce make-first architecture and clean node_modules
 
 ## Status
-- **Progress**: 7/10 tasks completed (70%)
-- **Current**: BRANCH.md validation added to CI pipeline
-- **Next**: Remove root package.json to enforce make-first approach
+- **Progress**: 8/10 tasks completed (80%)
+- **Current**: Make-first architecture enforced, root package.json removed
+- **Next**: Test and validate make test.unit functionality
 
 ## Notes
 - All commits follow atomic commit guidelines (max 10-15 files per commit)

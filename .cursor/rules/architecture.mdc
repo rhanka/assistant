@@ -18,6 +18,16 @@ tags: [architecture, boundaries]
 - Prod environement: Kubernetes (bare yaml configuration, NO Helm)
 - Target Cloud: Scaleway (Kubernetes)
 
+## Configuration Management
+- **Build/Compilation configs** → `packages/config/` (Docker-first approach)
+  - TypeScript compilation settings
+  - Build tool configurations
+  - Docker base configurations
+- **Editor/IDE configs** → **Root** (for VSCode/Cursor AI)
+  - .editorconfig, .eslintrc.js, .prettierrc
+  - .vscode/settings.json, .cursorrules
+- **Separation of concerns**: Build configs in packages, editor configs in root
+
 ## UI Framework (SvelteKit)
 - Routing with language prefix: `/[lang=en|fr]`
 - Use `svelte-i18n`; no hard-coded UI strings
