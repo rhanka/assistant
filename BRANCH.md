@@ -12,9 +12,13 @@ Implement comprehensive testing strategy with make commands, unit tests, E2E tes
 - [x] Update documentation and package dependencies
 - [x] Add BRANCH.md validation to prevent merge with branch files
 - [x] Remove root package.json (everything must be driven by make)
-- [ ] Ensure make test.unit works correctly
-- [ ] Validate all test commands through make
-- [ ] Test CI workflow with make commands
+- [x] Complete Docker-first architecture and test infrastructure
+- [x] Implement optimized CI strategy (path-based testing + P2P)
+- [x] Fix CI workflows to match testing strategy (remove obsolete ci.yml, fix ci-global, add P2P)
+- [x] Complete P2P integration workflows (workers-api, ui-api, scheduler-workers)
+- [x] Consolidate all CI workflows into single ci.yml with conditional jobs and dependencies
+- [ ] Update testing strategy documentation
+- [ ] Validate CI workflow with optimized testing
 
 ## Commits & Progress
 - [x] **Commit 1** (4ac4bfb): Consolidate AI directives into core .mdc files
@@ -26,11 +30,12 @@ Implement comprehensive testing strategy with make commands, unit tests, E2E tes
 - [x] **Commit 7** (0c01c66): Add BRANCH.md validation to prevent merge with branch files
 - [x] **Commit 8** (3998943): Enforce make-first architecture and clean node_modules
 - [x] **Commit 9** (e966e38): Move tsconfig.base.json to packages/config for Docker-first architecture
+- [x] **Commit 10** (ce75764): Complete Docker-first architecture and test infrastructure
 
 ## Status
-- **Progress**: 9/10 tasks completed (90%)
-- **Current**: All Docker services can be built and run tests (scheduler: 5/6, workers: 1/1, AI: 1/5)
-- **Next**: Final validation of make test.unit and CI workflow
+- **Progress**: 13/14 tasks completed (93%)
+- **Current**: All CI workflows consolidated into single ci.yml with proper dependencies
+- **Next**: Update testing strategy documentation and validate CI workflow
 
 ## Notes
 - All commits follow atomic commit guidelines (max 10-15 files per commit)

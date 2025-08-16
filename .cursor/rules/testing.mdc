@@ -1,4 +1,283 @@
----
+# Testing Strategy
+
+## Overview
+This document defines the testing strategy for the assistant project, ensuring all testing goes through the Makefile (Docker-first approach) with optimized CI workflows.
+
+## Testing Levels
+
+### 1. Unit Tests
+- **Scope**: Individual functions, classes, and components
+- **Environment**: Isolated, no external dependencies
+- **Execution**: Via `make test.unit.<package>`
+
+### 2. Integration Tests
+- **Scope**: Component with its direct dependencies (DB, Redis)
+- **Environment**: Real services (PostgreSQL, Redis) but isolated from other components
+- **Execution**: Via `make test.integration.<package>`
+
+### 3. End-to-End Tests
+- **Scope**: Full user workflows across multiple components
+- **Environment**: Complete stack with real services
+- **Execution**: Via `make test.e2e.<scenario>`
+
+### 4. Peer-to-Peer Tests
+- **Scope**: Integration between specific components
+- **Environment**: Real services for interfacing components
+- **Execution**: Via `make test.integration.<component1>-<component2>`
+
+## CI/CD Testing Strategy
+
+### Workflow Separation by Functional Domain
+
+#### CI API (Independent Component)
+```yaml
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/api/**'
+      - 'packages/schemas/**'
+      - 'packages/config/**'
+      - 'docker-compose.yml'
+      - 'Makefile'
+      - '.github/workflows/ci-api.yml'
+
+jobs:
+  test-api:
+    - make test.unit.api
+    - make test.integration.api
+```
+
+#### CI Scheduler (Independent Component)
+```yaml
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/scheduler/**'
+      - 'packages/config/**'
+      - 'docker-compose.yml'
+      - 'Makefile'
+      - '.github/workflows/ci-scheduler.yml'
+
+jobs:
+  test-scheduler:
+    - make test.unit.scheduler
+```
+
+#### CI AI (Independent Component)
+```yaml
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/ai/**'
+      - 'docker-compose.yml'
+      - 'Makefile'
+      - '.github/workflows/ci-ai.yml'
+
+jobs:
+  test-ai:
+    - make test.unit.ai
+```
+
+#### CI Workers (Depends on API)
+```yaml
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/workers/**'
+      - 'packages/api/**'
+      - 'packages/schemas/**'
+      - 'packages/config/**'
+      - 'docker-compose.yml'
+      - 'Makefile'
+      - '.github/workflows/ci-workers.yml'
+
+jobs:
+  test-workers:
+    - make test.unit.workers
+    - make test.unit.api
+    - make test.integration.workers-api
+```
+
+#### CI UI (Depends on API)
+```yaml
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/ui/**'
+      - 'packages/api/**'
+      - 'packages/schemas/**'
+      - 'packages/config/**'
+      - 'docker-compose.yml'
+      - 'Makefile'
+      - '.github/workflows/ci-ui.yml'
+
+jobs:
+  test-ui:
+    - make test.unit.ui
+    - make test.unit.api
+    - make test.e2e.ui-api
+```
+
+### Integration Testing Workflows
+
+#### CI Scheduler-Workers Integration
+```yaml
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/scheduler/**'
+      - 'packages/workers/**'
+      - 'packages/api/**'
+      - 'packages/schemas/**'
+      - 'packages/config/**'
+      - 'docker-compose.yml'
+      - 'Makefile'
+      - '.github/workflows/ci-scheduler-workers.yml'
+
+jobs:
+  test-scheduler-workers:
+    - make test.integration.scheduler-workers-api
+```
+
+#### CI Workers-API Integration
+```yaml
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/workers/**'
+      - 'packages/api/**'
+      - 'packages/schemas/**'
+      - 'packages/config/**'
+      - 'docker-compose.yml'
+      - 'Makefile'
+      - '.github/workflows/ci-workers-api.yml'
+
+jobs:
+  test-workers-api:
+    - make test.integration.workers-api
+```
+
+#### CI UI-API E2E
+```yaml
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/ui/**'
+      - 'packages/api/**'
+      - 'packages/schemas/**'
+      - 'packages/config/**'
+      - 'docker-compose.yml'
+      - 'Makefile'
+      - '.github/workflows/ci-ui-api.yml'
+
+jobs:
+  test-ui-api:
+    - make test.e2e.ui-api
+```
+
+### Configuration Changes Impact
+
+**Note**: When `Makefile`, `docker-compose.yml`, or `packages/config/**` change, ALL component workflows are triggered because these are shared dependencies. No separate "global" workflow is needed.
+
+## Component Dependencies
+
+### Dependency Map
+- **API**: Independent (PostgreSQL, Redis)
+- **Scheduler**: Independent (Redis only)
+- **AI**: Independent (no dependencies)
+- **Workers**: Depends on API (Redis + API calls)
+- **UI**: Depends on API (API calls only)
+
+### Configuration Dependencies
+- **`packages/config/**`**: Included in all workflows (shared TypeScript config)
+- **`Makefile`**: Included in all workflows (test commands)
+- **`docker-compose.yml`**: Included in all workflows (Docker environment)
+- **`packages/schemas/**`**: Included where API is involved
+
+## Make Commands
+
+### Package-Specific Tests
+```makefile
+# Unit tests
+test.unit.api: docker compose run --rm api npm run test:unit
+test.unit.ui: docker compose run --rm ui npm run test:unit
+test.unit.scheduler: docker compose run --rm scheduler npm run test:unit
+test.unit.workers: docker compose run --rm workers npm run test:unit
+test.unit.ai: docker compose run --rm ai pytest tests/
+
+# Integration tests
+test.integration.api: docker compose run --rm api npm run test:integration
+test.integration.workers-api: docker compose run --rm workers npm run test:integration
+
+# E2E tests
+test.e2e.ui: docker compose run --rm ui npm run test:e2e
+test.e2e.ui-api: docker compose run --rm ui npm run test:e2e:integration
+```
+
+### Composite Tests
+```makefile
+# Package tests (unit + integration)
+test.api: test.unit.api test.integration.api
+test.ui: test.unit.ui test.e2e.ui
+test.scheduler: test.unit.scheduler
+test.workers: test.unit.workers
+test.ai: test.unit.ai
+
+# Integration tests
+test.integration.scheduler-workers-api: docker compose run --rm scheduler npm run test:integration
+```
+
+## Testing Rules
+
+### 1. No Test Duplication
+- **Unit tests**: Always executed for changed components
+- **Integration tests**: Only in component-specific workflows
+- **E2E tests**: Only in integration workflows, replacing component integration tests
+
+### 2. Dependency Awareness
+- **Independent components**: Test in isolation
+- **Dependent components**: Include dependency tests
+- **P2P workflows**: Focus on integration/E2E, assume dependencies are already tested
+- **Configuration changes**: Trigger all relevant workflows
+
+### 3. Performance Optimization
+- **Path-based triggers**: Only test what changes
+- **Parallel execution**: Independent workflows run simultaneously
+- **Caching**: Leverage Docker layer caching and test result caching
+
+### 4. Quality Gates
+- **All unit tests must pass** before integration tests
+- **Integration tests must pass** before E2E tests
+- **P2P workflows focus on integration**: Unit tests handled by component workflows
+- **Global validation** required for configuration changes
+
+## Implementation Notes
+
+### GitHub Actions Best Practices
+- Use `pull_request` trigger for path-based filtering
+- Include all necessary configuration files in path filters
+- Separate workflows by functional domain
+- Use matrix strategies for parallel testing where possible
+
+### Docker-First Approach
+- All tests run in Docker containers
+- Use `docker compose run --rm` for test execution
+- Leverage Docker layer caching for faster builds
+- Ensure consistent test environment across CI and local
+
+### Make-First Architecture
+- All test commands go through Makefile
+- No direct `npm`, `pytest`, or `docker` commands in CI
+- Centralized test configuration and execution
+- Consistent interface for local and CI testing
 description:
 globs:
 alwaysApply: false

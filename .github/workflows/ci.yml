@@ -1,39 +1,147 @@
 name: CI
+
 on:
-  push:
-    branches: [ main ]
-  pull_request: {}
+  pull_request:
+    branches: [main]
 
 jobs:
-  build-and-check:
+  # Tests unitaires (conditionnels selon les fichiers modifiés)
+  test-api-unit:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/api/') || contains(github.event.pull_request.files.*.name, 'packages/schemas/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Install
-        run: npm install
-      - name: Run consistency checks
-        run: make check
-      - name: Build TypeScript packages
-        run: |
-          npm run -w @repo/plan-kernel build || true
-          npm run -w @repo/scheduler build || true
-          npm run -w @repo/workers build || true
-          npm run -w @repo/integrations-github build || true
-          npm run -w @repo/integrations-cursor build || true
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install Poetry
-        run: pip install poetry
-      - name: Validate AI service (deps only)
-        working-directory: packages/ai
-        run: poetry install --no-interaction --no-ansi
-      - name: Run tests
-        run: |
-          # Unit tests
-          make test.unit || true
-          # i18n coverage check
-          make test.i18n.coverage || true
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Start services
+        run: make up
+      - name: Test API Unit
+        run: make test.unit.api
+
+  test-scheduler-unit:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/scheduler/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Start services
+        run: make up
+      - name: Test Scheduler Unit
+        run: make test.unit.scheduler
+
+  test-workers-unit:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/workers/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Start services
+        run: make up
+      - name: Test Workers Unit
+        run: make test.unit.workers
+
+  test-ui-unit:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/ui/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Start services
+        run: make up
+      - name: Test UI Unit
+        run: make test.unit.ui
+
+  test-ai-unit:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/ai/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Start services
+        run: make up
+      - name: Test AI Unit
+        run: make test.unit.ai
+
+  # Tests d'intégration P2P (dépendent des tests unitaires)
+  test-scheduler-api:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/scheduler/') || contains(github.event.pull_request.files.*.name, 'packages/api/') || contains(github.event.pull_request.files.*.name, 'packages/schemas/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    needs: [test-scheduler-unit, test-api-unit]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Start services
+        run: make up
+      - name: Test Scheduler-API Integration
+        run: make test.integration.scheduler-api
+
+  test-scheduler-workers:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/scheduler/') || contains(github.event.pull_request.files.*.name, 'packages/workers/') || contains(github.event.pull_request.files.*.name, 'packages/api/') || contains(github.event.pull_request.files.*.name, 'packages/schemas/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    needs: [test-scheduler-unit, test-workers-unit, test-api-unit]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Start services
+        run: make up
+      - name: Test Scheduler-Workers Integration
+        run: make test.integration.scheduler-workers-api
+
+  test-workers-api:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/workers/') || contains(github.event.pull_request.files.*.name, 'packages/api/') || contains(github.event.pull_request.files.*.name, 'packages/schemas/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    needs: [test-workers-unit, test-api-unit, test-scheduler-workers]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Start services
+        run: make up
+      - name: Test Workers-API Integration
+        run: make test.integration.workers-api
+
+  test-ui-api:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/ui/') || contains(github.event.pull_request.files.*.name, 'packages/api/') || contains(github.event.pull_request.files.*.name, 'packages/schemas/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    needs: [test-ui-unit, test-api-unit]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Start services
+        run: make up
+      - name: Test UI-API E2E
+        run: make test.e2e.ui-api
+
+  # Tests P2P avec AI
+  test-scheduler-ai:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/scheduler/') || contains(github.event.pull_request.files.*.name, 'packages/ai/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    needs: [test-scheduler-unit, test-ai-unit]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Start services
+        run: make up
+      - name: Test Scheduler-AI Integration
+        run: make test.integration.scheduler-ai
+
+  test-workers-ai:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.files && (contains(github.event.pull_request.files.*.name, 'packages/workers/') || contains(github.event.pull_request.files.*.name, 'packages/ai/') || contains(github.event.pull_request.files.*.name, 'Makefile') || contains(github.event.pull_request.files.*.name, 'docker-compose.yml') || contains(github.event.pull_request.files.*.name, 'packages/config/'))
+    needs: [test-workers-unit, test-ai-unit]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Start services
+        run: make up
+      - name: Test Workers-AI Integration
+        run: make test.integration.workers-ai

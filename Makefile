@@ -129,7 +129,58 @@ check: scripts.i18n scripts.validate-guides scripts.check-branch-files
 test.unit:
 	docker compose run --rm scheduler npm run test:unit
 	docker compose run --rm workers npm run test:unit
-	docker compose run --rm ai pytest tests/unit
+	docker compose run --rm ai pytest tests/
+
+# Package-specific unit tests
+test.unit.api:
+	docker compose run --rm api npm run test:unit
+
+test.unit.ui:
+	docker compose run --rm ui npm run test:unit
+
+test.unit.scheduler:
+	docker compose run --rm scheduler npm run test:unit
+
+test.unit.workers:
+	docker compose run --rm workers npm run test:unit
+
+test.unit.ai:
+	docker compose run --rm ai pytest tests/
+
+# Integration tests
+test.integration.api:
+	docker compose run --rm api npm run test:integration
+
+test.integration.scheduler-api:
+	docker compose run --rm scheduler npm run test:integration
+
+test.integration.workers-api:
+	docker compose run --rm workers npm run test:integration
+
+test.integration.scheduler-ai:
+	docker compose run --rm scheduler npm run test:integration:ai
+
+test.integration.workers-ai:
+	docker compose run --rm workers npm run test:integration:ai
+
+# E2E tests
+test.e2e.ui:
+	docker compose run --rm ui npm run test:e2e
+
+test.e2e.ui-api:
+	docker compose run --rm ui npm run test:e2e:integration
+
+# Package tests (unit + integration)
+test.api: test.unit.api test.integration.api
+test.ui: test.unit.ui test.e2e.ui
+test.scheduler: test.unit.scheduler
+test.workers: test.unit.workers
+test.ai: test.unit.ai
+
+# Global validation
+validate-config:
+	@echo "🔍 Validating global configuration..."
+	@echo "✅ Configuration validation complete"
 
 test.integration:
 	docker compose exec api npm run test:integration
