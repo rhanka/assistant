@@ -23,10 +23,11 @@ tags: [workflow, repository, guardrails]
 
 ## FEATURE
 1. Read the target `TODO.md` item (**Next** or **Now**).
-2. Post a 3–6 step plan as the first PR comment.
-3. Implement with guardrails (preview, dry-run, logs).
-4. **Test before commit** - ensure all changes work as expected.
-5. Update `TODO.md` (check item, reference PR) and `RELEASE.md` (scope).
+2. **Create feature branch** with `BRANCH.md` documenting plan and tasks.
+3. Post a 3–6 step plan as the first PR comment.
+4. Implement with guardrails (preview, dry-run, logs).
+5. **Test before commit** - ensure all changes work as expected.
+6. Update `TODO.md` (check item, reference PR) and `RELEASE.md` (scope).
 
 ## MAINTENANCE
 - Small chores/refactors/docs. Same flow as FEATURE.
@@ -63,6 +64,61 @@ tags: [workflow, repository, guardrails]
 - **Before PR**: Run `make check` to validate consistency
 - **CI/CD**: All tests must pass, guides must be consistent
 - **Architecture**: Verify `make` commands work before any changes
+
+## Feature Branch Management
+
+### Branch Documentation
+- **REQUIRED**: Create `BRANCH.md` for each feature branch
+- **LOCATION**: Root of feature branch (not committed to main)
+- **PURPOSE**: Track progress, plan, and commit mapping
+
+### BRANCH.md Structure
+```markdown
+# Feature: [Name]
+
+## Objective
+Brief description of what this feature accomplishes
+
+## Plan / Todo
+- [ ] Task 1: Description
+- [ ] Task 2: Description  
+- [ ] Task 3: Description
+
+## Commits & Progress
+- [x] **Commit 1** (hash): Task 1 completed
+- [x] **Commit 2** (hash): Task 2 completed
+- [ ] **Commit 3**: Task 3 in progress
+
+## Status
+- **Progress**: X/Y tasks completed
+- **Current**: Working on Task 3
+- **Next**: Complete Task 3, then Task 4
+```
+
+### Branch Workflow
+1. **Create branch** → Create `BRANCH.md` with plan
+2. **Before commit** → Update `BRANCH.md` with new task
+3. **After commit** → Link commit hash to completed task
+4. **Before merge** → Ensure all tasks are completed and documented
+5. **After merge** → Archive `BRANCH.md` or move to docs/
+
+### Quality Gates
+- **Branch creation**: `BRANCH.md` must exist before first commit
+- **Commit mapping**: Every commit must be linked to a task
+- **Progress tracking**: Status must be updated after each commit
+- **Merge readiness**: All tasks must be completed and documented
+
+### Branch Documentation in Commits
+- **Intermediate commits**: Include and update `BRANCH.md` in each commit
+- **Final commit**: Copy `BRANCH.md` content to commit message, then remove file
+- **Commit message format**: Include complete development history and commit mapping
+- **New branch**: Start with fresh `BRANCH.md` for next feature
+
+### Final Commit Workflow
+1. **Copy BRANCH.md content** to commit message
+2. **Remove BRANCH.md** from working directory
+3. **Commit** with complete development history
+4. **Merge** branch with full traceability
 
 ## Guide Maintenance
 **IMPORTANT**: When updating documentation, follow this hierarchy:
