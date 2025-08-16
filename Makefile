@@ -76,7 +76,18 @@ scripts.i18n:
 scripts.validate-guides:
 	./packages/scripts/src/validate_guides.sh
 
-check: scripts.i18n scripts.validate-guides
+scripts.check-branch-files:
+	@echo "🔍 Checking for BRANCH.md files..."
+	@if find . -name "BRANCH.md" | grep -q .; then \
+		echo "❌ BRANCH.md files found - these should be removed before merge"; \
+		echo "Files found:"; \
+		find . -name "BRANCH.md"; \
+		exit 1; \
+	else \
+		echo "✅ No BRANCH.md files found - ready for merge"; \
+	fi
+
+check: scripts.i18n scripts.validate-guides scripts.check-branch-files
 
 # Testing (Docker-based)
 test.unit:
