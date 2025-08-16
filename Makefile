@@ -1,4 +1,4 @@
-.PHONY: dev up down ui api workers ai db.init db.migrate db.reset scripts.i18n check prod.deploy prod.status prod.logs dev.build dev.clean
+.PHONY: dev up down ui api workers ai db.init db.migrate db.reset scripts.i18n check prod.deploy prod.status prod.logs dev.build dev.clean restart.api logs.api status build.api up.api down.api rebuild.api
 
 # Environment variables (with defaults)
 export DATABASE_URL ?= postgresql://postgres:postgres@postgres:5432/assistant?schema=public
@@ -25,6 +25,18 @@ dev:
 	docker compose up -d
 	npm install
 
+# API-specific targets (using make instead of docker compose)
+build.api:
+	docker compose build api
+
+up.api:
+	docker compose up -d api
+
+down.api:
+	docker compose stop api
+
+rebuild.api: build.api up.api
+
 # Services (Docker-based development)
 ui:
 	docker compose exec ui npm run dev
@@ -37,6 +49,15 @@ workers:
 
 ai:
 	docker compose exec ai poetry run uvicorn app.main:app --reload --port $(AI_PORT)
+
+restart.api:
+	docker compose restart api
+
+logs.api:
+	docker compose logs -f api
+
+status:
+	docker compose ps
 
 # DB (Prisma via API package in Docker)
 db.init:
