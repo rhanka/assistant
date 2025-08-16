@@ -66,6 +66,7 @@ tags: [workflow, repository, guardrails]
 4. **Verify staging** : Run `git status` again to confirm what's staged
 5. **ABSOLUTELY NO git add .** : Never use `git add .` - always stage files individually
 6. **Commit with context** : Include clear description of what changed and why
+7. **ONE task per commit** : Complete ONE logical task, then commit. Do NOT chain multiple tasks without committing.
 
 ### Next Step Proposal (MANDATORY)
 After completing any task, **ALWAYS propose the next step** by following the workflow:
