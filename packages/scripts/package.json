@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "i18n:check": "ts-node src/i18n_check.ts",
+    "i18n:coverage": "ts-node src/i18n_coverage_check.ts",
     "release:prepare": "ts-node src/release_prepare.ts"
   },
   "dependencies": {},
