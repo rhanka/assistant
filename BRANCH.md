@@ -27,7 +27,7 @@ Implement comprehensive testing strategy with make commands, unit tests, E2E tes
 - [x] Add test:integration script to scheduler package
 - [x] Fix test-scheduler-api (Script `test:integration` ajouté mais test échoue encore)
 - [x] Fix test-scheduler-workers (Script `test.integration.scheduler-workers-api` manquant dans Makefile)
-- [ ] Fix test-scheduler-ai (Script `test.integration.ai` manquant dans scheduler package)
+- [x] Fix test-scheduler-ai (Script `test.integration.ai` manquant dans scheduler package)
 - [ ] Fix test-workers-ai (Script `test:integration:ai` manquant dans workers package)
 - [ ] Fix test-workers-api (Dépendant des tests scheduler, échoue à cause des échecs précédents)
 
@@ -46,11 +46,12 @@ Implement comprehensive testing strategy with make commands, unit tests, E2E tes
 - [x] **Commit 12** (11d57fc): Add test:integration script to scheduler package
 - [x] **Commit 13** (72f37ab): Fix test-scheduler-api configuration issues
 - [x] **Commit 14** (bd5569c): Fix test-scheduler-workers missing script and tests
+- [x] **Commit 15** (c34e090): Fix test-scheduler-ai missing script and integration tests
 
 ## Status
-- **Progress**: 19/22 tasks completed (86%)
-- **Current**: test-scheduler-workers script ajouté, 4 tests d'intégration passent
-- **Next**: Fix test-scheduler-ai (Script `test.integration.ai` manquant)
+- **Progress**: 20/22 tasks completed (91%)
+- **Current**: test-scheduler-ai script ajouté, 5 tests d'intégration passent
+- **Next**: Fix test-workers-ai (Script `test:integration:ai` manquant)
 
 ## Notes
 - All commits follow atomic commit guidelines (max 10-15 files per commit)
@@ -60,13 +61,12 @@ Implement comprehensive testing strategy with make commands, unit tests, E2E tes
 - test-ui-api now passes with separate Dockerfile for E2E tests
 - test-scheduler-api script added and working in CI
 - test-scheduler-workers script added and working locally (4 tests pass)
+- test-scheduler-ai script added and working locally (5 tests pass)
 
 ## Remaining Tests to Fix (Based on CI Failures)
-1. **test-scheduler-ai** : Script `test.integration.ai` manquant dans scheduler package (1m 10s)
-2. **test-workers-ai** : Script `test:integration:ai` manquant dans workers package (1m 41s)
-3. **test-workers-api** : Dépendant des tests scheduler, échoue à cause des échecs précédents
+1. **test-workers-ai** : Script `test:integration:ai` manquant dans workers package (1m 41s)
+2. **test-workers-api** : Dépendant des tests scheduler, échoue à cause des échecs précédents
 
 ## Next Steps
-1. **Fix test-scheduler-ai** : Add missing test.integration.ai script to scheduler package
-2. **Fix test-workers-ai** : Add missing test:integration:ai script to workers package
-3. **Validate all tests** : Ensure all tests pass in CI
+1. **Fix test-workers-ai** : Add missing test:integration:ai script to workers package
+2. **Validate all tests** : Ensure all tests pass in CI

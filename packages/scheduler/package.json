@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:unit": "vitest run",
     "test:integration": "vitest run tests/integration/",
-    "test:integration:workers": "vitest run tests/integration/workers/"
+    "test:integration:workers": "vitest run tests/integration/workers/",
+    "test:integration:ai": "vitest run tests/integration/ai/"
   },
   "dependencies": {
     "bullmq": "^5.7.0"
