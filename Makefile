@@ -26,6 +26,9 @@ dev:
 	npm install
 
 # API-specific targets (using make instead of docker compose)
+update.api.lock:
+	docker run --rm -v $(PWD)/packages/api:/app -w /app node:20 npm install --legacy-peer-deps
+
 build.api:
 	docker compose build api
 
@@ -133,7 +136,8 @@ test.unit:
 
 # Package-specific unit tests
 test.unit.api:
-	docker compose run --rm api npm run test:unit
+	docker build --target test -t api-test -f packages/api/Dockerfile .
+	docker run --rm --network assistant_default api-test
 
 test.unit.ui:
 	docker compose run --rm ui npm run test:unit
