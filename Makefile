@@ -23,14 +23,35 @@ down:
 
 dev:
 	docker compose up -d
-	npm install
 
 # API-specific targets (using make instead of docker compose)
 update.api.lock:
 	docker run --rm -v $(PWD)/packages/api:/app -w /app node:20 npm install --legacy-peer-deps
+	@echo "🧹 Cleaning up any local traces..."
+	@if [ -d "packages/api/node_modules" ]; then \
+		echo "❌ Removing local node_modules from packages/api"; \
+		rm -rf packages/api/node_modules; \
+	fi
+	@if [ -f "packages/api/package-lock.json" ]; then \
+		echo "✅ package-lock.json updated successfully"; \
+	else \
+		echo "❌ Failed to update package-lock.json"; \
+		exit 1; \
+	fi
 
 update.ui.lock:
 	docker run --rm -v $(PWD)/packages/ui:/app -w /app node:20 npm install --legacy-peer-deps
+	@echo "🧹 Cleaning up any local traces..."
+	@if [ -d "packages/ui/node_modules" ]; then \
+		echo "❌ Removing local node_modules from packages/ui"; \
+		rm -rf packages/ui/node_modules; \
+	fi
+	@if [ -f "packages/ui/package-lock.json" ]; then \
+		echo "✅ package-lock.json updated successfully"; \
+	else \
+		echo "❌ Failed to update package-lock.json"; \
+		exit 1; \
+	fi
 
 build.api:
 	docker compose build api
@@ -96,6 +117,9 @@ restart.api:
 	docker compose restart api
 
 logs.api:
+	docker compose logs api
+
+logs.api.follow:
 	docker compose logs -f api
 
 status:
@@ -226,3 +250,8 @@ dev.build:
 dev.clean:
 	docker compose down -v
 	docker system prune -f
+	@echo "🧹 Cleaning up any local dependency traces..."
+	@find . -name "node_modules" -type d -exec rm -rf {} + 2>/dev/null || true
+	@find . -name ".venv" -type d -exec rm -rf {} + 2>/dev/null || true
+	@find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+	@echo "✅ Workspace cleaned - no local dependencies remaining"

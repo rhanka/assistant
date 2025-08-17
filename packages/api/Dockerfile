@@ -35,6 +35,8 @@ RUN npm ci --only=production --legacy-peer-deps
 # Copy built application and Prisma client
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
+# Copy Prisma schema for migrations
+COPY packages/api/prisma ./prisma
 
 EXPOSE 3001
 CMD ["npm", "run", "start"]
