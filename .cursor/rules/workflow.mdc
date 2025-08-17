@@ -64,13 +64,13 @@ tags: [workflow, repository, guardrails]
 2. **Selective staging** : Use `git add <specific-files>` for files you know you modified
 3. **Remove deleted files** : Use `git rm <deleted-files>` for files you know you deleted
 4. **Verify staging** : Run `git status` again to confirm what's staged
-5. **ABSOLUTELY NO git add .** : Never use `git add .` - always stage files individually
+5. **ABSOLUTELY NO `git add .`** : Never use `git add .` - first check with `git status` and `git add <files> && git rm <removed-files>` for explicit staging
 6. **Commit with context** : Include clear description of what changed and why
 7. **ONE task per commit** : Complete ONE logical task, then commit. Do NOT chain multiple tasks without committing.
 8. **File count limit** : Maximum 10-15 files per commit - split large changes into multiple commits
 9. **Consolidate CI debug commits (MANDATORY)**: When experimenting with CI workflows (e.g., tweaking `.github/workflows/*.yml`), avoid piling multiple temporary `fix:`/`test:` commits.
    - Small last-commit adjustments: prefer `git commit --amend --no-edit` (or edit message as needed).
-   - Multiple debug commits: use `git reset --soft HEAD~N`, stage intentionally with `git add <files>`, and create ONE clean commit.
+   - Multiple debug commits: use `git commit --amend --no-edit`, stage intentionally with `git add <files> && git rm <removed-files>`, and create ONE clean commit.
    - After amending or soft reset (history rewrite), you MUST push with `git push --force-with-lease` to update the remote safely.
    This keeps the history readable and compliant with atomic commit rules.
 
@@ -80,6 +80,17 @@ After completing any task, **ALWAYS propose the next step** by following the wor
 2. **Identify next priority** : What comes next according to TODO.md or current context
 3. **Propose specific action** : Clear, actionable next step
 4. **Wait for approval** : Do not proceed without user confirmation
+
+### Feature Completion Workflow (MANDATORY)
+After implementing all commits for a feature:
+1. **Push to GitHub** : `git push origin <branch-name>`
+2. **Verify CI** : Monitor GitHub Actions until all tests pass and no bugs remain (using `curl` or `gh` for detailed logs)
+3. **Plan remaining actions** : If commits need additional work, document in BRANCH.md
+4. **Final cleanup** : When everything works:
+   - Remove BRANCH.md
+   - Check off feature in TODO.md
+   - Create final commit with BRANCH.md content in commit message
+   - Push final state
 
 ### CI Monitoring (MANDATORY)
 - After any push to a feature branch or PR update, automatically verify GitHub Actions runs.
@@ -115,7 +126,7 @@ After completing any task, **ALWAYS propose the next step** by following the wor
 ## Feature Branch Management
 
 ### Branch Documentation
-- **REQUIRED**: Create `BRANCH.md` for each feature branch
+- **REQUIRED**: Create `BRANCH.md` for each feature branch (final two steps should be always test strategy completion from `testing.mdc` and Github CI execution check)
 - **LOCATION**: Root of feature branch (not committed to main)
 - **PURPOSE**: Track progress, plan, and commit mapping
 
