@@ -176,7 +176,8 @@ test.e2e.ui:
 	docker compose run --rm ui npm run test:e2e
 
 test.e2e.ui-api:
-	docker compose run --rm ui npm run test:e2e
+	docker build --target test-e2e -t ui-e2e-test -f packages/ui/Dockerfile.e2e .
+	docker run --rm --network assistant_default ui-e2e-test
 
 # Package tests (unit + integration)
 test.api: test.unit.api test.integration.api
