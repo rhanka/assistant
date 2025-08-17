@@ -1,4 +1,31 @@
-.PHONY: dev up down ui api workers ai db.init db.migrate db.reset scripts.i18n check prod.deploy prod.status prod.logs dev.build dev.clean restart.api logs.api status build.api up.api down.api rebuild.api
+.PHONY: dev up down ui api workers ai db.init db.migrate db.reset scripts.i18n check prod.deploy prod.status prod.logs dev.build dev.clean restart.api logs.api status build.api up.api down.api rebuild.api interactive.help interactive.test
+
+# =============================================================================
+# INTERACTIVE MODE USAGE
+# =============================================================================
+# 
+# This Makefile supports interactive and non-interactive modes for better
+# development experience and CI compatibility.
+#
+# Usage examples:
+#   # Interactive mode (development)
+#   INTERACTIVE=true make db.init
+#   INTERACTIVE=true make logs.api.follow
+#
+#   # Non-interactive mode (CI, default)
+#   make db.init
+#   make logs.api.follow
+#
+#   # Override for specific commands
+#   INTERACTIVE=true make db.reset
+#
+# Available interactive commands:
+#   - db.init, db.migrate, db.reset: Confirmations for destructive operations
+#   - logs.api, logs.api.follow: Pagination and follow options
+#   - test.*: Verbose output and progress indicators
+#   - migrate.*: Confirmation prompts for migrations
+#
+# =============================================================================
 
 # Environment variables (with defaults)
 export DATABASE_URL ?= postgresql://postgres:postgres@postgres:5432/assistant?schema=public
@@ -9,6 +36,40 @@ export AI_PORT ?= 8000
 export GITHUB_TOKEN ?= your-github-token-here
 export GITHUB_OWNER ?= your-org-or-user
 export GITHUB_REPO ?= your-repo
+
+# Interactive mode control (default: non-interactive for CI)
+export INTERACTIVE ?= false
+
+# Interactive mode helpers
+interactive.help:
+	@echo "🔧 INTERACTIVE MODE HELP"
+	@echo "========================="
+	@echo ""
+	@echo "Current mode: $(INTERACTIVE)"
+	@echo ""
+	@echo "Usage:"
+	@echo "  INTERACTIVE=true make <command>  # Enable interactive mode"
+	@echo "  make <command>                   # Use default mode (non-interactive)"
+	@echo ""
+	@echo "Interactive commands:"
+	@echo "  db.init, db.migrate, db.reset   # Database operations with confirmations"
+	@echo "  logs.api, logs.api.follow       # Log viewing with pagination"
+	@echo "  migrate.api.reset               # Migration reset with confirmation"
+	@echo ""
+	@echo "Examples:"
+	@echo "  INTERACTIVE=true make db.reset  # Reset DB with confirmation"
+	@echo "  INTERACTIVE=true make logs.api  # View logs with pagination"
+	@echo "  make db.init                    # Non-interactive DB init"
+
+interactive.test:
+	@echo "🧪 Testing interactive mode..."
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		echo "✅ Interactive mode is ENABLED"; \
+		echo "Commands will show confirmations and use pagination"; \
+	else \
+		echo "✅ Interactive mode is DISABLED (default)"; \
+		echo "Commands will run without user interaction (CI-friendly)"; \
+	fi
 
 # Ensure .env file exists (for secrets/overrides only)
 .env:
@@ -117,23 +178,95 @@ restart.api:
 	docker compose restart api
 
 logs.api:
-	docker compose logs api
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		echo "📋 Showing API logs..."; \
+		echo "Press 'q' to exit, 'h' for help, or any other key to continue"; \
+		docker compose logs api | less -R; \
+	else \
+		docker compose logs api; \
+	fi
 
 logs.api.follow:
-	docker compose logs -f api
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		echo "📋 Following API logs in real-time..."; \
+		echo "Press Ctrl+C to stop following logs"; \
+		docker compose logs -f api; \
+	else \
+		docker compose logs -f api; \
+	fi
 
 status:
 	docker compose ps
 
 # DB (Prisma via API package in Docker)
 db.init:
-	docker compose exec api npx prisma generate
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		echo "🔧 Initializing database schema..."; \
+		echo "This will generate Prisma client and apply schema changes."; \
+		read -p "Continue? [y/N]: " reply; \
+		case "$$reply" in \
+			[yY]|[yY][eE][sS]) \
+				echo "Proceeding..."; \
+				;; \
+			*) \
+				echo "❌ Operation cancelled"; \
+				exit 1; \
+				;; \
+		esac; \
+	fi
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		docker compose exec api npx prisma generate; \
+	else \
+		docker compose run --rm api npx prisma generate; \
+	fi
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		echo "✅ Database schema initialized successfully"; \
+	fi
 
 db.migrate:
-	docker compose exec api npx prisma migrate dev --name init
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		echo "🔄 Running database migration..."; \
+		echo "This will apply pending migrations to the database."; \
+		read -p "Continue? [y/N]: " reply; \
+		case "$$reply" in \
+			[yY]|[yY][eE][sS]) \
+				echo "Proceeding..."; \
+				;; \
+			*) \
+				echo "❌ Operation cancelled"; \
+				exit 1; \
+				;; \
+		esac; \
+	fi
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		docker compose exec api npx prisma migrate dev --name init; \
+	else \
+		docker compose run --rm api npx prisma migrate dev --name init; \
+	fi
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		echo "✅ Database migration completed successfully"; \
+	fi
 
 db.reset:
-	docker compose exec api npx prisma migrate reset -f
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		echo "⚠️  WARNING: This will reset the entire database!"; \
+		echo "All data will be lost and migrations will be reapplied."; \
+		echo "This operation cannot be undone."; \
+		read -p "Are you absolutely sure? Type 'RESET' to confirm: " reply; \
+		if [ "$$reply" != "RESET" ]; then \
+			echo "❌ Operation cancelled"; \
+			exit 1; \
+		fi; \
+		echo "Proceeding with database reset..."; \
+	fi
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		docker compose exec api npx prisma migrate reset -f; \
+	else \
+		docker compose run --rm api npx prisma migrate reset -f; \
+	fi
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		echo "✅ Database reset completed successfully"; \
+	fi
 
 # Enhanced DB migration targets (work even when API is not running)
 migrate.api.dev:
@@ -143,7 +276,21 @@ migrate.api.deploy:
 	docker run --rm -v $(PWD)/packages/api:/app -w /app --network assistant_default -e DATABASE_URL=postgresql://postgres:postgres@postgres:5432/assistant?schema=public node:20 npx prisma migrate deploy
 
 migrate.api.reset:
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		echo "⚠️  WARNING: This will reset the entire database!"; \
+		echo "All data will be lost and migrations will be reapplied."; \
+		echo "This operation cannot be undone."; \
+		read -p "Are you absolutely sure? Type 'RESET' to confirm: " reply; \
+		if [ "$$reply" != "RESET" ]; then \
+			echo "❌ Operation cancelled"; \
+			exit 1; \
+		fi; \
+		echo "Proceeding with database reset..."; \
+	fi
 	docker run --rm -v $(PWD)/packages/api:/app -w /app --network assistant_default -e DATABASE_URL=postgresql://postgres:postgres@postgres:5432/assistant?schema=public node:20 npx prisma migrate reset -f
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		echo "✅ Database reset completed successfully"; \
+	fi
 
 migrate.api.dev.name:
 	docker run --rm -v $(PWD)/packages/api:/app -w /app --network assistant_default -e DATABASE_URL=postgresql://postgres:postgres@postgres:5432/assistant?schema=public node:20 npx prisma migrate dev --name subplans-and-categorization
