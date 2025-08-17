@@ -18,6 +18,13 @@ tags: [architecture, boundaries]
 - Prod environement: Kubernetes (bare yaml configuration, NO Helm)
 - Target Cloud: Scaleway (Kubernetes)
 
+## Docker-First Architecture (MANDATORY)
+- **NO native npm/python on developer machine** - Docker containers only
+- **ALL development commands MUST go through Docker** - no exceptions
+- **Dependencies managed in containers** - never install npm/python globally
+- **Make commands execute in Docker** - consistent environment across all developers
+- **Clean workspace** - no node_modules, no .venv, no global packages
+
 ## Configuration Management
 - **Build/Compilation configs** → `packages/config/` (Docker-first approach)
   - TypeScript compilation settings
