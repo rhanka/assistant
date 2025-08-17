@@ -11,6 +11,7 @@ Note: Always read `.cursor/rules/MASTER.mdc` first, then `README.md`, then this 
 - [x] Enable Task to be themselves (Sub)-Plans and Plan to be categorized by Project or Activity (PR: feat/task-subplans-plan-categorization)
 - [ ] Makefile: add an option and instruction to enable interactive/non-interactive switch (db.init, logs.*, etc)
 - [ ] Makefile: add an option to trace SLOC of project based on `cloc --not-match-f='package.*json|tsconfig.json' .`
+- [ ] Add security in testing strategy : updates .mdc files - include partial or full scope coverage (e.g no critical or high vulnerability unless contextual usage is logged and has a further mitigation in Now or Next)
 - [ ] Workers: job "sync:github" (issues + Projects v2) scaffold
 - [ ] UI: SvelteKit layout with /en and /fr, i18n switching
 - [ ] Scripts: db:init db:migrate db:reset (packages/scripts)
