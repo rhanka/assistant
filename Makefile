@@ -135,6 +135,32 @@ db.migrate:
 db.reset:
 	docker compose exec api npx prisma migrate reset -f
 
+# Enhanced DB migration targets (work even when API is not running)
+migrate.api.dev:
+	docker run --rm -v $(PWD)/packages/api:/app -w /app --network assistant_default -e DATABASE_URL=postgresql://postgres:postgres@postgres:5432/assistant?schema=public node:20 npx prisma migrate dev
+
+migrate.api.deploy:
+	docker run --rm -v $(PWD)/packages/api:/app -w /app --network assistant_default -e DATABASE_URL=postgresql://postgres:postgres@postgres:5432/assistant?schema=public node:20 npx prisma migrate deploy
+
+migrate.api.reset:
+	docker run --rm -v $(PWD)/packages/api:/app -w /app --network assistant_default -e DATABASE_URL=postgresql://postgres:postgres@postgres:5432/assistant?schema=public node:20 npx prisma migrate reset -f
+
+migrate.api.dev.name:
+	docker run --rm -v $(PWD)/packages/api:/app -w /app --network assistant_default -e DATABASE_URL=postgresql://postgres:postgres@postgres:5432/assistant?schema=public node:20 npx prisma migrate dev --name subplans-and-categorization
+
+migrate.api.generate:
+	docker run --rm -v $(PWD)/packages/api:/app -w /app --network assistant_default -e DATABASE_URL=postgresql://postgres:postgres@postgres:5432/assistant?schema=public node:20 npx prisma generate
+
+migrate.api.db-push:
+	docker run --rm -v $(PWD)/packages/api:/app -w /app --network assistant_default -e DATABASE_URL=postgresql://postgres:postgres@postgres:5432/assistant?schema=public node:20 npx prisma db push
+
+# Legacy DB targets (kept for backward compatibility)
+db.migrate.legacy:
+	docker compose exec api npx prisma migrate dev --name init
+
+db.reset.legacy:
+	docker compose exec api npx prisma migrate reset -f
+
 # Scripts (Docker-based)
 scripts.i18n:
 	docker compose exec api npm run -w @repo/scripts i18n:check
