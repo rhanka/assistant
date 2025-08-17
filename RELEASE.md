@@ -7,11 +7,12 @@
 
 ## Features Developed & Merged ✅
 - [x] AI directives consolidated (PR: boot/ai-directives, commit: fe22598)
-- [x] Makefile architecture Docker-first (PR: feat/makefile-architecture, commit: 4e00567)
-- [x] API GraphQL schema Plan/Task/Step (PR: feat/api-graphql-schema, commit: 192f012)
+- [x] Makefile architecture Docker-first (PR: feat/makefile-architecture, commit: 4a00567)
+- [x] API GraphQL schema Plan/Task/Step (PR: feat/api-graphql-schema, commit: 192a012)
+- [x] Scheduler: compile Plan → DAG and enqueue jobs (PR: feat/scheduler-plan-dag-execution, commit: 822235f)
+- [x] Task Sub-Plans and Plan Categorization (PR: feat/task-subplans-plan-categorization, commit: pending)
 
 ## Features In Progress 🔄
-- [ ] Scheduler: compile Plan → DAG and enqueue jobs
 - [ ] Workers: job "sync:github" (issues + Projects v2) scaffold
 - [ ] UI: SvelteKit layout with /en and /fr, i18n switching
 - [ ] Scripts: db:init db:migrate db:reset (packages/scripts)
