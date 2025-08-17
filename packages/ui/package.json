@@ -7,8 +7,8 @@
     "dev": "vite dev --port $UI_PORT",
     "build": "vite build",
     "preview": "vite preview --port $UI_PORT",
-    "test": "playwright test",
-    "test:e2e": "playwright test",
+    "test": "npm run test:unit",
+    "test:e2e": "NODE_ENV=test:e2e playwright test",
     "test:unit": "vitest run"
   },
   "dependencies": {
