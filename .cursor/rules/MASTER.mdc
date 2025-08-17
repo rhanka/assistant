@@ -5,9 +5,12 @@ This file consolidates all development rules into a single source of truth for A
 
 ## Core Architecture Principles
 
-### Make-First Architecture
+### Docker-First Architecture (MANDATORY)
+- **NO native npm/python on developer machine** - Docker containers only
 - **ALL development commands MUST go through Make** - no exceptions
-- **Docker-based execution** for consistency
+- **Make commands execute in Docker** - consistent environment across all developers
+- **Dependencies managed in containers** - never install npm/python globally
+- **Clean workspace** - no node_modules, no .venv, no global packages
 - **Same commands work locally and in CI** - no drift allowed
 
 ### Rule Hierarchy
@@ -19,7 +22,7 @@ This file consolidates all development rules into a single source of truth for A
 
 ### BOOT Phase (First Run)
 1. **FIRST**: Read this file (MASTER.mdc) for rules overview
-2. **SECOND**: Read `README.md` for project context
+2. **SECOND**: Read `README.md` for project context and high level specifications
 3. **THIRD**: Read `TODO.md` for **Now** items
 4. Create `boot/<slug>` branches
 5. Follow Make-first architecture
@@ -118,24 +121,29 @@ This file consolidates all development rules into a single source of truth for A
 
 ## Quick Reference
 
-### Essential Commands
+### Essential Commands (Docker-First)
 ```bash
-make up              # Start infrastructure
-make dev             # Install dependencies
-make test.unit       # Run unit tests (REQUIRED before commit)
-make test.all        # Run all tests
+make up              # Start infrastructure (PostgreSQL, Redis)
+make dev             # Start all services in Docker
+make test.unit       # Run unit tests in Docker (REQUIRED before commit)
+make test.all        # Run all tests in Docker
 make check           # Validate consistency
+make dev.clean       # Clean workspace (remove any local traces)
+make logs.api        # Show API logs (one-time)
+make logs.api.follow # Follow API logs in real-time (Ctrl+C to stop)
 ```
 
 ### Before Any Commit
-1. ✅ Run `make test.unit`
-2. ✅ Verify `make` commands work
+1. ✅ Run `make test.unit` (executes in Docker)
+2. ✅ Verify `make` commands work (Docker-based)
 3. ✅ Check i18n coverage if UI changed
+4. ✅ Ensure no local node_modules/.venv exist
 
 ### Before Any PR
-1. ✅ All tests pass (`make test.all`)
+1. ✅ All tests pass (`make test.all` - Docker-based)
 2. ✅ Consistency validated (`make check`)
 3. ✅ Architecture compliance verified
+4. ✅ Workspace clean (`make dev.clean` if needed)
 
 ## Summary
 
@@ -147,6 +155,8 @@ make check           # Validate consistency
 - **conventions.mdc** → Standards and quality gates
 
 **Remember**: When in doubt, use `make` - it's the law of the land! 🚀
+
+**Docker-First Rule**: Never run npm/python directly - always use `make` commands that execute in Docker containers!
 description:
 globs:
 alwaysApply: false

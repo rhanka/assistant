@@ -67,7 +67,8 @@ tags: [workflow, repository, guardrails]
 5. **ABSOLUTELY NO git add .** : Never use `git add .` - always stage files individually
 6. **Commit with context** : Include clear description of what changed and why
 7. **ONE task per commit** : Complete ONE logical task, then commit. Do NOT chain multiple tasks without committing.
-8. **Consolidate CI debug commits (MANDATORY)**: When experimenting with CI workflows (e.g., tweaking `.github/workflows/*.yml`), avoid piling multiple temporary `fix:`/`test:` commits.
+8. **File count limit** : Maximum 10-15 files per commit - split large changes into multiple commits
+9. **Consolidate CI debug commits (MANDATORY)**: When experimenting with CI workflows (e.g., tweaking `.github/workflows/*.yml`), avoid piling multiple temporary `fix:`/`test:` commits.
    - Small last-commit adjustments: prefer `git commit --amend --no-edit` (or edit message as needed).
    - Multiple debug commits: use `git reset --soft HEAD~N`, stage intentionally with `git add <files>`, and create ONE clean commit.
    - After amending or soft reset (history rewrite), you MUST push with `git push --force-with-lease` to update the remote safely.
