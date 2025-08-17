@@ -50,6 +50,7 @@ This file consolidates all development rules into a single source of truth for A
 - `make test.unit` - Unit tests (REQUIRED before commit)
 - `make test.integration` - Integration tests
 - `make test.e2e` - E2E tests (Playwright)
+- `make test.security*` - Security tests (REQUIRED before merge)
 - `make test.i18n` - i18n validation
 - `make test.i18n.coverage` - Full i18n coverage
 - `make test.all` - Complete test suite
@@ -61,9 +62,11 @@ This file consolidates all development rules into a single source of truth for A
 
 ### Quality Gates
 - All tests must pass before merge
+- Security tests must pass before merge
 - i18n coverage must be 100% (EN/FR parity)
 - Unit test coverage: minimum 80%
-- No critical security vulnerabilities
+- No critical security vulnerabilities without documented context
+- Vulnerability assessment required for all components
 
 ## Guide Maintenance
 

@@ -5,6 +5,62 @@ tags: [security, approvals]
 ---
 
 # SECURITY
+
+## Core Security Principles
 - Forbidden actions: destructive operations in production; secrets in plain text.
 - Require "⚠ approval" for: DB migrations in prod, merges, release publishing.
-- Always produce a **preview** (diff/plan) before acting.
+- Always produce a preview (diff/plan) before acting.
+
+## Security Testing Strategy
+
+### Coverage Requirements
+- Critical/High vulnerabilities are not allowed unless contextual usage is documented and mitigation is planned (Now/Next in `TODO.md`).
+- Security checks must run in CI on every PR for changed components.
+
+### Categories (Complete Scope)
+1) Dependency Vulnerabilities (manifests/packages)
+- Objective: detect vulnerable dependencies early and block builds on Critical/High.
+- Tooling: npm audit (Dockerfile, blocking), Snyk test (CI), optional fallback: safety/pip-audit for Python.
+
+2) Authentication & Authorization (functional)
+- Objective: verify access controls and session/token handling.
+- Tooling: future functional tests (API/UI) once flows exist.
+
+3) Input Validation & Sanitization (functional)
+- Objective: protect against XSS, CSRF, injections.
+- Tooling: future functional tests (API payloads/UI forms); Snyk Code can detect some patterns.
+
+4) Data Protection (functional)
+- Objective: protect secrets, encryption, PII access boundaries.
+- Tooling: future functional tests + static checks.
+
+5) API Security (functional)
+- Objective: rate limiting, schema validation, injection resilience.
+- Tooling: future functional tests; Snyk Code for static analysis.
+
+6) Infrastructure & Container Security
+- Objective: secure images and IaC configs.
+- Tooling: Snyk Container (image), Trivy (image), Snyk IaC (docker-compose, k8s). Falco is production-only.
+
+### CI Integration (summary)
+- See `testing.mdc` for the high-level DAG and orchestration order.
+- Build images first (dependency audits in Dockerfiles). Dependency scans in CI should reuse built images or rely on manifests.
+- Run code/deps/IaC scans (Snyk) and container scans (Snyk/Trivy) after build, in parallel with unit tests.
+- P2P/E2E remain governed by testing order in `testing.mdc`.
+
+### Make Targets (Naming — documentation)
+- Aggregates: `test.security`, `test.security.scan`, `test.security.container`
+- Deps scans per service: `test.security.scan.deps.<service>` (should run after `build.<service>`)
+- Code scan: `test.security.scan.code`
+- IaC scan: `test.security.scan.iac`
+- Container scans: `test.security.container.snyk.<service>`, `.trivy.<service>`, and `.all`
+- Future functional categories (pentest umbrella): `test.security.pentest`, with possible `auth/input/data/api/infra` sub-targets
+
+### Vulnerability Management
+- Identify → Assess → Mitigate → Track (`TODO.md`) → Approvals for exceptions (⚠).
+- CI must fail on unapproved Critical/High dependency vulnerabilities.
+
+### Production Notes
+- Falco (runtime security) is out-of-scope for CI; include in Kubernetes production hardening.
+
+

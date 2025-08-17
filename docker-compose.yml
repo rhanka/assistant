@@ -55,5 +55,6 @@ services:
       - REDIS_URL=${REDIS_URL}
     depends_on: [redis]
     ports: ["3002:3002"]
+
 volumes:
   pgdata:
