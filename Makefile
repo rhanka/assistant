@@ -217,7 +217,7 @@ db.init:
 	@if [ "$(INTERACTIVE)" = "true" ]; then \
 		docker compose exec api npx prisma generate; \
 	else \
-		docker compose run --rm api npx prisma generate; \
+		docker compose run --rm -e CI=true api npx prisma generate; \
 	fi
 	@if [ "$(INTERACTIVE)" = "true" ]; then \
 		echo "✅ Database schema initialized successfully"; \
@@ -241,7 +241,7 @@ db.migrate:
 	@if [ "$(INTERACTIVE)" = "true" ]; then \
 		docker compose exec api npx prisma migrate dev --name init; \
 	else \
-		docker compose run --rm api npx prisma migrate dev --name init; \
+		docker compose run --rm -e CI=true api npx prisma migrate dev --name init; \
 	fi
 	@if [ "$(INTERACTIVE)" = "true" ]; then \
 		echo "✅ Database migration completed successfully"; \
@@ -262,7 +262,7 @@ db.reset:
 	@if [ "$(INTERACTIVE)" = "true" ]; then \
 		docker compose exec api npx prisma migrate reset -f; \
 	else \
-		docker compose run --rm api npx prisma migrate reset -f; \
+		docker compose run --rm -e CI=true api npx prisma migrate reset -f; \
 	fi
 	@if [ "$(INTERACTIVE)" = "true" ]; then \
 		echo "✅ Database reset completed successfully"; \
@@ -287,7 +287,11 @@ migrate.api.reset:
 		fi; \
 		echo "Proceeding with database reset..."; \
 	fi
-	docker run --rm -v $(PWD)/packages/api:/app -w /app --network assistant_default -e DATABASE_URL=postgresql://postgres:postgres@postgres:5432/assistant?schema=public node:20 npx prisma migrate reset -f
+	@if [ "$(INTERACTIVE)" = "true" ]; then \
+		docker run --rm -v $(PWD)/packages/api:/app -w /app --network assistant_default -e DATABASE_URL=postgresql://postgres:postgres@postgres:5432/assistant?schema=public node:20 npx prisma migrate reset -f; \
+	else \
+		docker run --rm -v $(PWD)/packages/api:/app -w /app --network assistant_default -e CI=true -e DATABASE_URL=postgresql://postgres:postgres@postgres:5432/assistant?schema=public node:20 npx prisma migrate reset -f; \
+	fi
 	@if [ "$(INTERACTIVE)" = "true" ]; then \
 		echo "✅ Database reset completed successfully"; \
 	fi
