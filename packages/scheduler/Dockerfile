@@ -5,6 +5,7 @@ COPY packages/scheduler/tsconfig.json ./
 COPY packages/config/tsconfig.base.json ./
 RUN npm install --legacy-peer-deps
 COPY packages/scheduler/src ./src
+COPY packages/scheduler/tests ./tests
 RUN npm run build
 EXPOSE 3002
 CMD ["npm", "run", "start"]
