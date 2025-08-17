@@ -29,7 +29,7 @@ Implement comprehensive testing strategy with make commands, unit tests, E2E tes
 - [x] Fix test-scheduler-workers (Script `test.integration.scheduler-workers-api` manquant dans Makefile)
 - [x] Fix test-scheduler-ai (Script `test.integration.ai` manquant dans scheduler package)
 - [x] Fix test-workers-ai (Script `test:integration:ai` manquant dans workers package)
-- [ ] Fix test-workers-api (Dépendant des tests scheduler, échoue à cause des échecs précédents)
+- [x] Fix test-workers-api (Script `test:integration` manquant et dépendance incorrecte supprimée)
 
 ## Commits & Progress
 - [x] **Commit 1** (4ac4bfb): Consolidate AI directives into core .mdc files
@@ -48,11 +48,12 @@ Implement comprehensive testing strategy with make commands, unit tests, E2E tes
 - [x] **Commit 14** (bd5569c): Fix test-scheduler-workers missing script and tests
 - [x] **Commit 15** (c34e090): Fix test-scheduler-ai missing script and integration tests
 - [x] **Commit 16** (33ea20b): Fix test-workers-ai migration to Vitest and integration tests
+- [x] **Commit 17** (e4c0877): Fix test-workers-api dependency and add integration tests
 
 ## Status
-- **Progress**: 21/22 tasks completed (95%)
-- **Current**: test-workers-ai script ajouté, 5 tests d'intégration passent
-- **Next**: Fix test-workers-api (Dépendant des tests scheduler)
+- **Progress**: 22/22 tasks completed (100%)
+- **Current**: Tous les tests sont maintenant résolus et fonctionnent localement
+- **Next**: Validation finale dans le CI
 
 ## Notes
 - All commits follow atomic commit guidelines (max 10-15 files per commit)
@@ -64,10 +65,16 @@ Implement comprehensive testing strategy with make commands, unit tests, E2E tes
 - test-scheduler-workers script added and working locally (4 tests pass)
 - test-scheduler-ai script added and working locally (5 tests pass)
 - test-workers-ai script added and working locally (5 tests pass)
+- test-workers-api script added and working locally (6 tests pass)
+- **Dépendance incorrecte supprimée** : test-workers-api n'attend plus test-scheduler-workers
 
-## Remaining Tests to Fix (Based on CI Failures)
-1. **test-workers-api** : Dépendant des tests scheduler, échoue à cause des échecs précédents
+## Tests Status - TOUS RÉSOLUS ✅
+1. **test-scheduler-api** : ✅ **RÉSOLU** - 3 tests passent
+2. **test-scheduler-workers** : ✅ **RÉSOLU** - 4 tests passent  
+3. **test-scheduler-ai** : ✅ **RÉSOLU** - 5 tests passent
+4. **test-workers-ai** : ✅ **RÉSOLU** - 5 tests passent
+5. **test-workers-api** : ✅ **RÉSOLU** - 6 tests passent
 
 ## Next Steps
-1. **Fix test-workers-api** : Ensure it works after all scheduler tests pass
-2. **Validate all tests** : Ensure all tests pass in CI
+1. **Validation finale** : Commiter et pousser pour valider dans le CI
+2. **Tous les tests passent** : Vérifier que le CI est vert

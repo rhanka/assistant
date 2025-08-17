@@ -9,6 +9,7 @@
     "start": "node dist/index.js",
     "test": "vitest run",
     "test:unit": "vitest run",
+    "test:integration": "vitest run tests/integration/",
     "test:integration:ai": "vitest run tests/integration/ai/"
   },
   "dependencies": {
