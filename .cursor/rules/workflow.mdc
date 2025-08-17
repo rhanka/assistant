@@ -95,6 +95,7 @@ After completing any task, **ALWAYS propose the next step** by following the wor
 - If status is "skipped" unexpectedly, inspect workflow conditions/filters; for path-based workflows, ensure common files (Makefile, docker-compose.yml, packages/config, packages/schemas, CI files) are included in filters.
 - If quick tweaks are needed, prefer `git commit --amend --no-edit` and push with `git push --force-with-lease`.
 - If multiple debug commits were created, consolidate with `git reset --soft HEAD~N`, commit once, then `git push --force-with-lease`.
+- **Push command**: Always use `git push origin <branch-name>` explicitly, never `git push --set-upstream`.
 
 ## Quality Gates
 - **Before commit**: Run `make test.unit` (enforced by testing.mdc)
