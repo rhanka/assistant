@@ -4,7 +4,7 @@
 See `.cursor/rules/MASTER.mdc` for consolidated rules, then relevant sub `.mdc` files
 
 ## Project Goals
-Build a principal assistant that can plan, delegate, and safely execute work across your devices and tools. The system must support multimodal, multi‑device interaction and cleanly separate **planning** from **execution**.
+Build a principal personal assistant that can plan, delegate, and safely execute work across your devices and tools. The system must support multimodal, multi‑device interaction and cleanly separate **planning** from **execution**, based on a hierachical delegation model by projects or activities composed of tasks.
 
 **Plans‑first** We treat **Plan** as a first‑class artifact (product/roadmap level) and **Task** as an executable unit. A Plan groups Tasks toward an objective and can follow Agile/Kanban/Waterfall practices. Execution is modeled as a **DAG** (Directed Acyclic Graph) derived from the Plan. We maintain a clear boundary between **Plan building** (done today via API+UI capabilities) and **Task scheduling/execution** (the **Scheduler** compiles Plan → DAG and enqueues jobs for **Workers**). Re‑planning must be safe, auditable, and non‑destructive.
 

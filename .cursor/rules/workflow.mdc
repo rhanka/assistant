@@ -174,7 +174,7 @@ Brief description of what this feature accomplishes
 
 ### Final Commit Workflow
 1. **Copy BRANCH.md content** to commit message
-2. **Remove BRANCH.md** from working directory
+2. **Remove BRANCH.md** from working directory (not before CI github test check)
 3. **Commit** with complete development history
 4. **Merge** branch with full traceability
 
