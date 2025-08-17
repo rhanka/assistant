@@ -2,12 +2,14 @@ import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
 
 export enum PlanMethodology { AGILE_SCRUM='AGILE_SCRUM', KANBAN='KANBAN', WATERFALL='WATERFALL', HYBRID='HYBRID' }
 export enum PlanStatus { DRAFT='DRAFT', IN_PROGRESS='IN_PROGRESS', BLOCKED='BLOCKED', COMPLETED='COMPLETED', CANCELLED='CANCELLED' }
-export enum TaskType { EPIC='EPIC', STORY='STORY', TASK='TASK', BUG='BUG', SPIKE='SPIKE', CHORE='CHORE' }
+export enum PlanCategory { PROJECT='PROJECT', ACTIVITY='ACTIVITY', MILESTONE='MILESTONE', SPRINT='SPRINT' }
+export enum TaskType { EPIC='EPIC', STORY='STORY', TASK='TASK', BUG='BUG', SPIKE='SPIKE', CHORE='CHORE', SUB_PLAN='SUB_PLAN' }
 export enum TaskStatus { TODO='TODO', IN_PROGRESS='IN_PROGRESS', BLOCKED='BLOCKED', REVIEW='REVIEW', DONE='DONE', CANCELLED='CANCELLED' }
 export enum StepStatus { TODO='TODO', IN_PROGRESS='IN_PROGRESS', BLOCKED='BLOCKED', COMPLETED='COMPLETED' }
 
 registerEnumType(PlanMethodology, { name: 'PlanMethodology' });
 registerEnumType(PlanStatus, { name: 'PlanStatus' });
+registerEnumType(PlanCategory, { name: 'PlanCategory' });
 registerEnumType(TaskType, { name: 'TaskType' });
 registerEnumType(TaskStatus, { name: 'TaskStatus' });
 registerEnumType(StepStatus, { name: 'StepStatus' });
@@ -23,6 +25,7 @@ export class Task {
   @Field({ nullable: true }) estimate?: number;
   @Field({ nullable: true }) dueDate?: Date;
   @Field(() => [String], { nullable: true }) dependencies?: string[];
+  @Field({ nullable: true }) subPlanId?: string;
   @Field({ nullable: true }) linksGithubIssue?: string;
   @Field({ nullable: true }) linksGithubPR?: string;
   @Field() createdAt!: Date;
@@ -48,9 +51,13 @@ export class Plan {
   @Field(() => ID) id!: string;
   @Field() title!: string;
   @Field(() => PlanMethodology) methodology!: PlanMethodology;
+  @Field(() => PlanCategory) category!: PlanCategory;
+  @Field({ nullable: true }) project?: string;
+  @Field({ nullable: true }) activity?: string;
   @Field(() => PlanStatus) status!: PlanStatus;
   @Field({ nullable: true }) objective?: string;
   @Field(() => [Task]) tasks!: Task[];
+  @Field(() => [Task]) subPlans!: Task[];
   @Field() createdAt!: Date;
   @Field() updatedAt!: Date;
 }
