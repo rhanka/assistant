@@ -9,7 +9,7 @@ Note: Always read `.cursor/rules/MASTER.mdc` first, then `README.md`, then this 
 - [x] Test: Write down test strategy in .mdc; implement test in Make then GitHub Actions
 - [x] Scheduler: compile Plan → DAG and enqueue jobs (PR: feat/scheduler-plan-dag-execution)
 - [x] Enable Task to be themselves (Sub)-Plans and Plan to be categorized by Project or Activity (PR: feat/task-subplans-plan-categorization)
-- [ ] Makefile: add an option and instruction to enable interactive/non-interactive switch (db.init, logs.*, etc)
+- [x] Makefile: add an option and instruction to enable interactive/non-interactive switch (db.init, logs.*, etc) (PR: feat/makefile-interactive-switch)
 - [ ] Makefile: add an option to trace SLOC of project based on `cloc --not-match-f='package.*json|tsconfig.json' .`
 - [ ] Add security in testing strategy : updates .mdc files - include partial or full scope coverage (e.g no critical or high vulnerability unless contextual usage is logged and has a further mitigation in Now or Next)
 - [ ] Workers: job "sync:github" (issues + Projects v2) scaffold
@@ -18,7 +18,9 @@ Note: Always read `.cursor/rules/MASTER.mdc` first, then `README.md`, then this 
 
 ## Next
 - [ ] AI: FastAPI stub /summarize
-- [ ] Cursor: Playwright helper to open Web Agents (dry-run)
+- [ ] UI: Add views to chat interactively with a Plan or Task or Project/Activity (instruct a new Plan etc) and a view to have status of Projects/Activity with their Plan and Sub-Plan and Task (hierarchically)
+- [ ] Add (in packages/integrations) a Chrome plugin to interact with tabs and UI/API
+- [ ] Add (in packages/integrations) a Cursor AI plugin to take control remote on Cursor AI chat on an existing Cursor AI session on a laptop and interact through UI/API
 
 ## Later
 - [ ] Data import (CSV/JSON) for Plans/Tasks
