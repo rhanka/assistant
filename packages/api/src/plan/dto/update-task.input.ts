@@ -12,6 +12,7 @@ export class UpdateTaskInput {
   @Field(() => Float, { nullable: true }) estimate?: number;
   @Field({ nullable: true }) dueDate?: Date;
   @Field(() => [String], { nullable: true }) dependencies?: string[];
+  @Field({ nullable: true }) subPlanId?: string;
   @Field({ nullable: true }) linksGithubIssue?: string;
   @Field({ nullable: true }) linksGithubPR?: string;
 }
