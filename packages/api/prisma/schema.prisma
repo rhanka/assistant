@@ -22,6 +22,13 @@ enum PlanStatus {
   CANCELLED
 }
 
+enum PlanCategory {
+  PROJECT
+  ACTIVITY
+  MILESTONE
+  SPRINT
+}
+
 enum TaskType {
   EPIC
   STORY
@@ -29,6 +36,7 @@ enum TaskType {
   BUG
   SPIKE
   CHORE
+  SUB_PLAN
 }
 
 enum TaskStatus {
@@ -46,11 +54,15 @@ model Plan {
   objective    String?
   methodology  PlanMethodology
   status       PlanStatus @default(DRAFT)
+  category     PlanCategory @default(PROJECT)
+  project      String?
+  activity     String?
   constraints  Json?
   customFields Json?
   linksGithubProject String?
   linksGithubMilestone Int?
   tasks        Task[]
+  subPlans     Task[]   @relation("TaskSubPlan")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -59,6 +71,8 @@ model Task {
   id        String   @id @default(cuid())
   planId    String
   plan      Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+  subPlanId String?
+  subPlan   Plan?    @relation("TaskSubPlan", fields: [subPlanId], references: [id], onDelete: SetNull)
   title     String
   type      TaskType?
   status    TaskStatus @default(TODO)
@@ -74,4 +88,5 @@ model Task {
   updatedAt DateTime @updatedAt
 
   @@index([planId])
+  @@index([subPlanId])
 }
