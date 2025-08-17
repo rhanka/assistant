@@ -8,10 +8,11 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "ts-node-dev --respawn src/index.ts",
-    "start": "node dist/index.js",
+    "start": "node dist/main.js",
     "test": "vitest run",
     "test:unit": "vitest run",
-    "test:integration": "vitest run tests/integration/"
+    "test:integration": "vitest run tests/integration/",
+    "test:integration:workers": "vitest run tests/integration/workers/"
   },
   "dependencies": {
     "bullmq": "^5.7.0"
