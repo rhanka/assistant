@@ -23,7 +23,9 @@ services:
     ports: ["${API_PORT:-3001}:3001"]
     depends_on: [postgres, redis]
   ui:
-    build: ./packages/ui
+    build:
+      context: .
+      dockerfile: ./packages/ui/Dockerfile
     environment:
       - UI_PORT=${UI_PORT}
     ports: ["${UI_PORT:-5173}:5173"]
