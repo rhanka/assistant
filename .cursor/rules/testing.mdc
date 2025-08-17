@@ -235,6 +235,20 @@ test.ai: test.unit.ai
 test.integration.scheduler-workers-api: docker compose run --rm scheduler npm run test:integration
 ```
 
+## Testing Frameworks
+
+### Framework Selection
+- **UI (SvelteKit)**: Use **Vitest** for unit tests (modern, Vite-native)
+- **API (NestJS)**: Use **Vitest** for unit tests (TypeScript-first, ESM support)
+- **Scheduler/Workers**: Use **Vitest** for unit tests (consistency with other packages)
+- **AI (Python)**: Use **pytest** for unit tests (Python standard)
+- **E2E**: Use **Playwright** for browser automation
+
+### Framework Rationale
+- **Vitest**: Better TypeScript/ESM support, faster than Jest, Vite-native
+- **pytest**: Python standard, extensive ecosystem
+- **Playwright**: Modern browser automation, better than Selenium
+
 ## Testing Rules
 
 ### 1. No Test Duplication
