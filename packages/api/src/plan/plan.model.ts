@@ -54,3 +54,43 @@ export class Plan {
   @Field() createdAt!: Date;
   @Field() updatedAt!: Date;
 }
+
+@ObjectType()
+export class DagResult {
+  @Field() isValid!: boolean;
+  @Field({ nullable: true }) message?: string;
+  @Field(() => [String]) topologicalOrder!: string[];
+}
+
+@ObjectType()
+export class ExecutionPlan {
+  @Field() totalTasks!: number;
+  @Field({ nullable: true }) estimatedDuration?: number;
+  @Field(() => [String], { nullable: true }) criticalPath?: string[];
+}
+
+@ObjectType()
+export class CompileResult {
+  @Field(() => ID) planId!: string;
+  @Field(() => [Task]) tasks!: Task[];
+  @Field(() => DagResult) dag!: DagResult;
+  @Field(() => ExecutionPlan) executionPlan!: ExecutionPlan;
+}
+
+@ObjectType()
+export class ExecuteResult {
+  @Field(() => ID) planId!: string;
+  @Field() executionId!: string;
+  @Field() status!: string;
+  @Field() tasksEnqueued!: number;
+  @Field({ nullable: true }) estimatedCompletion?: Date;
+  @Field(() => [DryRunResult], { nullable: true }) dryRunResults?: DryRunResult[];
+}
+
+@ObjectType()
+export class DryRunResult {
+  @Field() taskId!: string;
+  @Field() action!: string;
+  @Field() estimatedDuration!: number;
+  @Field(() => [String]) dependencies!: string[];
+}
