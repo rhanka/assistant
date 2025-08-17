@@ -17,201 +17,52 @@ This document defines the testing strategy for the assistant project, ensuring a
 - **Environment**: Isolated, no external dependencies
 - **Execution**: Via `make test.unit.<package>`
 
-### 2. Integration Tests
+### 2. Integration Tests (Peer-to-Peer)
 - **Scope**: Component with its direct dependencies (DB, Redis)
 - **Environment**: Real services (PostgreSQL, Redis) but isolated from other components
-- **Execution**: Via `make test.integration.<package>`
+- **Execution**: Via `make test.integration.<component1>-<component2>`
 
 ### 3. End-to-End Tests
 - **Scope**: Full user workflows across multiple components
 - **Environment**: Complete stack with real services
 - **Execution**: Via `make test.e2e.<scenario>`
 
-### 4. Peer-to-Peer Tests
-- **Scope**: Integration between specific components
-- **Environment**: Real services for interfacing components
-- **Execution**: Via `make test.integration.<component1>-<component2>`
-
 ## CI/CD Testing Strategy
 
-### Workflow Separation by Functional Domain
+### Updated CI Pipeline (High-Level)
+1) Build images (block on Critical/High dependency vulns inside Dockerfiles)
+- Node: run `npm audit --audit-level=high` in base and production stages
+- Python: consider `pip-audit --strict` (or defer to Snyk in CI)
+- Tag and push images to GHCR (e.g., `ghcr.io/<org>/<repo>/<service>:<sha>`) for reuse
 
-#### CI API (Independent Component)
-```yaml
-on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'packages/api/**'
-      - 'packages/schemas/**'
-      - 'packages/config/**'
-      - 'docker-compose.yml'
-      - 'Makefile'
-      - '.github/workflows/ci-api.yml'
+2) In parallel after build
+- Unit tests per service (`make test.unit.*`), unchanged
+- Security scans (Snyk/Trivy in parallel)
+  - Snyk Code (source), Snyk Deps (manifests), Snyk IaC (compose/k8s)
+  - Snyk Container + Trivy Image on built images
 
-jobs:
-  test-api:
-    - make test.unit.api
-    - make test.integration.api
-```
+3) After unit tests of involved services
+- Run P2P integration tests (`make test.integration.*`)
 
-#### CI Scheduler (Independent Component)
-```yaml
-on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'packages/scheduler/**'
-      - 'packages/config/**'
-      - 'docker-compose.yml'
-      - 'Makefile'
-      - '.github/workflows/ci-scheduler.yml'
+4) E2E tests (to be)
+- Run after integration, if applicable
 
-jobs:
-  test-scheduler:
-    - make test.unit.scheduler
-```
+### High-Level DAG (dependencies)
+- 1.0: Build images (with dependency audits) → 1.1: Store/push images (GHCR)
+- 1.1 → 2.0: Run Unit Tests per service (parallel)
+- 1.1 → 4.0: Run Security Scans (Snyk Code/Deps/IaC + Snyk Container, Trivy) (parallel)
+- 2.0 → 3.0: Run P2P Integration Tests for service pairs that passed unit tests
+- 3.0 → E2E (if applicable)
 
-#### CI AI (Independent Component)
-```yaml
-on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'packages/ai/**'
-      - 'docker-compose.yml'
-      - 'Makefile'
-      - '.github/workflows/ci-ai.yml'
+### Path-Based Triggers and Dependencies
+- Build job runs when any service or global config changes
+- Unit jobs depend on build (images available, tests targets unchanged)
+- Security jobs depend on build
+- Integration jobs depend on unit jobs for involved services
 
-jobs:
-  test-ai:
-    - make test.unit.ai
-```
+## Make Commands (Documentation)
 
-#### CI Workers (Depends on API)
-```yaml
-on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'packages/workers/**'
-      - 'packages/api/**'
-      - 'packages/schemas/**'
-      - 'packages/config/**'
-      - 'docker-compose.yml'
-      - 'Makefile'
-      - '.github/workflows/ci-workers.yml'
-
-jobs:
-  test-workers:
-    - make test.unit.workers
-    - make test.unit.api
-    - make test.integration.workers-api
-```
-
-#### CI UI (Depends on API)
-```yaml
-on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'packages/ui/**'
-      - 'packages/api/**'
-      - 'packages/schemas/**'
-      - 'packages/config/**'
-      - 'docker-compose.yml'
-      - 'Makefile'
-      - '.github/workflows/ci-ui.yml'
-
-jobs:
-  test-ui:
-    - make test.unit.ui
-    - make test.unit.api
-    - make test.e2e.ui-api
-```
-
-### Integration Testing Workflows
-
-#### CI Scheduler-Workers Integration
-```yaml
-on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'packages/scheduler/**'
-      - 'packages/workers/**'
-      - 'packages/api/**'
-      - 'packages/schemas/**'
-      - 'packages/config/**'
-      - 'docker-compose.yml'
-      - 'Makefile'
-      - '.github/workflows/ci-scheduler-workers.yml'
-
-jobs:
-  test-scheduler-workers:
-    - make test.integration.scheduler-workers-api
-```
-
-#### CI Workers-API Integration
-```yaml
-on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'packages/workers/**'
-      - 'packages/api/**'
-      - 'packages/schemas/**'
-      - 'packages/config/**'
-      - 'docker-compose.yml'
-      - 'Makefile'
-      - '.github/workflows/ci-workers-api.yml'
-
-jobs:
-  test-workers-api:
-    - make test.integration.workers-api
-```
-
-#### CI UI-API E2E
-```yaml
-on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'packages/ui/**'
-      - 'packages/api/**'
-      - 'packages/schemas/**'
-      - 'packages/config/**'
-      - 'docker-compose.yml'
-      - 'Makefile'
-      - '.github/workflows/ci-ui-api.yml'
-
-jobs:
-  test-ui-api:
-    - make test.e2e.ui-api
-```
-
-### Configuration Changes Impact
-
-**Note**: When `Makefile`, `docker-compose.yml`, or `packages/config/**` change, ALL component workflows are triggered because these are shared dependencies. No separate "global" workflow is needed.
-
-## Component Dependencies
-
-### Dependency Map
-- **API**: Independent (PostgreSQL, Redis)
-- **Scheduler**: Independent (Redis only)
-- **AI**: Independent (no dependencies)
-- **Workers**: Depends on API (Redis + API calls)
-- **UI**: Depends on API (API calls only)
-
-### Configuration Dependencies
-- **`packages/config/**`**: Included in all workflows (shared TypeScript config)
-- **`Makefile`**: Included in all workflows (test commands)
-- **`docker-compose.yml`**: Included in all workflows (Docker environment)
-- **`packages/schemas/**`**: Included where API is involved
-
-## Make Commands
-
-### Package-Specific Tests
+### Package-Specific Tests (unchanged)
 ```makefile
 # Unit tests
 test.unit.api: docker compose run --rm api npm run test:unit
@@ -229,17 +80,25 @@ test.e2e.ui: docker compose run --rm ui npm run test:e2e
 test.e2e.ui-api: docker compose run --rm ui npm run test:e2e:integration
 ```
 
-### Composite Tests
+### Security Tests (naming only — implemented in Makefile)
 ```makefile
-# Package tests (unit + integration)
-test.api: test.unit.api test.integration.api
-test.ui: test.unit.ui test.e2e.ui
-test.scheduler: test.unit.scheduler
-test.workers: test.unit.workers
-test.ai: test.unit.ai
+# Aggregates
+test.security: test.security.scan test.security.container
+test.security.scan: test.security.scan.deps test.security.scan.code test.security.scan.iac
+test.security.container: test.security.container.snyk.all test.security.container.trivy.all
 
-# Integration tests
-test.integration.scheduler-workers-api: docker compose run --rm scheduler npm run test:integration
+# Dependency scans (per service) — depend on image build targets
+test.security.scan.deps.api|ui|workers|scheduler|ai  # should run after build.<service>
+
+# Code scan (source)
+test.security.scan.code
+
+# IaC scan (compose/k8s)
+test.security.scan.iac
+
+# Container scans (per service)
+test.security.container.snyk.<service> and .all
+test.security.container.trivy.<service> and .all
 ```
 
 ## Testing Frameworks
