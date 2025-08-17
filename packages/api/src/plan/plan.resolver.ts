@@ -1,11 +1,15 @@
 import { Resolver, Query, Mutation, Args, ResolveField, Parent } from '@nestjs/graphql';
-import { Plan, PlanMethodology, PlanStatus, Task, TaskStatus, Step, StepStatus, TaskType } from './plan.model.js';
-import { CreatePlanInput, CreateTaskInput, CreateStepInput, UpdatePlanInput, UpdateTaskInput, UpdateStepInput } from './dto/index.js';
+import { Plan, PlanMethodology, PlanStatus, Task, TaskStatus, Step, StepStatus, TaskType, CompileResult, ExecuteResult } from './plan.model.js';
+import { CreatePlanInput, CreateTaskInput, CreateStepInput, UpdatePlanInput, UpdateTaskInput, UpdateStepInput, CompilePlanInput, ExecutePlanInput } from './dto/index.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { SchedulerAdapterService } from './scheduler-adapter.service.js';
 
 @Resolver(() => Plan)
 export class PlanResolver {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private schedulerService: SchedulerAdapterService
+  ) {}
 
   @Query(() => [Plan])
   async plans(): Promise<Plan[]> {
@@ -126,5 +130,15 @@ export class PlanResolver {
   async deleteTask(@Args('id') id: string): Promise<boolean> {
     await this.prisma.task.delete({ where: { id } });
     return true;
+  }
+
+  @Mutation(() => CompileResult)
+  async compilePlan(@Args('input') input: CompilePlanInput): Promise<CompileResult> {
+    return this.schedulerService.compilePlan(input.planId);
+  }
+
+  @Mutation(() => ExecuteResult)
+  async executePlan(@Args('input') input: ExecutePlanInput): Promise<ExecuteResult> {
+    return this.schedulerService.executePlan(input.planId, input.dryRun);
   }
 }
