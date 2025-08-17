@@ -1,3 +1,5 @@
+import { describe, it, expect } from 'vitest'
+
 describe('Workers', () => {
   describe('Basic Functionality', () => {
     it('should be able to create a queue', () => {
