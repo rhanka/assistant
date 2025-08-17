@@ -37,6 +37,11 @@ export GITHUB_TOKEN ?= your-github-token-here
 export GITHUB_OWNER ?= your-org-or-user
 export GITHUB_REPO ?= your-repo
 
+# GHCR (GitHub Container Registry) configuration
+export GHCR_OWNER ?= rhanka
+export GHCR_PROJECT ?= assistant
+export GHCR_REGISTRY ?= ghcr.io/$(GHCR_OWNER)/$(GHCR_PROJECT)
+
 # Interactive mode control (default: non-interactive for CI)
 export INTERACTIVE ?= false
 
@@ -114,8 +119,76 @@ update.ui.lock:
 		exit 1; \
 	fi
 
+# Build targets with GHCR tagging
 build.api:
 	docker compose build api
+	@echo "🏷️  Tagging API image for GHCR..."
+	@docker tag assistant-api:latest $(GHCR_REGISTRY)/api:$$(git rev-parse --short HEAD)
+	@docker tag assistant-api:latest $(GHCR_REGISTRY)/api:latest
+
+build.scheduler:
+	docker compose build scheduler
+	@echo "🏷️  Tagging Scheduler image for GHCR..."
+	@docker tag assistant-scheduler:latest $(GHCR_REGISTRY)/scheduler:$$(git rev-parse --short HEAD)
+	@docker tag assistant-scheduler:latest $(GHCR_REGISTRY)/scheduler:latest
+
+build.workers:
+	docker compose build workers
+	@echo "🏷️  Tagging Workers image for GHCR..."
+	@docker tag assistant-workers:latest $(GHCR_REGISTRY)/workers:$$(git rev-parse --short HEAD)
+	@docker tag assistant-workers:latest $(GHCR_REGISTRY)/workers:latest
+
+build.ui:
+	docker compose build ui
+	@echo "🏷️  Tagging UI image for GHCR..."
+	@docker tag assistant-ui:latest $(GHCR_REGISTRY)/ui:$$(git rev-parse --short HEAD)
+	@docker tag assistant-ui:latest $(GHCR_REGISTRY)/ui:latest
+
+build.ai:
+	docker compose build ai
+	@echo "🏷️  Tagging AI image for GHCR..."
+	@docker tag assistant-ai:latest $(GHCR_REGISTRY)/ai:$$(git rev-parse --short HEAD)
+	@docker tag assistant-ai:latest $(GHCR_REGISTRY)/ai:latest
+
+# Build all services
+build.all: build.api build.scheduler build.workers build.ui build.ai
+
+# Push targets to GHCR
+push.api:
+	@echo "🚀 Pushing API image to GHCR..."
+	@docker push $(GHCR_REGISTRY)/api:$$(git rev-parse --short HEAD)
+	@docker push $(GHCR_REGISTRY)/api:latest
+
+push.scheduler:
+	@echo "🚀 Pushing Scheduler image to GHCR..."
+	@docker push $(GHCR_REGISTRY)/scheduler:$$(git rev-parse --short HEAD)
+	@docker push $(GHCR_REGISTRY)/scheduler:latest
+
+push.workers:
+	@echo "🚀 Pushing Workers image to GHCR..."
+	@docker push $(GHCR_REGISTRY)/workers:$$(git rev-parse --short HEAD)
+	@docker push $(GHCR_REGISTRY)/workers:latest
+
+push.ui:
+	@echo "🚀 Pushing UI image to GHCR..."
+	@docker push $(GHCR_REGISTRY)/ui:$$(git rev-parse --short HEAD)
+	@docker push $(GHCR_REGISTRY)/ui:latest
+
+push.ai:
+	@echo "🚀 Pushing AI image to GHCR..."
+	@docker push $(GHCR_REGISTRY)/ai:$$(git rev-parse --short HEAD)
+	@docker push $(GHCR_REGISTRY)/ai:latest
+
+# Push all services
+push.all: push.api push.scheduler push.workers push.ui push.ai
+
+# Build and push in one command
+build.push.api: build.api push.api
+build.push.scheduler: build.scheduler push.scheduler
+build.push.workers: build.workers push.workers
+build.push.ui: build.ui push.ui
+build.push.ai: build.ai push.ai
+build.push.all: build.all push.all
 
 up.api:
 	docker compose up -d api
@@ -126,9 +199,6 @@ down.api:
 rebuild.api: build.api up.api
 
 # Scheduler-specific targets
-build.scheduler:
-	docker compose build scheduler
-
 up.scheduler:
 	docker compose up -d scheduler
 
@@ -138,9 +208,6 @@ down.scheduler:
 rebuild.scheduler: build.scheduler up.scheduler
 
 # Workers-specific targets
-build.workers:
-	docker compose build workers
-
 up.workers:
 	docker compose up -d workers
 
@@ -150,9 +217,6 @@ down.workers:
 rebuild.workers: build.workers up.workers
 
 # AI-specific targets
-build.ai:
-	docker compose build ai
-
 up.ai:
 	docker compose up -d ai
 
@@ -391,23 +455,20 @@ test.scheduler: test.unit.scheduler
 test.workers: test.unit.workers
 test.ai: test.unit.ai
 
+
+
 # Global validation
 validate-config:
 	@echo "🔍 Validating global configuration..."
 	@echo "✅ Configuration validation complete"
 
-test.integration:
-	docker compose exec api npm run test:integration
-	docker compose exec ai pytest tests/integration
 
-test.e2e:
-	docker compose exec ui npm run test:e2e
 
 test.i18n:
-	docker compose exec api npm run -w @repo/scripts i18n:check
+	docker compose run --rm scripts npm run i18n:check
 
 test.i18n.coverage:
-	docker compose exec api npm run -w @repo/scripts i18n:coverage
+	docker compose run --rm scripts npm run i18n:coverage
 
 test.all: test.unit test.integration test.e2e test.i18n test.i18n.coverage
 
