@@ -7,7 +7,7 @@ Note: Always read `.cursor/rules/MASTER.mdc` first, then `README.md`, then this 
 - [x] Makefile: apply architecture (e.g dev in docker, python or npm run or npx for db migration must be in docker if local or kube if in production env) (PR: feat/makefile-architecture)
 - [x] API: GraphQL schema (Plan/Task/Step) + REST /health + OpenAPI (PR: feat/api-graphql-schema)
 - [x] Test: Write down test strategy in .mdc; implement test in Make then GitHub Actions
-- [ ] Scheduler: compile Plan → DAG and enqueue jobs
+- [x] Scheduler: compile Plan → DAG and enqueue jobs (PR: feat/scheduler-plan-dag-execution)
 - [ ] Makefile: add an option and instruction to enable interactive/non-interactive switch (db.init, logs.*, etc)
 - [ ] Workers: job "sync:github" (issues + Projects v2) scaffold
 - [ ] UI: SvelteKit layout with /en and /fr, i18n switching
