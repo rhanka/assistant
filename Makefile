@@ -162,6 +162,9 @@ test.integration.api:
 test.integration.scheduler-api:
 	docker compose run --rm scheduler npm run test:integration
 
+test.integration.scheduler-workers-api:
+	docker compose run --rm scheduler npm run test:integration:workers
+
 test.integration.workers-api:
 	docker compose run --rm workers npm run test:integration
 
