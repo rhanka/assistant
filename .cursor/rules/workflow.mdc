@@ -82,11 +82,16 @@ After completing any task, **ALWAYS propose the next step** by following the wor
 
 ### CI Monitoring (MANDATORY)
 - After any push to a feature branch or PR update, automatically verify GitHub Actions runs.
-- Preferred: use GitHub API via curl (gh CLI optional). Minimal, non-interactive checks:
+- **Primary method**: use GitHub API via curl for basic status checks. Minimal, non-interactive checks:
   - Latest run for current branch:
     - `curl -s "https://api.github.com/repos/<ORG>/<REPO>/actions/runs?branch=$BRANCH&per_page=1" | grep -E '"event"|"status"|"conclusion"'`
   - Job list for a specific run id:
     - `curl -s "https://api.github.com/repos/<ORG>/<REPO>/actions/runs/<RUN_ID>/jobs" | grep -E '"name"|"conclusion"'`
+- **Secondary method**: When curl is insufficient (e.g., accessing detailed logs, artifacts, or when API rate limits are hit), use `gh` CLI:
+  - Install: `sudo apt install gh` or `sudo snap install gh`
+  - Authenticate: `gh auth login` (requires GitHub token with `repo` and `workflow` scopes)
+  - Access logs: `gh run view <RUN_ID> --log-failed` or `gh run view <RUN_ID> --log`
+  - Download artifacts: `gh run download <RUN_ID>`
 - If status is "skipped" unexpectedly, inspect workflow conditions/filters; for path-based workflows, ensure common files (Makefile, docker-compose.yml, packages/config, packages/schemas, CI files) are included in filters.
 - If quick tweaks are needed, prefer `git commit --amend --no-edit` and push with `git push --force-with-lease`.
 - If multiple debug commits were created, consolidate with `git reset --soft HEAD~N`, commit once, then `git push --force-with-lease`.
