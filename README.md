@@ -213,6 +213,8 @@ make test.e2e.ui-api    # Test UI-API end-to-end workflow
    - AI: `make ai`
 
 ## Project layout
+
+```
 .
 ├─ .cursor/...            # AI coding cursor rules
 │  └─ rules/
@@ -247,3 +249,4 @@ make test.e2e.ui-api    # Test UI-API end-to-end workflow
 ├─ .env.example
 ├─ .gitignore
 └─ LICENSE
+```
