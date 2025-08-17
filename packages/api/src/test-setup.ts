@@ -1,4 +1,4 @@
 import { vi } from 'vitest'
 
 // Mock global functions if needed
-global.vi = vi
+;(global as any).vi = vi
