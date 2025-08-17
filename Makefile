@@ -140,7 +140,8 @@ test.unit.api:
 	docker run --rm --network assistant_default api-test
 
 test.unit.ui:
-	docker compose run --rm ui npm run test:unit
+	docker build --target test -t ui-test -f packages/ui/Dockerfile .
+	docker run --rm --network assistant_default ui-test
 
 test.unit.scheduler:
 	docker compose run --rm scheduler npm run test:unit
