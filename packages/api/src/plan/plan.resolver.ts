@@ -1,5 +1,5 @@
 import { Resolver, Query, Mutation, Args, ResolveField, Parent } from '@nestjs/graphql';
-import { Plan, PlanMethodology, PlanStatus, Task, TaskStatus, Step, StepStatus, TaskType, CompileResult, ExecuteResult } from './plan.model.js';
+import { Plan, PlanMethodology, PlanStatus, PlanCategory, Task, TaskStatus, Step, StepStatus, TaskType, CompileResult, ExecuteResult } from './plan.model.js';
 import { CreatePlanInput, CreateTaskInput, CreateStepInput, UpdatePlanInput, UpdateTaskInput, UpdateStepInput, CompilePlanInput, ExecutePlanInput } from './dto/index.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { SchedulerAdapterService } from './scheduler-adapter.service.js';
@@ -13,14 +13,37 @@ export class PlanResolver {
 
   @Query(() => [Plan])
   async plans(): Promise<Plan[]> {
-    const rows = await this.prisma.plan.findMany({ include: { tasks: true } });
+    const rows = await this.prisma.plan.findMany({ 
+      include: { 
+        tasks: true,
+        subPlans: true 
+      } 
+    });
     return rows.map((p) => ({
       id: p.id,
       title: p.title,
       methodology: p.methodology as PlanMethodology,
+      category: p.category as PlanCategory,
+      project: p.project || undefined,
+      activity: p.activity || undefined,
       status: p.status as PlanStatus,
       objective: p.objective || undefined,
       tasks: (p.tasks || []).map((t) => ({
+        id: t.id,
+        title: t.title,
+        type: t.type as TaskType,
+        status: t.status as TaskStatus,
+        assignee: t.assignee || undefined,
+        labels: t.labels || [],
+        estimate: t.estimate || undefined,
+        dueDate: t.dueDate || undefined,
+        dependencies: t.dependencies || [],
+        linksGithubIssue: t.linksGithubIssue || undefined,
+        linksGithubPR: t.linksGithubPR || undefined,
+        createdAt: t.createdAt,
+        updatedAt: t.updatedAt
+      } as Task)),
+      subPlans: (p.subPlans || []).map((t) => ({
         id: t.id,
         title: t.title,
         type: t.type as TaskType,
@@ -43,15 +66,27 @@ export class PlanResolver {
   @Mutation(() => Plan)
   async createPlan(@Args('input') input: CreatePlanInput): Promise<Plan> {
     const created = await this.prisma.plan.create({
-      data: { title: input.title, methodology: input.methodology, status: 'DRAFT', objective: input.objective ?? null }
+      data: { 
+        title: input.title, 
+        methodology: input.methodology, 
+        category: input.category,
+        project: input.project,
+        activity: input.activity,
+        status: 'DRAFT', 
+        objective: input.objective ?? null 
+      }
     });
     return { 
       id: created.id, 
       title: created.title, 
       methodology: created.methodology as PlanMethodology, 
+      category: created.category as PlanCategory,
+      project: created.project || undefined,
+      activity: created.activity || undefined,
       status: created.status as PlanStatus, 
       objective: created.objective ?? undefined, 
       tasks: [],
+      subPlans: [],
       createdAt: created.createdAt,
       updatedAt: created.updatedAt
     };
@@ -70,6 +105,7 @@ export class PlanResolver {
         estimate: input.estimate,
         dueDate: input.dueDate,
         dependencies: input.dependencies || [],
+        subPlanId: input.subPlanId,
         linksGithubIssue: input.linksGithubIssue,
         linksGithubPR: input.linksGithubPR
       }
@@ -84,6 +120,7 @@ export class PlanResolver {
       estimate: created.estimate || undefined,
       dueDate: created.dueDate || undefined,
       dependencies: created.dependencies || [],
+      subPlanId: created.subPlanId || undefined,
       linksGithubIssue: created.linksGithubIssue || undefined,
       linksGithubPR: created.linksGithubPR || undefined,
       createdAt: created.createdAt,
@@ -105,6 +142,7 @@ export class PlanResolver {
         estimate: input.estimate,
         dueDate: input.dueDate,
         dependencies: input.dependencies,
+        subPlanId: input.subPlanId,
         linksGithubIssue: input.linksGithubIssue,
         linksGithubPR: input.linksGithubPR
       }
@@ -119,6 +157,7 @@ export class PlanResolver {
       estimate: updated.estimate || undefined,
       dueDate: updated.dueDate || undefined,
       dependencies: updated.dependencies || [],
+      subPlanId: updated.subPlanId || undefined,
       linksGithubIssue: updated.linksGithubIssue || undefined,
       linksGithubPR: updated.linksGithubPR || undefined,
       createdAt: updated.createdAt,
