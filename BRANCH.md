@@ -33,7 +33,8 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 
 ## Commits & Progress
 - [x] docs(rules): align testing & security MDC with CI DAG and add BRANCH plan
-gi- [ ] build(make): add build/push targets (`build.<svc>`, `push.<svc>`, `.all`) — no behavior change
+- [x] build(make): add build/push targets (`build.<svc>`, `push.<svc>`, `.all`) — no behavior change
+- [x] build(make): improve GHCR config with env vars (GHCR_OWNER, GHCR_PROJECT, GHCR_REGISTRY)
 - [ ] build(make): add security targets (naming only) — `test.security.scan.*`, `test.security.container.*`
 - [ ] build(docker-api): gate deps with `npm audit --audit-level=high` (base + prod)
 - [ ] build(docker-ui): gate deps with `npm audit --audit-level=high` (base + prod)
@@ -48,6 +49,6 @@ gi- [ ] build(make): add build/push targets (`build.<svc>`, `push.<svc>`, `.all`
 - [ ] ci: run `make check` and fix guide consistency
 
 ## Status
-- Progress: 2/N tasks completed
-- Current: Waiting for design review/approval
-- Next: Implement Make targets (build/push + security), adapt `up` optional dependency on build, then CI workflow updates
+- Progress: 3/15 tasks completed
+- Current: Build/push targets implemented and working with env vars
+- Next: Add security targets (naming only), then implement Dockerfile dependency gating
