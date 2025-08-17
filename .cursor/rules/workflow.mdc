@@ -103,6 +103,14 @@ After completing any task, **ALWAYS propose the next step** by following the wor
 - **CI/CD**: All tests must pass, guides must be consistent
 - **Architecture**: Verify `make` commands work before any changes
 
+## Dependency Management
+- **Package-lock updates**: Always use `make update.<package>.lock` to update package-lock.json files
+- **Docker-only**: Never run `npm install` directly - all dependency management must go through Docker
+- **Available commands**: 
+  - `make update.api.lock` - Update API package-lock.json
+  - `make update.ui.lock` - Update UI package-lock.json
+- **Clean environment**: Remove local `node_modules` if they exist outside Docker containers
+
 ## Feature Branch Management
 
 ### Branch Documentation

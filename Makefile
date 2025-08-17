@@ -29,6 +29,9 @@ dev:
 update.api.lock:
 	docker run --rm -v $(PWD)/packages/api:/app -w /app node:20 npm install --legacy-peer-deps
 
+update.ui.lock:
+	docker run --rm -v $(PWD)/packages/ui:/app -w /app node:20 npm install --legacy-peer-deps
+
 build.api:
 	docker compose build api
 
@@ -173,7 +176,7 @@ test.e2e.ui:
 	docker compose run --rm ui npm run test:e2e
 
 test.e2e.ui-api:
-	docker compose run --rm ui npm run test:e2e:integration
+	docker compose run --rm ui npm run test:e2e
 
 # Package tests (unit + integration)
 test.api: test.unit.api test.integration.api
