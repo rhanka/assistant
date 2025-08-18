@@ -37,13 +37,14 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [x] build(make): add security targets — `test.security.scan.*`, `test.security.container.*`
 - [x] build(security): implement SAST scanning (Semgrep on source code) - 0664279
 - [x] build(security): implement SCA scanning (Trivy on manifests/dependencies) - cb211d4
-- [ ] build(security): implement IaC scanning (Trivy on docker-compose.yml and k8s/)
-- [ ] build(security): implement container scanning (Trivy on built images)
-- [ ] build(docker-api): gate deps with `npm audit --audit-level=high` (base + prod)
-- [ ] build(docker-ui): gate deps with `npm audit --audit-level=high` (base + prod)
-- [ ] build(docker-workers): gate deps with `npm audit --audit-level=high` (base + prod)
-- [ ] build(docker-scheduler): gate deps with `npm audit --audit-level=high` (base + prod)
-- [ ] build(docker-ai): add `pip-audit --strict` or defer (document reliance on Snyk)
+- [x] build(security): implement IaC scanning (Trivy on docker-compose.yml and k8s/) - f85e0ed
+- [x] build(security): implement container scanning (Trivy on built images) - fae9a87
+- [x] build(docker-api): gate deps with `npm audit --audit-level=high` (base + prod)
+- [x] build(docker-ui): gate deps with `npm audit --audit-level=high` (base + prod)
+- [x] build(docker-workers): gate deps with `npm audit --audit-level=high` (base + prod)
+- [x] build(docker-scheduler): gate deps with `npm audit --audit-level=high` (base + prod)
+- [x] build(docker-ai): add `pip-audit --strict` or defer (document reliance on Snyk)
+- [x] **Commit 11** (0a5fa71): Fix AI Dockerfile - update FastAPI to 0.116.0 to fix starlette vulnerabilities
 - [ ] ci(build): add build-images job (matrix), tag/push to GHCR
 - [ ] ci(unit): add `needs: build-images` (no logic change inside tests)
 - [ ] ci(security): add Snyk (code/deps/iac/container) + Trivy image jobs (parallel)
@@ -52,6 +53,6 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [ ] ci: run `make check` and fix guide consistency
 
 ## Status
-- Progress: 6/22 tasks completed
-- Current: SCA scanning implemented with per-service targets
-- Next: Implement IaC scanning (Trivy on docker-compose.yml and k8s/)
+- Progress: 15/22 tasks completed
+- Current: All Dockerfiles now have dependency vulnerability gating implemented and working
+- Next: Implement CI build-images job and update GitHub Actions workflow
