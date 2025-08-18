@@ -13,19 +13,39 @@ This document defines the testing strategy for the assistant project, ensuring a
 ## Testing Levels
 
 ### 1. Unit Tests
-- **Scope**: Individual functions, classes, and components
-- **Environment**: Isolated, no external dependencies
+- **Scope**: Individual functions, classes, components, and mock tests
+- **Environment**: Isolated, no external dependencies, includes mock data/behavior
+- **Includes**: Mock tests (tests bouchons) that simulate external dependencies
 - **Execution**: Via `make test.unit.<package>`
 
 ### 2. Integration Tests (Peer-to-Peer)
-- **Scope**: Component with its direct dependencies (DB, Redis)
-- **Environment**: Real services (PostgreSQL, Redis) but isolated from other components
+- **Scope**: Service-to-service communication and data flow
+- **What they test**:
+  - HTTP API calls between services
+  - Message passing (Redis, queues)
+  - Data consistency across services
+  - Error handling in distributed scenarios
+- **Environment**: Multiple real services running simultaneously
+- **Service deployment**: Use `make up.<service>` to start required services
 - **Execution**: Via `make test.integration.<component1>-<component2>`
 
 ### 3. End-to-End Tests
 - **Scope**: Full user workflows across multiple components
 - **Environment**: Complete stack with real services
 - **Execution**: Via `make test.e2e.<scenario>`
+
+### Service Deployment Strategy
+**For P2P Integration Tests**:
+- **Pre-test setup**: Start required services with `make up.<service>`
+- **Service coordination**: Ensure services are healthy before testing
+- **Post-test cleanup**: Stop services with `make down.<service>`
+
+**Service health checks**:
+- API: HTTP endpoint `/health`
+- Workers: Queue status check
+- Scheduler: Task queue status
+- UI: Static file serving
+- AI: Model loading status
 
 ## CI/CD Testing Strategy
 
