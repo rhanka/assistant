@@ -440,6 +440,41 @@ test.integration.scheduler-ai:
 test.integration.workers-ai:
 	docker compose run --rm workers npm run test:integration:ai
 
+# Security tools preparation
+security.prepare:
+	@echo "🔧 Preparing security tools..."
+	@echo "📥 Pulling Semgrep image..."
+	@docker pull semgrep/semgrep:latest
+	@echo "📥 Pulling Trivy image..."
+	@docker pull aquasec/trivy:latest
+	@echo "✅ Security tools preparation complete"
+
+# Security testing targets
+# SAST (Static Application Security Testing) - Semgrep on source code per service
+test.security.scan.code.api:
+	@echo "🔒 Security: Scanning API code for vulnerabilities (Semgrep SAST)"
+	@docker run --rm -v "${PWD}/packages/api:/src" semgrep/semgrep semgrep scan --config auto --severity ERROR
+
+test.security.scan.code.ui:
+	@echo "🔒 Security: Scanning UI code for vulnerabilities (Semgrep SAST)"
+	@docker run --rm -v "${PWD}/packages/ui:/src" semgrep/semgrep semgrep scan --config auto --severity ERROR
+
+test.security.scan.code.workers:
+	@echo "🔒 Security: Scanning Workers code for vulnerabilities (Semgrep SAST)"
+	@docker run --rm -v "${PWD}/packages/workers:/src" semgrep/semgrep semgrep scan --config auto --severity ERROR
+
+test.security.scan.code.scheduler:
+	@echo "🔒 Security: Scanning Scheduler code for vulnerabilities (Semgrep SAST)"
+	@docker run --rm -v "${PWD}/packages/scheduler:/src" semgrep/semgrep semgrep scan --config auto --severity ERROR
+
+test.security.scan.code.ai:
+	@echo "🔒 Security: Scanning AI code for vulnerabilities (Semgrep SAST)"
+	@docker run --rm -v "${PWD}/packages/ai:/src" semgrep/semgrep semgrep scan --config auto --severity ERROR
+
+# Aggregate SAST scan for all services
+test.security.scan.code: test.security.scan.code.api test.security.scan.code.ui test.security.scan.code.workers test.security.scan.code.scheduler test.security.scan.code.ai
+	@echo "✅ All SAST scans completed"
+
 # E2E tests
 test.e2e.ui:
 	docker compose run --rm ui npm run test:e2e
