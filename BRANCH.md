@@ -55,7 +55,7 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [x] makefile: update build.scheduler to target production - b665103
 - [x] docs(security): add security test exit criteria to security.mdc - [current commit]
 - [x] ci(build-workers): add build-workers job with production target and artifacts
-- [ ] ci(build-ui): add build-ui job with production target and artifacts
+- [x] ci(build-ui): add build-ui job with production target and artifacts
 - [ ] ci(build-ai): add build-ai job with production target and artifacts
 - [ ] ci(unit): update unit test dependencies (no logic change inside tests)
   - [ ] ci(unit-api): remove dependency on build-api (runs in parallel)
@@ -80,21 +80,21 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [ ] makefile: add save/load targets for all services
   - [ ] makefile(save-scheduler): add save.scheduler target
   - [x] makefile(save-workers): add save.workers target
-  - [ ] makefile(save-ui): add save.ui target
+  - [x] makefile(save-ui): add save.ui target
   - [ ] makefile(save-ai): add save.ai target
   - [ ] makefile(load-scheduler): add load.scheduler target
   - [x] makefile(load-workers): add load.workers target
-  - [ ] makefile(load-ui): add load.ui target
+  - [x] makefile(load-ui): add load.ui target
   - [ ] makefile(load-ai): add load.ai target
 - [ ] makefile: update build targets to target production for all services
   - [ ] makefile(build-scheduler): update build.scheduler to target production
   - [x] makefile(build-workers): update build.workers to target production
-  - [ ] makefile(build-ui): update build.ui to target production
+  - [x] makefile(build-ui): update build.ui to target production
   - [ ] makefile(build-ai): update build.ai to target production
 - [ ] docs(readme): reflect new build/push/security commands
 - [ ] ci: run `make check` and fix guide consistency
 
 ## Status
-- Progress: 28/45 tasks completed
-- Current: Workers service CI workflow implemented and working with artifacts
-- Next: Implement CI build jobs for remaining services (ui, ai)
+- Progress: 33/45 tasks completed
+- Current: UI service CI workflow implemented and working with artifacts
+- Next: Implement CI build jobs for remaining services (ai)

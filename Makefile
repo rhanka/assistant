@@ -114,7 +114,8 @@ build.workers:
 	docker build -f packages/workers/Dockerfile --target production -t assistant-workers:latest .
 
 build.ui:
-	docker compose build ui
+	@echo "🔨 Building UI image (production target)..."
+	docker build -f packages/ui/Dockerfile --target production -t assistant-ui:latest .
 
 build.ai:
 	docker compose build ai
@@ -135,6 +136,10 @@ save.workers:
 	@echo "💾 Saving Workers image as artifact..."
 	@docker save assistant-workers:latest -o workers-image.tar
 
+save.ui:
+	@echo "💾 Saving UI image as artifact..."
+	@docker save assistant-ui:latest -o ui-image.tar
+
 load.api:
 	@echo "📥 Loading API image from artifact..."
 	@docker load -i api-image.tar
@@ -146,6 +151,10 @@ load.scheduler:
 load.workers:
 	@echo "📥 Loading Workers image from artifact..."
 	@docker load -i workers-image.tar
+
+load.ui:
+	@echo "📥 Loading UI image from artifact..."
+	@docker load -i ui-image.tar
 
 # Build all services
 
