@@ -4,5 +4,7 @@ COPY packages/ai/pyproject.toml ./
 COPY packages/ai/app ./app
 COPY packages/ai/tests ./tests
 RUN pip install poetry && poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi
+# Security: Audit Python dependencies for vulnerabilities
+RUN pip install pip-audit && pip-audit --strict
 EXPOSE 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

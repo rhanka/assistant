@@ -5,6 +5,8 @@ COPY packages/config/tsconfig.base.json ./
 
 # Install all dependencies (including devDependencies for testing)
 RUN npm ci --legacy-peer-deps
+# Security: Audit dependencies for HIGH/CRITICAL vulnerabilities
+RUN npm audit --audit-level=high
 
 # Copy source code and generate Prisma client
 COPY packages/api/prisma ./prisma
@@ -31,6 +33,8 @@ COPY packages/config/tsconfig.base.json ./
 
 # Install only production dependencies
 RUN npm ci --only=production --legacy-peer-deps
+# Security: Audit production dependencies for HIGH/CRITICAL vulnerabilities
+RUN npm audit --audit-level=high
 
 # Copy built application and Prisma client
 COPY --from=build /app/dist ./dist

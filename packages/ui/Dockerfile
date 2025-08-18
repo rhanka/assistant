@@ -5,6 +5,8 @@ COPY packages/config/tsconfig.base.json ./
 
 # Install all dependencies (including devDependencies for testing)
 RUN npm ci --legacy-peer-deps
+# Security: Audit dependencies for HIGH/CRITICAL vulnerabilities
+RUN npm audit --audit-level=high
 
 # Copy source code
 COPY packages/ui/src ./src
@@ -17,5 +19,7 @@ CMD ["npm", "run", "test:unit"]
 
 # Production stage
 FROM base AS production
+# Security: Audit production dependencies for HIGH/CRITICAL vulnerabilities
+RUN npm audit --audit-level=high
 EXPOSE 5173
 CMD ["npm", "run", "dev"]
