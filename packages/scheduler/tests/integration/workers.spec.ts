@@ -27,4 +27,18 @@ describe('Scheduler-Workers Integration (P2P)', () => {
     // 3. Verify dependency resolution
     expect(true).toBe(true) // Placeholder
   })
+
+  it('should validate Redis queue communication', async () => {
+    // TODO: REAL INTEGRATION TEST TO IMPLEMENT
+    // This test will verify actual Redis communication between scheduler and workers
+    // 1. Start all three services (scheduler, workers, api)
+    // 2. Scheduler pushes job to Redis queue
+    // 3. Worker picks up job from queue
+    // 4. Verify job processing and status updates
+    
+    // CURRENT STATUS: Placeholder - no real integration yet
+    // INTEGRATION EXISTS: No - this is a new test to implement
+    // POTENTIAL TESTS: Redis queue operations, job assignment, status synchronization
+    expect(true).toBe(true) // Placeholder until real integration is implemented
+  })
 })

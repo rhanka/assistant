@@ -27,4 +27,19 @@ describe('Workers-AI Integration (P2P)', () => {
     // 3. Verify error handling
     expect(true).toBe(true) // Placeholder
   })
+
+  it('should validate AI task delegation workflow', async () => {
+    // TODO: REAL INTEGRATION TEST TO IMPLEMENT
+    // This test will verify actual AI task delegation between workers and AI service
+    // 1. Start both services
+    // 2. Worker creates AI task and sends to AI service
+    // 3. AI service processes task and returns result
+    // 4. Worker receives and processes result
+    // 5. Verify complete workflow
+    
+    // CURRENT STATUS: Placeholder - no real integration yet
+    // INTEGRATION EXISTS: No - this is a new test to implement
+    // POTENTIAL TESTS: Task delegation, AI processing, result handling, error recovery
+    expect(true).toBe(true) // Placeholder until real integration is implemented
+  })
 })

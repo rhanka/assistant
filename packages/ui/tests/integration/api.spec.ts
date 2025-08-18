@@ -27,4 +27,18 @@ describe('UI-API Integration (P2P)', () => {
     // 4. Verify UI reflects changes
     expect(true).toBe(true) // Placeholder
   })
+
+  it('should validate UI-API HTTP communication', async () => {
+    // TODO: REAL INTEGRATION TEST TO IMPLEMENT
+    // This test will verify actual HTTP communication between UI and API
+    // 1. Start both services
+    // 2. UI makes HTTP request to API endpoints
+    // 3. Verify API responses and data rendering
+    // 4. Test user interactions and state updates
+    
+    // CURRENT STATUS: Placeholder - no real integration yet
+    // INTEGRATION EXISTS: No - this is a new test to implement
+    // POTENTIAL TESTS: HTTP requests, data rendering, user interactions, state synchronization
+    expect(true).toBe(true) // Placeholder until real integration is implemented
+  })
 })
