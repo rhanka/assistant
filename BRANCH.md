@@ -50,7 +50,10 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [x] makefile: remove GHCR tagging and push targets (cleanup) - 11b222a
 - [x] makefile: add save/load targets for API service - 32e1b2a
 - [x] makefile: update build.api to target production - fa6beff
-- [ ] ci(build-scheduler): add build-scheduler job with production target and artifacts
+- [x] ci(build-scheduler): add build-scheduler job with production target and artifacts - b665103
+- [x] makefile: add save/load targets for scheduler service - b665103
+- [x] makefile: update build.scheduler to target production - b665103
+- [x] docs(security): add security test exit criteria to security.mdc - [current commit]
 - [ ] ci(build-workers): add build-workers job with production target and artifacts
 - [ ] ci(build-ui): add build-ui job with production target and artifacts
 - [ ] ci(build-ai): add build-ai job with production target and artifacts
@@ -92,6 +95,6 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [ ] ci: run `make check` and fix guide consistency
 
 ## Status
-- Progress: 20/45 tasks completed
-- Current: API service CI workflow implemented and working with artifacts
-- Next: Implement CI build jobs for remaining services (scheduler, workers, ui, ai)
+- Progress: 24/45 tasks completed
+- Current: Scheduler service CI workflow implemented and working with artifacts
+- Next: Implement CI build jobs for remaining services (workers, ui, ai)
