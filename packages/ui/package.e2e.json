@@ -1,0 +1,22 @@
+{
+  "name": "@repo/ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:e2e": "NODE_ENV=test:e2e playwright test"
+  },
+  "dependencies": {
+    "@sveltejs/kit": "^2.5.0",
+    "svelte": "^5.0.0",
+    "svelte-i18n": "^4.0.1",
+    "vite": "^5.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@sveltejs/adapter-auto": "^3.0.0",
+    "@sveltejs/adapter-static": "^3.0.0",
+    "typescript": "^5.5.4"
+  }
+}
