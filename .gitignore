@@ -34,3 +34,6 @@ packages/api/prisma/migrations/
 # SvelteKit
 packages/ui/.svelte-kit/
 packages/ui/build/
+
+# Docker artifacts
+*-image.tar

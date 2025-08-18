@@ -89,33 +89,17 @@ dev:
 
 # API-specific targets (using make instead of docker compose)
 update.api.lock:
-	docker run --rm -v $(PWD)/packages/api:/app -w /app node:20 npm install --legacy-peer-deps
-	@echo "🧹 Cleaning up any local traces..."
-	@if [ -d "packages/api/node_modules" ]; then \
-		echo "❌ Removing local node_modules from packages/api"; \
-		rm -rf packages/api/node_modules; \
-	fi
-	@if [ -f "packages/api/package-lock.json" ]; then \
-		echo "✅ package-lock.json updated successfully"; \
-	else \
-		echo "❌ Failed to update package-lock.json"; \
-		exit 1; \
-	fi
+	docker run --rm -v $(pwd)/packages/api:/app -v /tmp/api-nodemodules:/app/node_modules -w /app node:20 npm install --legacy-peer-deps
+
+update.scheduler.lock:
+	docker run --rm -v $(pwd)/packages/scheduler:/app -v /tmp/scheduler-nodemodules:/app/node_modules -w /app node:20 npm install --legacy-peer-deps
+
+update.workers.lock:
+	docker run --rm -v $(pwd)/packages/workers:/app -v /tmp/workers-nodemodules:/app/node_modules -w /app node:20 npm install --legacy-peer-deps
 
 update.ui.lock:
-	docker run --rm -v $(PWD)/packages/ui:/app -w /app node:20 npm install --legacy-peer-deps
-	@echo "🧹 Cleaning up any local traces..."
-	@if [ -d "packages/ui/node_modules" ]; then \
-		echo "❌ Removing local node_modules from packages/ui"; \
-		rm -rf packages/ui/node_modules; \
-	fi
-	@if [ -f "packages/ui/package-lock.json" ]; then \
-		echo "✅ package-lock.json updated successfully"; \
-	else \
-		echo "❌ Failed to update package-lock.json"; \
-		exit 1; \
-	fi
-
+	docker run --rm -v $(pwd)/packages/ui:/app -v /tmp/ui-nodemodules:/app/node_modules -w /app node:20 npm install --legacy-peer-deps
+	
 # Build targets (local builds for CI artifacts)
 build.api:
 	@echo "🔨 Building API image (production target)..."
