@@ -110,7 +110,8 @@ build.scheduler:
 	docker build -f packages/scheduler/Dockerfile --target production -t assistant-scheduler:latest .
 
 build.workers:
-	docker compose build workers
+	@echo "🔨 Building Workers image (production target)..."
+	docker build -f packages/workers/Dockerfile --target production -t assistant-workers:latest .
 
 build.ui:
 	docker compose build ui
@@ -130,6 +131,10 @@ save.scheduler:
 	@echo "💾 Saving Scheduler image as artifact..."
 	@docker save assistant-scheduler:latest -o scheduler-image.tar
 
+save.workers:
+	@echo "💾 Saving Workers image as artifact..."
+	@docker save assistant-workers:latest -o workers-image.tar
+
 load.api:
 	@echo "📥 Loading API image from artifact..."
 	@docker load -i api-image.tar
@@ -137,6 +142,10 @@ load.api:
 load.scheduler:
 	@echo "📥 Loading Scheduler image from artifact..."
 	@docker load -i scheduler-image.tar
+
+load.workers:
+	@echo "📥 Loading Workers image from artifact..."
+	@docker load -i workers-image.tar
 
 # Build all services
 
@@ -366,7 +375,9 @@ test.unit.scheduler:
 	docker compose run --rm scheduler npm run test:unit
 
 test.unit.workers:
-	docker compose run --rm workers npm run test:unit
+	@echo "🧪 Running Workers unit tests..."
+	docker build -f packages/workers/Dockerfile --target test -t assistant-workers-test:latest .
+	docker run --rm assistant-workers-test:latest
 
 test.unit.ai:
 	docker compose run --rm ai pytest tests/
