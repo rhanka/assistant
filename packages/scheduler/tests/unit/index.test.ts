@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { validateDag, topoOrder, Plan, TaskNode } from './index'
+import { validateDag, topoOrder, Plan, TaskNode } from '../../src/index'
 
 // Mock bullmq module
 vi.mock('bullmq', () => ({

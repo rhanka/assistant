@@ -10,6 +10,7 @@ RUN npm audit --audit-level=high
 
 # Copy source code and configs
 COPY packages/ui/src ./src
+COPY packages/ui/tests ./tests
 COPY packages/ui/svelte.config.js packages/ui/vite.config.ts packages/ui/tsconfig.json ./
 
 # Build stage - generate static assets
