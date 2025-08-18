@@ -3,7 +3,6 @@ description: Security guardrails
 alwaysApply: true
 tags: [security, approvals]
 ---
-
 # SECURITY
 
 ## Core Security Principles
@@ -20,7 +19,7 @@ tags: [security, approvals]
 ### Categories (Complete Scope)
 1) Dependency Vulnerabilities (manifests/packages)
 - Objective: detect vulnerable dependencies early and block builds on Critical/High.
-- Tooling: npm audit (Dockerfile, blocking), Snyk test (CI), optional fallback: safety/pip-audit for Python.
+- Tooling: npm audit (Dockerfile, blocking), Trivy SCA (CI), optional fallback: safety/pip-audit for Python.
 
 2) Authentication & Authorization (functional)
 - Objective: verify access controls and session/token handling.
@@ -28,32 +27,32 @@ tags: [security, approvals]
 
 3) Input Validation & Sanitization (functional)
 - Objective: protect against XSS, CSRF, injections.
-- Tooling: future functional tests (API payloads/UI forms); Snyk Code can detect some patterns.
+- Tooling: future functional tests (API payloads/UI forms); Semgrep for static analysis patterns.
 
 4) Data Protection (functional)
 - Objective: protect secrets, encryption, PII access boundaries.
-- Tooling: future functional tests + static checks.
+- Tooling: future functional tests + Semgrep static checks.
 
 5) API Security (functional)
 - Objective: rate limiting, schema validation, injection resilience.
-- Tooling: future functional tests; Snyk Code for static analysis.
+- Tooling: future functional tests; Semgrep for static analysis.
 
 6) Infrastructure & Container Security
 - Objective: secure images and IaC configs.
-- Tooling: Snyk Container (image), Trivy (image), Snyk IaC (docker-compose, k8s). Falco is production-only.
+- Tooling: Trivy (container images + IaC + SCA), Semgrep (SAST code). Falco is production-only.
 
 ### CI Integration (summary)
 - See `testing.mdc` for the high-level DAG and orchestration order.
 - Build images first (dependency audits in Dockerfiles). Dependency scans in CI should reuse built images or rely on manifests.
-- Run code/deps/IaC scans (Snyk) and container scans (Snyk/Trivy) after build, in parallel with unit tests.
+- Run code/deps/IaC/Container scans (Semgrep SAST + Trivy SCA/IaC/Container) and container scans (Trivy) after build, in parallel with unit tests.
 - P2P/E2E remain governed by testing order in `testing.mdc`.
 
 ### Make Targets (Naming — documentation)
 - Aggregates: `test.security`, `test.security.scan`, `test.security.container`
-- Deps scans per service: `test.security.scan.deps.<service>` (should run after `build.<service>`)
-- Code scan: `test.security.scan.code`
-- IaC scan: `test.security.scan.iac`
-- Container scans: `test.security.container.snyk.<service>`, `.trivy.<service>`, and `.all`
+- Deps scans per service: `test.security.scan.deps.<service>` (Trivy SCA on manifests, should run after `build.<service>`)
+- Code scan: `test.security.scan.code` (Semgrep SAST on source code)
+- IaC scan: `test.security.scan.iac` (Trivy on docker-compose.yml and k8s/)
+- Container scans: `test.security.container.<service>` and `.all` (Trivy on built images)
 - Future functional categories (pentest umbrella): `test.security.pentest`, with possible `auth/input/data/api/infra` sub-targets
 
 ### Vulnerability Management

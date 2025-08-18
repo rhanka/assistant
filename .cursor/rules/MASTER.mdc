@@ -50,7 +50,10 @@ This file consolidates all development rules into a single source of truth for A
 - `make test.unit` - Unit tests (REQUIRED before commit)
 - `make test.integration` - Integration tests
 - `make test.e2e` - E2E tests (Playwright)
-- `make test.security*` - Security tests (REQUIRED before merge)
+- `make test.security.deps.scan.all` - Security dependency scanning (REQUIRED before merge)
+- `make test.security.scan.code` - Semgrep SAST code scanning
+- `make test.security.scan.iac` - Trivy IaC scanning
+- `make test.security.container.all` - Trivy container vulnerability scanning
 - `make test.i18n` - i18n validation
 - `make test.i18n.coverage` - Full i18n coverage
 - `make test.all` - Complete test suite
