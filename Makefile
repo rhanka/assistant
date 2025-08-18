@@ -500,6 +500,13 @@ test.security.scan.deps.ai:
 test.security.scan.deps: test.security.scan.deps.api test.security.scan.deps.ui test.security.scan.deps.workers test.security.scan.deps.scheduler test.security.scan.deps.ai
 	@echo "✅ All SCA scans completed"
 
+# IaC (Infrastructure as Code) - Trivy on docker-compose.yml and k8s/
+test.security.scan.iac:
+	@echo "🔒 Security: Scanning Infrastructure as Code for vulnerabilities (Trivy IaC)"
+	@echo "📋 Scanning docker-compose.yml..."
+	@docker run --rm -v "${PWD}:/src" aquasec/trivy config --severity HIGH,CRITICAL /src/docker-compose.yml
+	@echo "📋 Note: k8s/ directory not yet present - will be added when Kubernetes configs are implemented"
+
 # E2E tests
 test.e2e.ui:
 	docker compose run --rm ui npm run test:e2e
