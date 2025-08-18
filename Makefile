@@ -122,7 +122,8 @@ build.api:
 	docker build -f packages/api/Dockerfile --target production -t assistant-api:latest .
 
 build.scheduler:
-	docker compose build scheduler
+	@echo "🔨 Building Scheduler image (production target)..."
+	docker build -f packages/scheduler/Dockerfile --target production -t assistant-scheduler:latest .
 
 build.workers:
 	docker compose build workers
@@ -141,9 +142,17 @@ save.api:
 	@echo "💾 Saving API image as artifact..."
 	@docker save assistant-api:latest -o api-image.tar
 
+save.scheduler:
+	@echo "💾 Saving Scheduler image as artifact..."
+	@docker save assistant-scheduler:latest -o scheduler-image.tar
+
 load.api:
 	@echo "📥 Loading API image from artifact..."
 	@docker load -i api-image.tar
+
+load.scheduler:
+	@echo "📥 Loading Scheduler image from artifact..."
+	@docker load -i scheduler-image.tar
 
 # Build all services
 
