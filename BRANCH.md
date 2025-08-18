@@ -56,7 +56,7 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [x] docs(security): add security test exit criteria to security.mdc - [current commit]
 - [x] ci(build-workers): add build-workers job with production target and artifacts
 - [x] ci(build-ui): add build-ui job with production target and artifacts
-- [ ] ci(build-ai): add build-ai job with production target and artifacts
+- [x] ci(build-ai): add build-ai job with production target and artifacts
 - [ ] ci(unit): update unit test dependencies (no logic change inside tests)
   - [ ] ci(unit-api): remove dependency on build-api (runs in parallel)
   - [ ] ci(unit-scheduler): add dependency on build-scheduler
@@ -81,20 +81,20 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
   - [ ] makefile(save-scheduler): add save.scheduler target
   - [x] makefile(save-workers): add save.workers target
   - [x] makefile(save-ui): add save.ui target
-  - [ ] makefile(save-ai): add save.ai target
+  - [x] makefile(save-ai): add save.ai target
   - [ ] makefile(load-scheduler): add load.scheduler target
   - [x] makefile(load-workers): add load.workers target
   - [x] makefile(load-ui): add load.ui target
-  - [ ] makefile(load-ai): add load.ai target
+  - [x] makefile(load-ai): add load.ai target
 - [ ] makefile: update build targets to target production for all services
   - [ ] makefile(build-scheduler): update build.scheduler to target production
   - [x] makefile(build-workers): update build.workers to target production
   - [x] makefile(build-ui): update build.ui to target production
-  - [ ] makefile(build-ai): update build.ai to target production
+  - [x] makefile(build.ai): update build.ai to target production
 - [ ] docs(readme): reflect new build/push/security commands
 - [ ] ci: run `make check` and fix guide consistency
 
 ## Status
-- Progress: 33/45 tasks completed
-- Current: UI service CI workflow implemented and working with artifacts
-- Next: Implement CI build jobs for remaining services (ai)
+- Progress: 37/45 tasks completed
+- Current: AI service CI workflow implemented with dependency on build-ai
+- Next: Update unit test dependencies and implement security scan jobs
