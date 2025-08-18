@@ -37,10 +37,7 @@ export GITHUB_TOKEN ?= your-github-token-here
 export GITHUB_OWNER ?= your-org-or-user
 export GITHUB_REPO ?= your-repo
 
-# GHCR (GitHub Container Registry) configuration
-export GHCR_OWNER ?= rhanka
-export GHCR_PROJECT ?= assistant
-export GHCR_REGISTRY ?= ghcr.io/$(GHCR_OWNER)/$(GHCR_PROJECT)
+# Docker image configuration (for local builds and CI artifacts)
 
 # Interactive mode control (default: non-interactive for CI)
 export INTERACTIVE ?= false
@@ -119,76 +116,36 @@ update.ui.lock:
 		exit 1; \
 	fi
 
-# Build targets with GHCR tagging
+# Build targets (local builds for CI artifacts)
 build.api:
-	docker compose build api
-	@echo "🏷️  Tagging API image for GHCR..."
-	@docker tag assistant-api:latest $(GHCR_REGISTRY)/api:$$(git rev-parse --short HEAD)
-	@docker tag assistant-api:latest $(GHCR_REGISTRY)/api:latest
+	@echo "🔨 Building API image (production target)..."
+	docker build -f packages/api/Dockerfile --target production -t assistant-api:latest .
 
 build.scheduler:
 	docker compose build scheduler
-	@echo "🏷️  Tagging Scheduler image for GHCR..."
-	@docker tag assistant-scheduler:latest $(GHCR_REGISTRY)/scheduler:$$(git rev-parse --short HEAD)
-	@docker tag assistant-scheduler:latest $(GHCR_REGISTRY)/scheduler:latest
 
 build.workers:
 	docker compose build workers
-	@echo "🏷️  Tagging Workers image for GHCR..."
-	@docker tag assistant-workers:latest $(GHCR_REGISTRY)/workers:$$(git rev-parse --short HEAD)
-	@docker tag assistant-workers:latest $(GHCR_REGISTRY)/workers:latest
 
 build.ui:
 	docker compose build ui
-	@echo "🏷️  Tagging UI image for GHCR..."
-	@docker tag assistant-ui:latest $(GHCR_REGISTRY)/ui:$$(git rev-parse --short HEAD)
-	@docker tag assistant-ui:latest $(GHCR_REGISTRY)/ui:latest
 
 build.ai:
 	docker compose build ai
-	@echo "🏷️  Tagging AI image for GHCR..."
-	@docker tag assistant-ai:latest $(GHCR_REGISTRY)/ai:$$(git rev-parse --short HEAD)
-	@docker tag assistant-ai:latest $(GHCR_REGISTRY)/ai:latest
 
 # Build all services
 build.all: build.api build.scheduler build.workers build.ui build.ai
 
-# Push targets to GHCR
-push.api:
-	@echo "🚀 Pushing API image to GHCR..."
-	@docker push $(GHCR_REGISTRY)/api:$$(git rev-parse --short HEAD)
-	@docker push $(GHCR_REGISTRY)/api:latest
+# Save/load targets for CI artifacts
+save.api:
+	@echo "💾 Saving API image as artifact..."
+	@docker save assistant-api:latest -o api-image.tar
 
-push.scheduler:
-	@echo "🚀 Pushing Scheduler image to GHCR..."
-	@docker push $(GHCR_REGISTRY)/scheduler:$$(git rev-parse --short HEAD)
-	@docker push $(GHCR_REGISTRY)/scheduler:latest
+load.api:
+	@echo "📥 Loading API image from artifact..."
+	@docker load -i api-image.tar
 
-push.workers:
-	@echo "🚀 Pushing Workers image to GHCR..."
-	@docker push $(GHCR_REGISTRY)/workers:$$(git rev-parse --short HEAD)
-	@docker push $(GHCR_REGISTRY)/workers:latest
-
-push.ui:
-	@echo "🚀 Pushing UI image to GHCR..."
-	@docker push $(GHCR_REGISTRY)/ui:$$(git rev-parse --short HEAD)
-	@docker push $(GHCR_REGISTRY)/ui:latest
-
-push.ai:
-	@echo "🚀 Pushing AI image to GHCR..."
-	@docker push $(GHCR_REGISTRY)/ai:$$(git rev-parse --short HEAD)
-	@docker push $(GHCR_REGISTRY)/ai:latest
-
-# Push all services
-push.all: push.api push.scheduler push.workers push.ui push.ai
-
-# Build and push in one command
-build.push.api: build.api push.api
-build.push.scheduler: build.scheduler push.scheduler
-build.push.workers: build.workers push.workers
-build.push.ui: build.ui push.ui
-build.push.ai: build.ai push.ai
-build.push.all: build.all push.all
+# Build all services
 
 up.api:
 	docker compose up -d api
