@@ -144,7 +144,7 @@ jobs:
       - name: Setup Docker
         uses: docker/setup-buildx-action@v3
       - name: Start services
-        run: make up
+        run: make up.api
       - name: Test API Unit
         run: make test.unit.api
 
@@ -157,7 +157,7 @@ jobs:
       - name: Setup Docker
         uses: docker/setup-buildx-action@v3
       - name: Start services
-        run: make up
+        run: make up.scheduler
       - name: Test Scheduler Unit
         run: make test.unit.scheduler
 
@@ -170,7 +170,7 @@ jobs:
       - name: Setup Docker
         uses: docker/setup-buildx-action@v3
       - name: Start services
-        run: make up
+        run: make up.workers
       - name: Test Workers Unit
         run: make test.unit.workers
 
@@ -183,7 +183,7 @@ jobs:
       - name: Setup Docker
         uses: docker/setup-buildx-action@v3
       - name: Start services
-        run: make up
+        run: make up.ui
       - name: Test UI Unit
         run: make test.unit.ui
 
@@ -203,7 +203,7 @@ jobs:
       - name: Load AI image from artifact
         run: make load.ai
       - name: Start services
-        run: make up
+        run: make up.ai
       - name: Test AI Unit
         run: make test.unit.ai
 
@@ -217,7 +217,7 @@ jobs:
       - name: Setup Docker
         uses: docker/setup-buildx-action@v3
       - name: Start services
-        run: make up
+        run: make up.scheduler up.api
       - name: Test Scheduler-API Integration
         run: make test.integration.scheduler-api
 
@@ -230,7 +230,7 @@ jobs:
       - name: Setup Docker
         uses: docker/setup-buildx-action@v3
       - name: Start services
-        run: make up
+        run: make up.scheduler up.workers up.api
       - name: Test Scheduler-Workers Integration
         run: make test.integration.scheduler-workers-api
 
@@ -243,7 +243,7 @@ jobs:
       - name: Setup Docker
         uses: docker/setup-buildx-action@v3
       - name: Start services
-        run: make up
+        run: make up.workers up.api
       - name: Test Workers-API Integration
         run: make test.integration.workers-api
 
@@ -256,7 +256,7 @@ jobs:
       - name: Setup Docker
         uses: docker/setup-buildx-action@v3
       - name: Start services
-        run: make up
+        run: make up.ui up.api
       - name: Test UI-API E2E
         run: make test.e2e.ui-api
 
@@ -277,7 +277,7 @@ jobs:
       - name: Load AI image from artifact
         run: make load.ai
       - name: Start services
-        run: make up
+        run: make up.scheduler up.ai
       - name: Test Scheduler-AI Integration
         run: make test.integration.scheduler-ai
 
@@ -297,6 +297,6 @@ jobs:
       - name: Load AI image from artifact
         run: make load.ai
       - name: Start services
-        run: make up
+        run: make up.workers up.ai
       - name: Test Workers-AI Integration
         run: make test.integration.workers-ai
