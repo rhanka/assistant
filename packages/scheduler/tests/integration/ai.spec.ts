@@ -26,4 +26,18 @@ describe('Scheduler-AI Integration (P2P)', () => {
     // 3. Verify dependency resolution
     expect(true).toBe(true) // Placeholder
   })
+
+  it('should validate AI service HTTP communication', async () => {
+    // TODO: REAL INTEGRATION TEST TO IMPLEMENT
+    // This test will verify actual HTTP communication between scheduler and AI service
+    // 1. Start both services
+    // 2. Scheduler sends AI task via HTTP
+    // 3. AI service processes and responds
+    // 4. Verify task completion and response
+    
+    // CURRENT STATUS: Placeholder - no real integration yet
+    // INTEGRATION EXISTS: No - this is a new test to implement
+    // POTENTIAL TESTS: HTTP task submission, AI processing, result retrieval
+    expect(true).toBe(true) // Placeholder until real integration is implemented
+  })
 })

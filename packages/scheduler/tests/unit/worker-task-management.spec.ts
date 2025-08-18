@@ -8,14 +8,14 @@ describe('Scheduler-Workers Integration', () => {
 
   it('should be able to import scheduler modules', async () => {
     // Test that we can import the main scheduler functionality
-    const { validateDag, topoOrder } = await import('../../../src/index')
+    const { validateDag, topoOrder } = await import('../../src/index')
     expect(typeof validateDag).toBe('function')
     expect(typeof topoOrder).toBe('function')
   })
 
   it('should validate basic DAG operations for worker tasks', async () => {
     // Test basic DAG validation functionality for worker-related tasks
-    const { validateDag } = await import('../../../src/index')
+    const { validateDag } = await import('../../src/index')
     
     const workerTasks = [
       { id: 'worker-task-1' },
@@ -29,7 +29,7 @@ describe('Scheduler-Workers Integration', () => {
 
   it('should handle worker task dependencies correctly', async () => {
     // Test that worker task dependencies are properly managed
-    const { topoOrder } = await import('../../../src/index')
+    const { topoOrder } = await import('../../src/index')
     
     const workerTasks = [
       { id: 'worker-task-1' },

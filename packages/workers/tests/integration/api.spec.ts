@@ -27,4 +27,19 @@ describe('Workers-API Integration (P2P)', () => {
     // 3. Verify error handling
     expect(true).toBe(true) // Placeholder
   })
+
+  it('should validate job queue processing workflow', async () => {
+    // TODO: REAL INTEGRATION TEST TO IMPLEMENT
+    // This test will verify actual job processing workflow between workers and API
+    // 1. Start both services
+    // 2. API creates job in Redis queue
+    // 3. Worker picks up and processes job
+    // 4. Worker updates job status in API
+    // 5. Verify complete workflow
+    
+    // CURRENT STATUS: Placeholder - no real integration yet
+    // INTEGRATION EXISTS: No - this is a new test to implement
+    // POTENTIAL TESTS: Queue operations, job processing, status updates, error handling
+    expect(true).toBe(true) // Placeholder until real integration is implemented
+  })
 })
