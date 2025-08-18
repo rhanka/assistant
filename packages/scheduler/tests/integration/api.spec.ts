@@ -30,7 +30,7 @@ describe('Scheduler-API Integration (P2P)', () => {
 
   it('should validate API endpoint connectivity', async () => {
     // REAL INTEGRATION TEST - Tests actual HTTP communication
-    const apiUrl = process.env.API_URL || 'http://localhost:3001';
+    const apiUrl = process.env.API_URL || 'http://api:3001';
     
     try {
       // Make real HTTP request to API health endpoint
