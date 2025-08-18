@@ -391,15 +391,18 @@ test.unit:
 
 # Package-specific unit tests
 test.unit.api:
+	@echo "🧪 Running API unit tests..."
 	docker build --target test -t api-test -f packages/api/Dockerfile .
-	docker run --rm --network assistant_default api-test
+	docker run --rm --network assistant_default api-test npm run test:unit
 
 test.unit.ui:
 	docker build --target test -t ui-test -f packages/ui/Dockerfile .
 	docker run --rm --network assistant_default ui-test
 
 test.unit.scheduler:
-	docker compose run --rm scheduler npm run test:unit
+	@echo "🧪 Running Scheduler unit tests..."
+	docker build -f packages/scheduler/Dockerfile --target test -t assistant-scheduler-test:latest .
+	docker run --rm assistant-scheduler-test:latest
 
 test.unit.workers:
 	@echo "🧪 Running Workers unit tests..."

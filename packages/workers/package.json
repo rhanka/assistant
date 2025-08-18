@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:unit": "vitest run tests/unit/",
     "test:integration": "vitest run tests/integration/",
-    "test:integration:ai": "vitest run tests/integration/ai/"
+    "test:integration:ai": "vitest run tests/integration/ai.spec.ts",
+    "test:integration:api": "vitest run tests/integration/api.spec.ts"
   },
   "dependencies": {
     "bullmq": "^5.7.0"

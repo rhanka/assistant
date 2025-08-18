@@ -9,7 +9,9 @@
     "preview": "vite preview --port $UI_PORT",
     "test": "npm run test:unit",
     "test:e2e": "NODE_ENV=test:e2e playwright test",
-    "test:unit": "vitest run"
+    "test:unit": "vitest run tests/unit/",
+    "test:integration": "vitest run tests/integration/",
+    "test:integration:api": "vitest run tests/integration/api.spec.ts"
   },
   "dependencies": {
     "@sveltejs/kit": "^2.5.0",
