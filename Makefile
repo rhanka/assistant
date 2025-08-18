@@ -507,6 +507,31 @@ test.security.scan.iac:
 	@docker run --rm -v "${PWD}:/src" aquasec/trivy config --severity HIGH,CRITICAL /src/docker-compose.yml
 	@echo "📋 Note: k8s/ directory not yet present - will be added when Kubernetes configs are implemented"
 
+# Container scanning - Trivy on built images per service
+test.security.container.api:
+	@echo "🔒 Security: Scanning API container for vulnerabilities (Trivy Container)"
+	@docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL assistant-api:latest
+
+test.security.container.ui:
+	@echo "🔒 Security: Scanning UI container for vulnerabilities (Trivy Container)"
+	@docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL assistant-ui:latest
+
+test.security.container.workers:
+	@echo "🔒 Security: Scanning Workers container for vulnerabilities (Trivy Container)"
+	@docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL assistant-workers:latest
+
+test.security.container.scheduler:
+	@echo "🔒 Security: Scanning Scheduler container for vulnerabilities (Trivy Container)"
+	@docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL assistant-scheduler:latest
+
+test.security.container.ai:
+	@echo "🔒 Security: Scanning AI container for vulnerabilities (Trivy Container)"
+	@docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL assistant-ai:latest
+
+# Aggregate container scan for all services
+test.security.container: test.security.container.api test.security.container.ui test.security.container.workers test.security.container.scheduler test.security.container.ai
+	@echo "✅ All container scans completed"
+
 # E2E tests
 test.e2e.ui:
 	docker compose run --rm ui npm run test:e2e
