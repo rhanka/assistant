@@ -77,6 +77,25 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
   - [ ] ci(integration-ui-api): update to depend on test-ui-unit + test-api-unit
   - [ ] ci(integration-scheduler-ai): update to depend on test-scheduler-unit + test-ai-unit
   - [ ] ci(integration-workers-ai): update to depend on test-workers-unit + test-ai-unit
+- [ ] ci(integration): fix service deployment strategy for integration tests
+  - [ ] ci(integration): replace `make up` with `make up.<service>` to start required services
+  - [ ] ci(integration): ensure services are running before executing integration tests
+- [ ] docs(integration): clarify integration test strategy (mock vs real services)
+- [ ] test(reclassify): move mock tests from integration to unit directories
+  - [ ] test(reclassify-scheduler): move scheduler mock tests to unit
+  - [ ] test(reclassify-workers): move workers mock tests to unit
+- [ ] test(scripts): add missing integration test scripts to package.json
+  - [ ] test(scripts-api): add test:integration to API package.json
+  - [ ] test(scripts-ui): add test:integration to UI package.json
+- [ ] make(integration): update Make targets to use up.<service>/down.<service>
+  - [ ] make(integration): update all integration test targets
+- [ ] test(integration): implement real P2P integration tests
+  - [ ] test(integration-scheduler-api): real scheduler-API communication
+  - [ ] test(integration-scheduler-workers): real scheduler-workers-API flow
+  - [ ] test(integration-workers-api): real workers-API communication
+  - [ ] test(integration-ui-api): real UI-API communication
+  - [ ] test(integration-scheduler-ai): real scheduler-AI communication
+  - [ ] test(integration-workers-ai): real workers-AI communication
 - [ ] makefile: add save/load targets for all services
   - [ ] makefile(save-scheduler): add save.scheduler target
   - [x] makefile(save-workers): add save.workers target

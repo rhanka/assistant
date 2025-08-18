@@ -202,6 +202,15 @@ down.ai:
 
 rebuild.ai: build.ai up.ai
 
+# UI-specific targets
+up.ui:
+	docker compose up -d ui
+
+down.ui:
+	docker compose stop ui
+
+rebuild.ui: build.ui up.ui
+
 # Services (Docker-based development)
 ui:
 	docker compose exec ui npm run dev
