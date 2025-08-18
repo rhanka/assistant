@@ -475,6 +475,31 @@ test.security.scan.code.ai:
 test.security.scan.code: test.security.scan.code.api test.security.scan.code.ui test.security.scan.code.workers test.security.scan.code.scheduler test.security.scan.code.ai
 	@echo "✅ All SAST scans completed"
 
+# SCA (Software Composition Analysis) - Trivy on manifests/dependencies per service
+test.security.scan.deps.api:
+	@echo "🔒 Security: Scanning API dependencies for vulnerabilities (Trivy SCA)"
+	@docker run --rm -v "${PWD}/packages/api:/src" aquasec/trivy fs --security-checks vuln --severity HIGH,CRITICAL /src
+
+test.security.scan.deps.ui:
+	@echo "🔒 Security: Scanning UI dependencies for vulnerabilities (Trivy SCA)"
+	@docker run --rm -v "${PWD}/packages/ui:/src" aquasec/trivy fs --security-checks vuln --severity HIGH,CRITICAL /src
+
+test.security.scan.deps.workers:
+	@echo "🔒 Security: Scanning Workers dependencies for vulnerabilities (Trivy SCA)"
+	@docker run --rm -v "${PWD}/packages/workers:/src" aquasec/trivy fs --security-checks vuln --severity HIGH,CRITICAL /src
+
+test.security.scan.deps.scheduler:
+	@echo "🔒 Security: Scanning Scheduler dependencies for vulnerabilities (Trivy SCA)"
+	@docker run --rm -v "${PWD}/packages/scheduler:/src" aquasec/trivy fs --security-checks vuln --severity HIGH,CRITICAL /src
+
+test.security.scan.deps.ai:
+	@echo "🔒 Security: Scanning AI dependencies for vulnerabilities (Trivy SCA)"
+	@docker run --rm -v "${PWD}/packages/ai:/src" aquasec/trivy fs --security-checks vuln --severity HIGH,CRITICAL /src
+
+# Aggregate SCA scan for all services
+test.security.scan.deps: test.security.scan.deps.api test.security.scan.deps.ui test.security.scan.deps.workers test.security.scan.deps.scheduler test.security.scan.deps.ai
+	@echo "✅ All SCA scans completed"
+
 # E2E tests
 test.e2e.ui:
 	docker compose run --rm ui npm run test:e2e

@@ -36,7 +36,7 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [x] build(make): improve GHCR config with env vars (GHCR_OWNER, GHCR_PROJECT, GHCR_REGISTRY)
 - [x] build(make): add security targets — `test.security.scan.*`, `test.security.container.*`
 - [x] build(security): implement SAST scanning (Semgrep on source code) - 0664279
-- [ ] build(security): implement SCA scanning (Trivy on manifests/dependencies)
+- [x] build(security): implement SCA scanning (Trivy on manifests/dependencies) - cb211d4
 - [ ] build(security): implement IaC scanning (Trivy on docker-compose.yml and k8s/)
 - [ ] build(security): implement container scanning (Trivy on built images)
 - [ ] build(docker-api): gate deps with `npm audit --audit-level=high` (base + prod)
@@ -52,6 +52,6 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [ ] ci: run `make check` and fix guide consistency
 
 ## Status
-- Progress: 5/22 tasks completed
-- Current: SAST scanning implemented with per-service targets
-- Next: Implement SCA scanning (Trivy on manifests/dependencies)
+- Progress: 6/22 tasks completed
+- Current: SCA scanning implemented with per-service targets
+- Next: Implement IaC scanning (Trivy on docker-compose.yml and k8s/)
