@@ -4,7 +4,7 @@ COPY packages/ui/package.json packages/ui/package-lock.json ./
 COPY packages/config/tsconfig.base.json ./
 
 # Install all dependencies (including devDependencies for testing)
-RUN npm ci --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 # Security: Audit dependencies for HIGH/CRITICAL vulnerabilities
 RUN npm audit --audit-level=high
 
@@ -12,13 +12,13 @@ RUN npm audit --audit-level=high
 COPY packages/ui/src ./src
 COPY packages/ui/svelte.config.js packages/ui/vite.config.ts packages/ui/tsconfig.json ./
 
-# Build stage - generate static assets (temporarily disabled due to syntax issues)
+# Build stage - generate static assets
 FROM base AS build
 # Exclude test files from build
 RUN find src -name "*.test.ts" -delete && \
     find src -name "*.spec.ts" -delete
-# Temporarily create empty dist directory instead of building
-RUN mkdir -p dist && echo "<html><body>UI Build Temporarily Disabled</body></html>" > dist/index.html
+# Build the SvelteKit application
+RUN npm run build
 
 # Test stage - run unit tests
 FROM base AS test
@@ -30,10 +30,10 @@ FROM nginx:alpine AS production
 # Security: Update nginx to latest patch
 RUN apk update && apk upgrade
 
-# Copy built static assets from build stage
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copy built static assets from build stage (SvelteKit 2 uses build/ directory)
+COPY --from=build /app/build /usr/share/nginx/html
 
-# Copy custom nginx config (we'll create this)
+# Copy custom nginx config
 COPY packages/ui/nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80 for HTTP
