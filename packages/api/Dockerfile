@@ -12,6 +12,7 @@ RUN npm audit --audit-level=high
 COPY packages/api/prisma ./prisma
 RUN npx prisma generate
 COPY packages/api/src ./src
+COPY packages/api/tests ./tests
 
 # Build stage (production only)
 FROM base AS build

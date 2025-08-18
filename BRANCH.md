@@ -57,12 +57,25 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [x] ci(build-workers): add build-workers job with production target and artifacts
 - [x] ci(build-ui): add build-ui job with production target and artifacts
 - [x] ci(build-ai): add build-ai job with production target and artifacts
-- [ ] ci(unit): update unit test dependencies (no logic change inside tests)
-  - [ ] ci(unit-api): remove dependency on build-api (runs in parallel)
-  - [ ] ci(unit-scheduler): add dependency on build-scheduler
-  - [ ] ci(unit-workers): add dependency on build-workers
-  - [ ] ci(unit-ui): add dependency on build-ui
-  - [ ] ci(unit-ai): add dependency on build-ai
+- [x] ci(unit): update unit test dependencies (no logic change inside tests)
+  - [x] ci(unit-api): remove dependency on build-api (runs in parallel)
+  - [x] ci(unit-scheduler): remove dependency on build-scheduler (runs in parallel)
+  - [x] ci(unit-workers): remove dependency on build-workers (runs in parallel)
+  - [x] ci(unit-ui): remove dependency on build-ui (runs in parallel)
+  - [x] ci(unit-ai): add dependency on build-ai (uses same image)
+- [ ] test(unit): fix unit test regression - ensure tests use correct Docker targets
+  - [x] test(unit-scheduler): fix test.unit.scheduler to use Dockerfile test target
+  - [x] test(unit-api): fix test.unit.api to use Dockerfile test target
+  - [x] test(unit-ui): fix test.unit.ui to use Dockerfile test target
+  - [x] test(unit-workers): fix test.unit.workers to use Dockerfile test target
+  - [x] test(unit-ai): test.unit.ai already correct (uses docker compose)
+- [x] test(api-harmonization): harmonize API test structure with other services
+  - [x] test(api-structure): create tests/unit/ and tests/integration/ directories
+  - [x] test(api-move): move tests from src/ to dedicated directories
+  - [x] test(api-config): remove vitest.config.ts (use default config)
+  - [x] test(api-dockerfile): update Dockerfile to copy tests/ directory
+  - [x] test(api-package): add test:integration script to package.json
+  - [x] test(api-p2p): create P2P integration tests for API ↔ Scheduler and API ↔ Workers
 - [ ] ci(security): add security scan jobs per service (parallel with unit tests)
   - [ ] ci(security-api): add security job for API (SAST + SCA + Container)
   - [ ] ci(security-scheduler): add security job for Scheduler (SAST + SCA + Container)
@@ -84,15 +97,15 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [ ] test(reclassify): move mock tests from integration to unit directories
   - [ ] test(reclassify-scheduler): move scheduler mock tests to unit
   - [ ] test(reclassify-workers): move workers mock tests to unit
-- [ ] test(scripts): add missing integration test scripts to package.json
-  - [ ] test(scripts-api): add test:integration to API package.json
+- [x] test(scripts): add missing integration test scripts to package.json
+  - [x] test(scripts-api): add test:integration to API package.json
   - [ ] test(scripts-ui): add test:integration to UI package.json
 - [ ] make(integration): update Make targets to use up.<service>/down.<service>
   - [ ] make(integration): update all integration test targets
 - [ ] test(integration): implement real P2P integration tests
-  - [ ] test(integration-scheduler-api): real scheduler-API communication
+  - [x] test(integration-scheduler-api): real scheduler-API communication
   - [ ] test(integration-scheduler-workers): real scheduler-workers-API flow
-  - [ ] test(integration-workers-api): real workers-API communication
+  - [x] test(integration-workers-api): real workers-API communication
   - [ ] test(integration-ui-api): real UI-API communication
   - [ ] test(integration-scheduler-ai): real scheduler-AI communication
   - [ ] test(integration-workers-ai): real workers-AI communication
@@ -114,6 +127,6 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [ ] ci: run `make check` and fix guide consistency
 
 ## Status
-- Progress: 37/45 tasks completed
-- Current: AI service CI workflow implemented with dependency on build-ai
-- Next: Update unit test dependencies and implement security scan jobs
+- Progress: 44/51 tasks completed
+- Current: API test structure harmonized with other services
+- Next: Update UI package.json scripts and implement security scan jobs
