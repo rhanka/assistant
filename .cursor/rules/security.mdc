@@ -47,13 +47,43 @@ tags: [security, approvals]
 - Run code/deps/IaC/Container scans (Semgrep SAST + Trivy SCA/IaC/Container) and container scans (Trivy) after build, in parallel with unit tests.
 - P2P/E2E remain governed by testing order in `testing.mdc`.
 
+### Security Test Exit Criteria
+**All security tests MUST fail (exit with error code) if vulnerabilities are detected:**
+
+#### SAST (Semgrep) - `test.security.scan.code`
+- **Exit Code**: 1 (error) if ANY findings are detected
+- **Severity**: All levels (INFO, WARNING, ERROR) trigger failure
+- **Rationale**: Code quality and security issues must be addressed before merge
+
+#### SCA (Trivy) - `test.security.scan.deps.<service>`
+- **Exit Code**: 1 (error) if HIGH or CRITICAL vulnerabilities are detected
+- **Severity**: HIGH and CRITICAL trigger failure, MEDIUM and LOW are warnings
+- **Rationale**: Critical/High dependency vulnerabilities block production deployment
+
+#### IaC (Trivy) - `test.security.scan.iac`
+- **Exit Code**: 1 (error) if HIGH or CRITICAL misconfigurations are detected
+- **Severity**: HIGH and CRITICAL trigger failure, MEDIUM and LOW are warnings
+- **Rationale**: Infrastructure misconfigurations can create security gaps
+
+#### Container (Trivy) - `test.security.container.<service>`
+- **Exit Code**: 1 (error) if HIGH or CRITICAL vulnerabilities are detected
+- **Severity**: HIGH and CRITICAL trigger failure, MEDIUM and LOW are warnings
+- **Rationale**: Container vulnerabilities can be exploited in production
+
+#### Dockerfile Dependency Gating
+- **Build Failure**: Docker builds fail if dependency audits detect HIGH/CRITICAL vulnerabilities
+  - **Node.js services**: `npm audit --audit-level=high` in `make build.<service>` (api, scheduler, workers, ui)
+  - **Python services**: `pip-audit --strict` in `make build.<service>` (ai)
+- **Rationale**: Prevents vulnerable images from being created and stored as artifacts
+
 ### Make Targets (Naming — documentation)
-- Aggregates: `test.security`, `test.security.scan`, `test.security.container`
-- Deps scans per service: `test.security.scan.deps.<service>` (Trivy SCA on manifests, should run after `build.<service>`)
-- Code scan: `test.security.scan.code` (Semgrep SAST on source code)
-- IaC scan: `test.security.scan.iac` (Trivy on docker-compose.yml and k8s/)
-- Container scans: `test.security.container.<service>` and `.all` (Trivy on built images)
-- Future functional categories (pentest umbrella): `test.security.pentest`, with possible `auth/input/data/api/infra` sub-targets
+- **Docker dependency gating**: `build.<service>` (api, scheduler, workers, ui, ai) - blocks on HIGH/CRITICAL vulns
+- **Aggregates**: `test.security`, `test.security.scan`, `test.security.container`
+- **Deps scans per service**: `test.security.scan.deps.<service>` (Trivy SCA on manifests, should run after `build.<service>`)
+- **Code scan**: `test.security.scan.code` (Semgrep SAST on source code)
+- **IaC scan**: `test.security.scan.iac` (Trivy on docker-compose.yml and k8s/)
+- **Container scans**: `test.security.container.<service>` and `.all` (Trivy on built images)
+- **Future functional categories** (pentest umbrella): `test.security.pentest`, with possible `auth/input/data/api/infra` sub-targets
 
 ### Vulnerability Management
 - Identify → Assess → Mitigate → Track (`TODO.md`) → Approvals for exceptions (⚠).
