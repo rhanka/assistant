@@ -27,6 +27,8 @@ This document defines the testing strategy for the assistant project, ensuring a
   - Error handling in distributed scenarios
 - **Environment**: Multiple real services running simultaneously
 - **Service deployment**: Use `make up.<service>` to start required services
+- **File structure**: One file per service pair in `/tests/integration/<service>.spec.ts`
+- **Naming convention**: `packages/<service1>/tests/integration/<service2>.spec.ts` for Service1 ↔ Service2
 - **Execution**: Via `make test.integration.<component1>-<component2>`
 
 ### 3. End-to-End Tests
