@@ -300,3 +300,124 @@ jobs:
         run: make up.workers up.ai
       - name: Test Workers-AI Integration
         run: make test.integration.workers-ai
+
+  # Security scans per service (SAST + SCA + Container)
+  security-api:
+    runs-on: ubuntu-latest
+    needs: [changes, build-api]
+    if: needs.changes.outputs.api == 'true' || needs.changes.outputs.global == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Download API image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: api-image
+          path: .
+      - name: Load API image from artifact
+        run: make load.api
+      - name: SAST (code)
+        run: make test.security.scan.code.api
+      - name: SCA (deps)
+        run: make test.security.scan.deps.api
+      - name: Container scan
+        run: make test.security.container.api
+
+  security-scheduler:
+    runs-on: ubuntu-latest
+    needs: [changes, build-scheduler]
+    if: needs.changes.outputs.scheduler == 'true' || needs.changes.outputs.global == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Download Scheduler image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: scheduler-image
+          path: .
+      - name: Load Scheduler image from artifact
+        run: make load.scheduler
+      - name: SAST (code)
+        run: make test.security.scan.code.scheduler
+      - name: SCA (deps)
+        run: make test.security.scan.deps.scheduler
+      - name: Container scan
+        run: make test.security.container.scheduler
+
+  security-workers:
+    runs-on: ubuntu-latest
+    needs: [changes, build-workers]
+    if: needs.changes.outputs.workers == 'true' || needs.changes.outputs.global == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Download Workers image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: workers-image
+          path: .
+      - name: Load Workers image from artifact
+        run: make load.workers
+      - name: SAST (code)
+        run: make test.security.scan.code.workers
+      - name: SCA (deps)
+        run: make test.security.scan.deps.workers
+      - name: Container scan
+        run: make test.security.container.workers
+
+  security-ui:
+    runs-on: ubuntu-latest
+    needs: [changes, build-ui]
+    if: needs.changes.outputs.ui == 'true' || needs.changes.outputs.global == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Download UI image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ui-image
+          path: .
+      - name: Load UI image from artifact
+        run: make load.ui
+      - name: SAST (code)
+        run: make test.security.scan.code.ui
+      - name: SCA (deps)
+        run: make test.security.scan.deps.ui
+      - name: Container scan
+        run: make test.security.container.ui
+
+  security-ai:
+    runs-on: ubuntu-latest
+    needs: [changes, build-ai]
+    if: needs.changes.outputs.ai == 'true' || needs.changes.outputs.global == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Download AI image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ai-image
+          path: .
+      - name: Load AI image from artifact
+        run: make load.ai
+      - name: SAST (code)
+        run: make test.security.scan.code.ai
+      - name: SCA (deps)
+        run: make test.security.scan.deps.ai
+      - name: Container scan
+        run: make test.security.container.ai
+
+  # Global IaC security scan
+  security-global:
+    runs-on: ubuntu-latest
+    needs: [changes]
+    if: needs.changes.outputs.global == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - name: IaC scan
+        run: make test.security.scan.iac
