@@ -37,9 +37,9 @@ This document defines the testing strategy for the assistant project, ensuring a
 
 2) In parallel after build
 - Unit tests per service (`make test.unit.*`), unchanged
-- Security scans (Snyk/Trivy in parallel)
-  - Snyk Code (source), Snyk Deps (manifests), Snyk IaC (compose/k8s)
-  - Snyk Container + Trivy Image on built images
+- Security scans (Semgrep + Trivy in parallel)
+  - Semgrep SAST (source code), Trivy SCA (manifests), Trivy IaC (compose/k8s)
+  - Trivy Container on built images
 
 3) After unit tests of involved services
 - Run P2P integration tests (`make test.integration.*`)
@@ -50,7 +50,7 @@ This document defines the testing strategy for the assistant project, ensuring a
 ### High-Level DAG (dependencies)
 - 1.0: Build images (with dependency audits) → 1.1: Store/push images (GHCR)
 - 1.1 → 2.0: Run Unit Tests per service (parallel)
-- 1.1 → 4.0: Run Security Scans (Snyk Code/Deps/IaC + Snyk Container, Trivy) (parallel)
+- 1.1 → 4.0: Run Security Scans (Semgrep SAST + Trivy SCA/IaC/Container) (parallel)
 - 2.0 → 3.0: Run P2P Integration Tests for service pairs that passed unit tests
 - 3.0 → E2E (if applicable)
 
@@ -85,20 +85,19 @@ test.e2e.ui-api: docker compose run --rm ui npm run test:e2e:integration
 # Aggregates
 test.security: test.security.scan test.security.container
 test.security.scan: test.security.scan.deps test.security.scan.code test.security.scan.iac
-test.security.container: test.security.container.snyk.all test.security.container.trivy.all
+test.security.container: test.security.container.all
 
 # Dependency scans (per service) — depend on image build targets
-test.security.scan.deps.api|ui|workers|scheduler|ai  # should run after build.<service>
+test.security.scan.deps.api|ui|workers|scheduler|ai  # Trivy SCA on manifests, should run after build.<service>
 
 # Code scan (source)
-test.security.scan.code
+test.security.scan.code  # Semgrep SAST on source code
 
 # IaC scan (compose/k8s)
-test.security.scan.iac
+test.security.scan.iac  # Trivy on docker-compose.yml and k8s/
 
 # Container scans (per service)
-test.security.container.snyk.<service> and .all
-test.security.container.trivy.<service> and .all
+test.security.container.<service> and .all  # Trivy on built images
 ```
 
 ## Testing Frameworks
@@ -158,7 +157,3 @@ test.security.container.trivy.<service> and .all
 - No direct `npm`, `pytest`, or `docker` commands in CI
 - Centralized test configuration and execution
 - Consistent interface for local and CI testing
-description:
-globs:
-alwaysApply: false
----

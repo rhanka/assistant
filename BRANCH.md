@@ -12,20 +12,19 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
   - [ ] Build targets per service with image tagging `build.<service>` and `build.all`
   - [ ] Push targets per service `push.<service>` and `push.all` (GHCR)
   - [ ] Adapt `up` to optionally depend on build (e.g., `UP_REQUIRES_BUILD=true make up`) except for dev-only services (e.g., Svelte dev)
-  - [ ] Security scan targets:
-    - [ ] `test.security.scan.deps.<service>` (Snyk manifests; runs after `build.<service>`)
-    - [ ] `test.security.scan.code` (Snyk Code)
-    - [ ] `test.security.scan.iac` (Snyk IaC on compose/k8s)
-    - [ ] `test.security.container.snyk.<service>` / `.all`
-    - [ ] `test.security.container.trivy.<service>` / `.all`
-  - [ ] Aggregates: `test.security`, `test.security.scan`, `test.security.container`
+    - [ ] Security scan targets:
+    - [ ] `test.security.scan.deps.<service>` (Trivy SCA on manifests; runs after `build.<service>`)
+    - [ ] `test.security.scan.code` (Semgrep SAST on source code)
+    - [ ] `test.security.scan.iac` (Trivy on compose/k8s)
+    - [ ] `test.security.container.<service>` / `.all` (Trivy on built images)
+    - [ ] Aggregates: `test.security`, `test.security.scan`, `test.security.container`
 - [ ] Dockerfiles (minimal)
   - [ ] Node services: add `npm audit --audit-level=high` in base and production stages
   - [ ] AI (Python): evaluate `pip-audit --strict`; if not feasible now, document Snyk-only
 - [ ] GitHub Actions (`.github/workflows/ci.yml`)
   - [ ] Add build job (matrix over services) → tag/push images to GHCR
   - [ ] Unit jobs: `needs: build-images` (tests logic unchanged)
-  - [ ] Security jobs (matrix): Snyk Code/Deps/IaC + Snyk Container + Trivy (parallel)
+  - [ ] Security jobs (matrix): Semgrep SAST + Trivy SCA/IaC/Container (parallel)
   - [ ] Integration jobs: depend on relevant unit jobs (unchanged semantics)
 - [ ] Docs and validation
   - [ ] Update README snippets if needed
@@ -35,7 +34,11 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [x] docs(rules): align testing & security MDC with CI DAG and add BRANCH plan
 - [x] build(make): add build/push targets (`build.<svc>`, `push.<svc>`, `.all`) — no behavior change
 - [x] build(make): improve GHCR config with env vars (GHCR_OWNER, GHCR_PROJECT, GHCR_REGISTRY)
-- [ ] build(make): add security targets (naming only) — `test.security.scan.*`, `test.security.container.*`
+- [x] build(make): add security targets — `test.security.scan.*`, `test.security.container.*`
+- [ ] build(security): implement SAST scanning (Semgrep on source code)
+- [ ] build(security): implement SCA scanning (Trivy on manifests/dependencies)
+- [ ] build(security): implement IaC scanning (Trivy on docker-compose.yml and k8s/)
+- [ ] build(security): implement container scanning (Trivy on built images)
 - [ ] build(docker-api): gate deps with `npm audit --audit-level=high` (base + prod)
 - [ ] build(docker-ui): gate deps with `npm audit --audit-level=high` (base + prod)
 - [ ] build(docker-workers): gate deps with `npm audit --audit-level=high` (base + prod)
@@ -49,6 +52,6 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [ ] ci: run `make check` and fix guide consistency
 
 ## Status
-- Progress: 3/15 tasks completed
-- Current: Build/push targets implemented and working with env vars
-- Next: Add security targets (naming only), then implement Dockerfile dependency gating
+- Progress: 4/22 tasks completed
+- Current: Security strategy clarified and split into 4 atomic commits
+- Next: Implement SAST scanning (Semgrep on source code)
