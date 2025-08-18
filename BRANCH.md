@@ -45,14 +45,53 @@ Introduce a coherent, minimal-impact security testing strategy leveraging Snyk a
 - [x] build(docker-scheduler): gate deps with `npm audit --audit-level=high` (base + prod)
 - [x] build(docker-ai): add `pip-audit --strict` or defer (document reliance on Snyk)
 - [x] **Commit 11** (0a5fa71): Fix AI Dockerfile - update FastAPI to 0.116.0 to fix starlette vulnerabilities
-- [ ] ci(build): add build-images job (matrix), tag/push to GHCR
-- [ ] ci(unit): add `needs: build-images` (no logic change inside tests)
-- [ ] ci(security): add Snyk (code/deps/iac/container) + Trivy image jobs (parallel)
+- [x] ci(build-api): add build-api job with production target and artifacts - fa6beff
+- [x] ci(unit-api): remove dependency on build-api (runs in parallel) - 24156ff
+- [x] makefile: remove GHCR tagging and push targets (cleanup) - 11b222a
+- [x] makefile: add save/load targets for API service - 32e1b2a
+- [x] makefile: update build.api to target production - fa6beff
+- [ ] ci(build-scheduler): add build-scheduler job with production target and artifacts
+- [ ] ci(build-workers): add build-workers job with production target and artifacts
+- [ ] ci(build-ui): add build-ui job with production target and artifacts
+- [ ] ci(build-ai): add build-ai job with production target and artifacts
+- [ ] ci(unit): update unit test dependencies (no logic change inside tests)
+  - [ ] ci(unit-api): remove dependency on build-api (runs in parallel)
+  - [ ] ci(unit-scheduler): add dependency on build-scheduler
+  - [ ] ci(unit-workers): add dependency on build-workers
+  - [ ] ci(unit-ui): add dependency on build-ui
+  - [ ] ci(unit-ai): add dependency on build-ai
+- [ ] ci(security): add security scan jobs per service (parallel with unit tests)
+  - [ ] ci(security-api): add security job for API (SAST + SCA + Container)
+  - [ ] ci(security-scheduler): add security job for Scheduler (SAST + SCA + Container)
+  - [ ] ci(security-workers): add security job for Workers (SAST + SCA + Container)
+  - [ ] ci(security-ui): add security job for UI (SAST + SCA + Container)
+  - [ ] ci(security-ai): add security job for AI (SAST + SCA + Container)
+  - [ ] ci(security-global): add global security job (IaC scanning only)
 - [ ] ci(integration): ensure DAG explicit (depends on corresponding unit jobs)
+  - [ ] ci(integration-scheduler-api): update to depend on test-scheduler-unit + test-api-unit
+  - [ ] ci(integration-scheduler-workers): update to depend on test-scheduler-unit + test-workers-unit + test-api-unit
+  - [ ] ci(integration-workers-api): update to depend on test-workers-unit + test-api-unit
+  - [ ] ci(integration-ui-api): update to depend on test-ui-unit + test-api-unit
+  - [ ] ci(integration-scheduler-ai): update to depend on test-scheduler-unit + test-ai-unit
+  - [ ] ci(integration-workers-ai): update to depend on test-workers-unit + test-ai-unit
+- [ ] makefile: add save/load targets for all services
+  - [ ] makefile(save-scheduler): add save.scheduler target
+  - [ ] makefile(save-workers): add save.workers target
+  - [ ] makefile(save-ui): add save.ui target
+  - [ ] makefile(save-ai): add save.ai target
+  - [ ] makefile(load-scheduler): add load.scheduler target
+  - [ ] makefile(load-workers): add load.workers target
+  - [ ] makefile(load-ui): add load.ui target
+  - [ ] makefile(load-ai): add load.ai target
+- [ ] makefile: update build targets to target production for all services
+  - [ ] makefile(build-scheduler): update build.scheduler to target production
+  - [ ] makefile(build-workers): update build.workers to target production
+  - [ ] makefile(build-ui): update build.ui to target production
+  - [ ] makefile(build-ai): update build.ai to target production
 - [ ] docs(readme): reflect new build/push/security commands
 - [ ] ci: run `make check` and fix guide consistency
 
 ## Status
-- Progress: 15/22 tasks completed
-- Current: All Dockerfiles now have dependency vulnerability gating implemented and working
-- Next: Implement CI build-images job and update GitHub Actions workflow
+- Progress: 20/45 tasks completed
+- Current: API service CI workflow implemented and working with artifacts
+- Next: Implement CI build jobs for remaining services (scheduler, workers, ui, ai)
