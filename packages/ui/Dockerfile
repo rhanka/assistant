@@ -1,49 +1,42 @@
-FROM node:20 AS base
+FROM node:24-alpine3.22 AS base
 WORKDIR /app
-COPY packages/ui/package.json packages/ui/package-lock.json ./
+COPY packages/ui/package.json packages/ui/package-lock.json packages/ui/tsconfig.json ./
 COPY packages/config/tsconfig.base.json ./
 
 # Install all dependencies (including devDependencies for testing)
-RUN npm install --legacy-peer-deps
+RUN npm ci --legacy-peer-deps
 # Security: Audit dependencies for HIGH/CRITICAL vulnerabilities
 RUN npm audit --audit-level=high
 
-# Copy source code and configs
+# Copy source code (SvelteKit needs the full src directory)
 COPY packages/ui/src ./src
 COPY packages/ui/tests ./tests
-COPY packages/ui/svelte.config.js packages/ui/vite.config.ts packages/ui/tsconfig.json ./
+COPY packages/ui/svelte.config.js packages/ui/vite.config.ts ./
 
-# Build stage - generate static assets
+# Build stage (production only)
 FROM base AS build
 # Exclude test files from build
 RUN find src -name "*.test.ts" -delete && \
     find src -name "*.spec.ts" -delete
-# Build the SvelteKit application
 RUN npm run build
 
-# Test stage - run unit tests
+# Test stage
 FROM base AS test
 # Tests can run here with all dependencies available
 CMD ["npm", "run", "test:unit"]
 
-# Production stage - nginx serving static assets
+# Production stage
 FROM nginx:alpine AS production
-# Security: Update nginx to latest patch
-RUN apk update && apk upgrade
-
-# Copy built static assets from build stage (SvelteKit 2 uses build/ directory)
+# Copy built application
 COPY --from=build /app/build /usr/share/nginx/html
-
-# Copy custom nginx config
+# Copy nginx configuration
 COPY packages/ui/nginx.conf /etc/nginx/nginx.conf
-
-# Expose port 80 for HTTP
+# Expose port
 EXPOSE 80
-
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
 
-# Default target (for docker-compose compatibility)
-FROM base AS default
-EXPOSE 5173
+# Development stage
+FROM base AS dev
+# Development mode with hot reload
 CMD ["npm", "run", "dev"]

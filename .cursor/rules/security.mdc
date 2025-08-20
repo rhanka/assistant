@@ -1,8 +1,3 @@
----
-description: Security guardrails
-alwaysApply: true
-tags: [security, approvals]
----
 # SECURITY
 
 ## Core Security Principles
@@ -89,6 +84,28 @@ tags: [security, approvals]
 ### Vulnerability Management
 - Identify → Assess → Mitigate → Track (`TODO.md`) → Approvals for exceptions (⚠).
 - CI must fail on unapproved Critical/High dependency vulnerabilities.
+
+### Vulnerability Register Management
+- **Mandatory documentation**: All HIGH/CRITICAL/ERROR findings must be documented in `.security/vulnerability-register.yaml`
+- **Compliance checking**: Security scans check findings against register before allowing CI to pass
+- **Categories required**: Each vulnerability must be categorized (false_positive, accepted_risk, planned_mitigation, technical_debt)
+- **Justification mandatory**: Every vulnerability must include clear justification for acceptance or deferral
+- **Timeline required**: Fix goals must be specified (1d, 1w, 1m, 1y) for planned mitigations
+
+### Vulnerability Register Lifecycle
+1. **Discovery**: Security scan detects vulnerability
+2. **Assessment**: Categorized and risk-assessed by security team
+3. **Documentation**: Added to register with justification and timeline
+4. **Acceptance**: CI passes if vulnerability is properly documented
+5. **Mitigation**: Fixed according to planned timeline
+6. **Verification**: Re-scanned to confirm resolution
+7. **Cleanup**: Removed from register after successful mitigation
+
+### Register Maintenance Rules
+- **Monthly review**: Review register for outdated entries and timeline validation
+- **Risk reassessment**: Periodically reassess risk levels of accepted vulnerabilities
+- **Documentation updates**: Keep justifications and timelines current
+- **Post-mitigation cleanup**: Remove resolved vulnerabilities and update metadata
 
 ### Production Notes
 - Falco (runtime security) is out-of-scope for CI; include in Kubernetes production hardening.

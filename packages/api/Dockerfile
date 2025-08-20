@@ -1,4 +1,4 @@
-FROM node:20 AS base
+FROM node:24-alpine3.22 AS base
 WORKDIR /app
 COPY packages/api/package.json packages/api/package-lock.json packages/api/tsconfig.json ./
 COPY packages/config/tsconfig.base.json ./
@@ -27,7 +27,7 @@ FROM base AS test
 CMD ["npm", "run", "test:unit"]
 
 # Production stage
-FROM node:20 AS production
+FROM node:24-alpine3.22 AS production
 WORKDIR /app
 COPY packages/api/package.json packages/api/package-lock.json ./
 COPY packages/config/tsconfig.base.json ./

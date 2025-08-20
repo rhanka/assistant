@@ -1,8 +1,3 @@
----
-description: Standard repository workflow (boot/feature/maintenance/release)
-alwaysApply: true
-tags: [workflow, repository, guardrails]
----
 
 # WORKFLOW
 
@@ -123,6 +118,34 @@ After implementing all commits for a feature:
   - `make update.ui.lock` - Update UI package-lock.json
 - **Clean environment**: Remove local `node_modules` if they exist outside Docker containers
 
+## Vulnerability Management Lifecycle
+
+### Vulnerability Register Maintenance
+- **Documentation mandatory**: All HIGH/CRITICAL/ERROR findings must be documented in `.security/vulnerability-register.yaml`
+- **Categories required**: Each vulnerability must have a valid category (false_positive, accepted_risk, planned_mitigation, technical_debt)
+- **Justification mandatory**: Every vulnerability must include justification for acceptance or deferral
+- **Timeline required**: Fix goals must be specified (1d, 1w, 1m, 1y)
+
+### Vulnerability Lifecycle Stages
+1. **Discovery**: Found by security scans (SAST, SCA, Container, IaC)
+2. **Assessment**: Categorized and risk-assessed
+3. **Documentation**: Added to vulnerability register with justification
+4. **Mitigation**: Fixed or accepted with timeline
+5. **Verification**: Re-scanned to confirm resolution
+6. **Cleanup**: Removed from register after successful mitigation
+
+### Post-Mitigation Cleanup
+- **Remove resolved vulnerabilities**: After successful fix, remove entry from vulnerability register
+- **Update metadata**: Update `last_updated` timestamp in register metadata
+- **Document resolution**: Add resolution details to commit message or documentation
+- **Verify compliance**: Ensure all security scans pass after cleanup
+
+### Register Maintenance Rules
+- **Regular review**: Review vulnerability register monthly for outdated entries
+- **Timeline validation**: Check if fix goals are realistic and achievable
+- **Risk reassessment**: Periodically reassess risk levels of accepted vulnerabilities
+- **Documentation updates**: Keep justifications and timelines current
+
 ## Feature Branch Management
 
 ### Branch Documentation
@@ -208,6 +231,11 @@ Brief description of what this feature accomplishes
    - If YES → Update `.mdc` file FIRST, then documentation
    - If NO → Update documentation only
 2. **Verify rule compliance** - All documentation must reflect current `.mdc` rules
+
+### Validation Commands
+- **Automatic**: `make check` (i18n + guide validation)
+- **Individual**: `make scripts.i18n`, `make scripts.validate-guides`
+- **Manual**: `./scripts/validate_guides.sh`
 
 ### Validation Commands
 - **Automatic**: `make check` (i18n + guide validation)

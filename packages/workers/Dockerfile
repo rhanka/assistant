@@ -1,10 +1,10 @@
-FROM node:20 AS base
+FROM node:24-alpine3.22 AS base
 WORKDIR /app
-COPY packages/workers/package.json packages/workers/tsconfig.json ./
+COPY packages/workers/package.json packages/workers/package-lock.json packages/workers/tsconfig.json ./
 COPY packages/config/tsconfig.base.json ./
 
 # Install all dependencies (including devDependencies for testing)
-RUN npm install --legacy-peer-deps
+RUN npm ci --legacy-peer-deps
 # Security: Audit dependencies for HIGH/CRITICAL vulnerabilities
 RUN npm audit --audit-level=high
 
@@ -25,19 +25,18 @@ FROM base AS test
 CMD ["npm", "run", "test:unit"]
 
 # Production stage
-FROM node:20 AS production
+FROM node:24-alpine3.22 AS production
 WORKDIR /app
-COPY packages/workers/package.json packages/workers/tsconfig.json ./
+COPY packages/workers/package.json packages/workers/package-lock.json ./
 COPY packages/config/tsconfig.base.json ./
 
 # Install only production dependencies
-RUN npm install --only=production --legacy-peer-deps
+RUN npm ci --only=production --legacy-peer-deps
 # Security: Audit production dependencies for HIGH/CRITICAL vulnerabilities
 RUN npm audit --audit-level=high
 
 # Copy built application
 COPY --from=build /app/dist ./dist
-
 EXPOSE 3003
 CMD ["npm", "run", "start"]
 
