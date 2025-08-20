@@ -37,3 +37,12 @@ packages/ui/build/
 
 # Docker artifacts
 *-image.tar
+
+# Security scan artifacts
+.security/sast-*
+.security/sca-*
+.security/iac-*
+.security/container*
+
+# Debug artifacts
+.debug*

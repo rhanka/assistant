@@ -431,97 +431,68 @@ test.integration.scheduler-ai:
 test.integration.workers-ai:
 	docker compose run --rm workers npm run test:integration:ai
 
-# Security tools preparation
-security.prepare:
-	@echo "🔧 Preparing security tools..."
-	@echo "📥 Pulling Semgrep image..."
-	@docker pull semgrep/semgrep:latest
-	@echo "📥 Pulling Trivy image..."
-	@docker pull aquasec/trivy:latest
-	@echo "✅ Security tools preparation complete"
+# Install security tools if not present
+install.security.tools:
+	@echo "🔧 Installing security tools..."
+	@if ! command -v jq >/dev/null 2>&1; then \
+		echo "Installing jq..."; \
+		sudo apt-get update && sudo apt-get install -y jq; \
+	else \
+		echo "jq already installed"; \
+	fi
+	@if ! command -v yq >/dev/null 2>&1; then \
+		echo "Installing yq..."; \
+		sudo apt-get update && sudo apt-get install -y yq; \
+	else \
+		echo "yq already installed"; \
+	fi
 
-# Security testing targets
-# SAST (Static Application Security Testing) - Semgrep on source code per service
-test.security.scan.code.api:
-	@echo "🔒 Security: Scanning API code for vulnerabilities (Semgrep SAST)"
-	@docker run --rm -v "${PWD}/packages/api:/src" semgrep/semgrep semgrep scan --config auto --severity ERROR --error
+# Unified Security Testing - Single wildcard with intelligent parsing
+# Usage: make test.security.sast-api, make test.security.sca-ui, make test.security.container-workers, etc.
+test.security.%:
+	@echo "🔒 Security: Parsing target '$*'..."
+	@mkdir -p .security
+	@SCAN_TYPE=$$(echo $* | cut -d- -f1); \
+	SERVICE=$$(echo $* | cut -d- -f2-); \
+	echo "Scan type: $$SCAN_TYPE, Service: $$SERVICE"; \
+	echo "🔒 Security: Executing $$SCAN_TYPE workflow on $$SERVICE..."; \
+	echo "  📋 Step 1: Executing scan..."; \
+	if [ "$$SCAN_TYPE" = "sast" ]; then \
+		docker run --rm -v "${PWD}/packages/$$SERVICE:/src" semgrep/semgrep semgrep scan --config auto --severity ERROR --json > .security/$$SCAN_TYPE-$$SERVICE.json || true; \
+	elif [ "$$SCAN_TYPE" = "sca" ]; then \
+		docker run --rm -v "${PWD}/packages/$$SERVICE:/src" aquasec/trivy fs --security-checks vuln --severity HIGH,CRITICAL --format json --quiet > .security/$$SCAN_TYPE-$$SERVICE.json /src || true; \
+	elif [ "$$SCAN_TYPE" = "container" ]; then \
+		docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --format json --quiet > .security/$$SCAN_TYPE-$$SERVICE.json assistant-$$SERVICE:latest || true; \
+	elif [ "$$SCAN_TYPE" = "iac" ]; then \
+		docker run --rm -v "${PWD}:/src" aquasec/trivy config --severity HIGH,CRITICAL --format json --quiet > .security/$$SCAN_TYPE-$$SERVICE.json /src/docker-compose.yml || true; \
+	else \
+		echo "❌ Error: Unknown scan type '$$SCAN_TYPE'"; \
+		echo "Supported types: sast, sca, container, iac"; \
+		echo "Usage: make test.security.sast-api, make test.security.sca-ui, make test.security.iac-infra, etc."; \
+		exit 1; \
+	fi; \
+	echo "  📋 Step 2: Parsing results to structured format..."; \
+	packages/scripts/src/security-parser.sh $$SCAN_TYPE .security/$$SCAN_TYPE-$$SERVICE.json .security/$$SCAN_TYPE-$$SERVICE-parsed.yaml $$SERVICE || exit 1; \
+	echo "  📋 Step 3: Checking compliance against vulnerability register..."; \
+	packages/scripts/src/security-compliance.sh $$SCAN_TYPE $$SERVICE || exit 1; \
+	echo "  📋 Note: k8s/ directory not yet present - will be added when Kubernetes configs are implemented"; \
+	echo "✅ $$SCAN_TYPE workflow completed for $$SERVICE"; \
 
-test.security.scan.code.ui:
-	@echo "🔒 Security: Scanning UI code for vulnerabilities (Semgrep SAST)"
-	@docker run --rm -v "${PWD}/packages/ui:/src" semgrep/semgrep semgrep scan --config auto --severity ERROR --error
-
-test.security.scan.code.workers:
-	@echo "🔒 Security: Scanning Workers code for vulnerabilities (Semgrep SAST)"
-	@docker run --rm -v "${PWD}/packages/workers:/src" semgrep/semgrep semgrep scan --config auto --severity ERROR --error
-
-test.security.scan.code.scheduler:
-	@echo "🔒 Security: Scanning Scheduler code for vulnerabilities (Semgrep SAST)"
-	@docker run --rm -v "${PWD}/packages/scheduler:/src" semgrep/semgrep semgrep scan --config auto --severity ERROR --error
-
-test.security.scan.code.ai:
-	@echo "🔒 Security: Scanning AI code for vulnerabilities (Semgrep SAST)"
-	@docker run --rm -v "${PWD}/packages/ai:/src" semgrep/semgrep semgrep scan --config auto --severity ERROR --error
-
-# Aggregate SAST scan for all services
-test.security.scan.code: test.security.scan.code.api test.security.scan.code.ui test.security.scan.code.workers test.security.scan.code.scheduler test.security.scan.code.ai
-	@echo "✅ All SAST scans completed"
-
-# SCA (Software Composition Analysis) - Trivy on manifests/dependencies per service
-test.security.scan.deps.api:
-	@echo "🔒 Security: Scanning API dependencies for vulnerabilities (Trivy SCA)"
-	@docker run --rm -v "${PWD}/packages/api:/src" aquasec/trivy fs --security-checks vuln --severity HIGH,CRITICAL --exit-code 1 /src
-
-test.security.scan.deps.ui:
-	@echo "🔒 Security: Scanning UI dependencies for vulnerabilities (Trivy SCA)"
-	@docker run --rm -v "${PWD}/packages/ui:/src" aquasec/trivy fs --security-checks vuln --severity HIGH,CRITICAL --exit-code 1 /src
-
-test.security.scan.deps.workers:
-	@echo "🔒 Security: Scanning Workers dependencies for vulnerabilities (Trivy SCA)"
-	@docker run --rm -v "${PWD}/packages/workers:/src" aquasec/trivy fs --security-checks vuln --severity HIGH,CRITICAL --exit-code 1 /src
-
-test.security.scan.deps.scheduler:
-	@echo "🔒 Security: Scanning Scheduler dependencies for vulnerabilities (Trivy SCA)"
-	@docker run --rm -v "${PWD}/packages/scheduler:/src" aquasec/trivy fs --security-checks vuln --severity HIGH,CRITICAL --exit-code 1 /src
-
-test.security.scan.deps.ai:
-	@echo "🔒 Security: Scanning AI dependencies for vulnerabilities (Trivy SCA)"
-	@docker run --rm -v "${PWD}/packages/ai:/src" aquasec/trivy fs --security-checks vuln --severity HIGH,CRITICAL --exit-code 1 /src
 
 # Aggregate SCA scan for all services
-test.security.scan.deps: test.security.scan.deps.api test.security.scan.deps.ui test.security.scan.deps.workers test.security.scan.deps.scheduler test.security.scan.deps.ai
-	@echo "✅ All SCA scans completed"
+test.security.sca: test.security.sca-api test.security.sca-ui test.security.sca-workers test.security.sca-scheduler test.security.sca-ai
+	@echo "✅ All SCA tests completed"
 
-# IaC (Infrastructure as Code) - Trivy on docker-compose.yml and k8s/
-test.security.scan.iac:
-	@echo "🔒 Security: Scanning Infrastructure as Code for vulnerabilities (Trivy IaC)"
-	@echo "📋 Scanning docker-compose.yml..."
-	@docker run --rm -v "${PWD}:/src" aquasec/trivy config --severity HIGH,CRITICAL --exit-code 1 /src/docker-compose.yml
-	@echo "📋 Note: k8s/ directory not yet present - will be added when Kubernetes configs are implemented"
+# Main security test aggregates
+test.security: test.security.sast test.security.sca test.security.iac test.security.container
+	@echo "✅ All security tests completed"
 
-# Container scanning - Trivy on built images per service
-test.security.container.api:
-	@echo "🔒 Security: Scanning API container for vulnerabilities (Trivy Container)"
-	@docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --exit-code 1 assistant-api:latest
-
-test.security.container.ui:
-	@echo "🔒 Security: Scanning UI container for vulnerabilities (Trivy Container)"
-	@docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --exit-code 1 assistant-ui:latest
-
-test.security.container.workers:
-	@echo "🔒 Security: Scanning Workers container for vulnerabilities (Trivy Container)"
-	@docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --exit-code 1 assistant-workers:latest
-
-test.security.container.scheduler:
-	@echo "🔒 Security: Scanning Scheduler container for vulnerabilities (Trivy Container)"
-	@docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --exit-code 1 assistant-scheduler:latest
-
-test.security.container.ai:
-	@echo "🔒 Security: Scanning AI container for vulnerabilities (Trivy Container)"
-	@docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --exit-code 1 assistant-ai:latest
+test.security.sast: test.security.sast-api test.security.sast-ui test.security.sast-workers test.security.sast-scheduler test.security.sast-ai
+	@echo "✅ All SAST tests completed"
 
 # Aggregate container scan for all services
-test.security.container: test.security.container.api test.security.container.ui test.security.container.workers test.security.container.scheduler test.security.container.ai
-	@echo "✅ All container scans completed"
+test.security.container: test.security.container-api test.security.container-ui test.security.container-workers test.security.container-scheduler test.security.container-ai
+	@echo "✅ All container tests completed"
 
 # E2E tests
 test.e2e.ui:
@@ -538,14 +509,10 @@ test.scheduler: test.unit.scheduler
 test.workers: test.unit.workers
 test.ai: test.unit.ai
 
-
-
 # Global validation
 validate-config:
 	@echo "🔍 Validating global configuration..."
 	@echo "✅ Configuration validation complete"
-
-
 
 test.i18n:
 	docker compose run --rm scripts npm run i18n:check
@@ -577,3 +544,5 @@ dev.clean:
 	@find . -name ".venv" -type d -exec rm -rf {} + 2>/dev/null || true
 	@find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
 	@echo "✅ Workspace cleaned - no local dependencies remaining"
+
+

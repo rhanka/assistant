@@ -57,29 +57,37 @@ This document defines the testing strategy for the assistant project, ensuring a
 - Python: consider `pip-audit --strict` (or defer to Snyk in CI)
 - Tag and push images to GHCR (e.g., `ghcr.io/<org>/<repo>/<service>:<sha>`) for reuse
 
-2) In parallel after build
+2) In parallel (no build dependency)
 - Unit tests per service (`make test.unit.*`), unchanged
-- Security scans (Semgrep + Trivy in parallel)
-  - Semgrep SAST (source code), Trivy SCA (manifests), Trivy IaC (compose/k8s)
-  - Trivy Container on built images
+- Code-based security scans (can run immediately)
+  - SAST: `make test.security.sast.*` (Semgrep on source code)
+  - SCA: `make test.security.sca.*` (Trivy on manifests)
+  - IaC: `make test.security.iac-infra` (Trivy on compose/k8s) - included in each service job
 
-3) After unit tests of involved services
+3) After build (depends on images)
+- Container security scans: `make test.security.container.*` (Trivy on built images)
+
+4) After unit tests of involved services
 - Run P2P integration tests (`make test.integration.*`)
 
-4) E2E tests (to be)
+5) E2E tests (to be)
 - Run after integration, if applicable
 
 ### High-Level DAG (dependencies)
-- 1.0: Build images (with dependency audits) → 1.1: Store/push images (GHCR)
-- 1.1 → 2.0: Run Unit Tests per service (parallel)
-- 1.1 → 4.0: Run Security Scans (Semgrep SAST + Trivy SCA/IaC/Container) (parallel)
-- 2.0 → 3.0: Run P2P Integration Tests for service pairs that passed unit tests
-- 3.0 → E2E (if applicable)
+- 1.a: Build images (with dependency audits) → Store/push images (GHCR)
+- 1.b: Run Unit Tests per service (parallel, except ai, after 1.a)
+- 1.c: Run Code-based Security Scans (SAST + SCA) (parallel, no build dependency, except ai)
+- 1.d: Run Global IaC Security Scan (parallel, no build dependency)
+- 1.a → 2.a: Run Container Security Scans (depends on built images, except ai)
+- 1.a → 2.b: Run Unified Security Scans for AI (SAST + SCA + Container, depends on build)
+- 1.b → 2.c: Run P2P Integration Tests for service pairs that passed unit tests
+- 1.a+b → 3.a: E2E (if applicable)
 
 ### Path-Based Triggers and Dependencies
 - Build job runs when any service or global config changes
-- Unit jobs depend on build (images available, tests targets unchanged)
-- Security jobs depend on build
+- Unit job for ai (python) only depends on build (images available)
+- Security jobs for container scan depend on build (except ai)
+- Security job for ai depends on build (unified approach)
 - Integration jobs depend on unit jobs for involved services
 
 ## Make Commands (Documentation)
@@ -104,22 +112,19 @@ test.e2e.ui-api: docker compose run --rm ui npm run test:e2e:integration
 
 ### Security Tests (naming only — implemented in Makefile)
 ```makefile
+# Unified security testing - Single wildcard with intelligent parsing
+# Usage: make test.security.sast-api, make test.security.sca-ui, make test.security.container-workers, etc.
+test.security.%: # Executes scan, parsing, and compliance check in one target
+
 # Aggregates
-test.security: test.security.scan test.security.container
-test.security.scan: test.security.scan.deps test.security.scan.code test.security.scan.iac
-test.security.container: test.security.container.all
+test.security.sast: test.security.sast-api test.security.sast-scheduler test.security.sast-workers test.security.sast-ui test.security.sast-ai
+test.security.sca: test.security.sca-api test.security.sca-scheduler test.security.sca-workers test.security.sca-ui test.security.sca-ai
+test.security.container: test.security.container-api test.security.container-scheduler test.security.container-workers test.security.container-ui
+test.security.iac: test.security.iac-infra
+test.security: test.security.sast test.security.sca test.security.container test.security.iac
 
-# Dependency scans (per service) — depend on image build targets
-test.security.scan.deps.api|ui|workers|scheduler|ai  # Trivy SCA on manifests, should run after build.<service>
-
-# Code scan (source)
-test.security.scan.code  # Semgrep SAST on source code
-
-# IaC scan (compose/k8s)
-test.security.scan.iac  # Trivy on docker-compose.yml and k8s/
-
-# Container scans (per service)
-test.security.container.<service> and .all  # Trivy on built images
+# Service-specific security (AI has unified approach)
+test.security.ai: # Unified SAST + SCA + Container (depends on build)
 ```
 
 ## Testing Frameworks
