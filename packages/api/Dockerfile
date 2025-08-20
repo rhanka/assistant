@@ -1,5 +1,7 @@
 FROM node:24-alpine3.22 AS base
 WORKDIR /app
+# Install OpenSSL and other dependencies for Prisma
+RUN apk add --no-cache openssl
 COPY packages/api/package.json packages/api/package-lock.json packages/api/tsconfig.json ./
 COPY packages/config/tsconfig.base.json ./
 
@@ -29,12 +31,14 @@ CMD ["npm", "run", "test:unit"]
 # Production stage
 FROM node:24-alpine3.22 AS production
 WORKDIR /app
+# Install OpenSSL and other dependencies for Prisma
+RUN apk add --no-cache openssl
 COPY packages/api/package.json packages/api/package-lock.json ./
 COPY packages/config/tsconfig.base.json ./
 
 # Install only production dependencies
 RUN npm ci --only=production --legacy-peer-deps
-# Security: Audit production dependencies for HIGH/CRITICAL vulnerabilities
+# Security: Audit dependencies for HIGH/CRITICAL vulnerabilities
 RUN npm audit --audit-level=high
 
 # Copy built application and Prisma client

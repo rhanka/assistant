@@ -22,6 +22,8 @@ RUN npm run build
 # Test stage
 FROM base AS test
 # Tests can run here with all dependencies available
+# Install devDependencies for testing
+RUN npm ci --legacy-peer-deps
 CMD ["npm", "run", "test:unit"]
 
 # Production stage
