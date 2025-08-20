@@ -418,7 +418,10 @@ test.integration.api:
 	docker compose run --rm api npm run test:integration
 
 test.integration.scheduler-api:
+	docker compose up -d api postgres redis
+	sleep 10
 	docker compose run --rm scheduler npm run test:integration
+	docker compose down
 
 test.integration.scheduler-workers-api:
 	docker compose run --rm scheduler npm run test:integration:workers

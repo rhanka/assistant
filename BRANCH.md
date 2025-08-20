@@ -183,6 +183,12 @@ Implement a comprehensive, unified security testing strategy with intelligent pa
   - [x] Document post-mitigation cleanup and maintenance workflows
 
 ## Next Steps
+- [x] **Integration Test Fix**: Resolve scheduler-api integration test failures - 243a74d
+  - [x] Upgrade Prisma to 6.14.0 for better Alpine compatibility
+  - [x] Fix Dockerfile Alpine compatibility by removing problematic PRISMA env vars
+  - [x] Fix scheduler Dockerfile test stage to include devDependencies
+  - [x] Update Makefile to properly start services for integration tests
+  - [x] All integration tests now pass: scheduler-api, scheduler-workers, workers-api
 - [ ] **Dockerfile Hardening**: Add non-root USER directives to all Dockerfiles
   - [ ] API Dockerfile: Add USER node directives for test and production stages
   - [ ] Workers Dockerfile: Add USER node directives for test, production, and default stages
@@ -190,7 +196,7 @@ Implement a comprehensive, unified security testing strategy with intelligent pa
   - [ ] UI Dockerfile: Add USER node directives for test, production, and development stages
 - [ ] **Vulnerability Register Update**: Remove resolved findings after hardening
   - [ ] Update vulnerability register metadata (last_updated timestamp)
-  - [ ] Remove all USER-related findings after successful mitigation
+  - [ ] Remove all USER-related findings altready successfully mitigated
   - [ ] Verify all security scans pass after hardening
 - [ ] **Final Validation**: Ensure complete security compliance
   - [ ] Run all security scans to confirm no new findings
@@ -198,8 +204,8 @@ Implement a comprehensive, unified security testing strategy with intelligent pa
   - [ ] Update documentation to reflect completed hardening
 
 ## Status
-- **Progress**: 54/58 tasks completed
-- **Current**: Node.js Alpine migration completed, Dockerfile hardening pending
+- **Progress**: 59/63 tasks completed
+- **Current**: Integration tests fixed, Dockerfile hardening pending
 - **Next**: Implement Dockerfile hardening, then final validation and merge
 
 ## Key Achievements for the Branch
@@ -220,6 +226,7 @@ Implement a comprehensive, unified security testing strategy with intelligent pa
 ### Testing and Integration
 - ✅ **Unit Tests**: Harmonized test structure across all services with proper Docker targets
 - ✅ **Integration Tests**: Real P2P communication tests between services (API ↔ Scheduler ↔ Workers ↔ UI)
+- ✅ **Integration Test Fixes**: Resolved scheduler-api test failures with Prisma 6.14.0 upgrade
 - ✅ **CI Pipeline**: Optimized DAG with parallel execution and proper job dependencies
 - ✅ **Test Coverage**: Comprehensive coverage for API, Workers, Scheduler, UI, and AI services
 
