@@ -79,13 +79,16 @@ After completing any task, **ALWAYS propose the next step** by following the wor
 ### Feature Completion Workflow (MANDATORY)
 After implementing all commits for a feature:
 1. **Push to GitHub** : `git push origin <branch-name>`
-2. **Verify CI** : Monitor GitHub Actions until all tests pass and no bugs remain (using `curl` or `gh` for detailed logs)
-3. **Plan remaining actions** : If commits need additional work, document in BRANCH.md
-4. **Final cleanup** : When everything works:
+2. **Final security validation** : Execute comprehensive security validation (see `security.mdc` for detailed workflow)
+3. **Verify CI** : Push and Monitor GitHub Actions(using `curl` or `gh` for detailed logs) 
+4. **Plan remaining actions** : If commits need additional substantial work, document in BRANCH.md - else commit --amend and git push --force <branch> until CI success
+5. **Final cleanup** : When everything works:
    - Remove BRANCH.md
    - Check off feature in TODO.md
+   - Update RELEASE.md
    - Create final commit with BRANCH.md content in commit message
    - Push final state
+   - Create a PR if not existing and update PR message with last BRANCH.md content
 
 ### CI Monitoring (MANDATORY)
 - After any push to a feature branch or PR update, automatically verify GitHub Actions runs.
