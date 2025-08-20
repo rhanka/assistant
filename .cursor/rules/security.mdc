@@ -107,6 +107,18 @@
 - **Documentation updates**: Keep justifications and timelines current
 - **Post-mitigation cleanup**: Remove resolved vulnerabilities and update metadata
 
+### Final Validation Workflow (MASTER REFERENCE)
+**This section is the authoritative source for final validation procedures. Other .mdc files reference this section.**
+
+- **Comprehensive security scanning**: Execute all security scans (SAST, SCA, Container, IaC) before branch completion
+- **Vulnerability register synchronization**: 
+  - Add newly discovered findings to register with proper categorization
+  - Remove resolved vulnerabilities that were fixed during branch development
+  - Update register metadata (last_updated timestamp, resolution details)
+- **Compliance verification**: Ensure all security scans pass and no new HIGH/CRITICAL/ERROR findings exist
+- **Documentation synchronization**: Update relevant .mdc files to reflect any new security procedures or findings
+- **CI validation**: Verify GitHub Actions pipeline passes with all security checks and compliance validation
+
 ### Production Notes
 - Falco (runtime security) is out-of-scope for CI; include in Kubernetes production hardening.
 
