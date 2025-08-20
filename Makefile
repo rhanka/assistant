@@ -88,17 +88,18 @@ dev:
 	docker compose up -d
 
 # API-specific targets (using make instead of docker compose)
+# Update package-lock.json files
 update.api.lock:
-	docker run --rm -v $(pwd)/packages/api:/app -v /tmp/api-nodemodules:/app/node_modules -w /app node:20 npm install --legacy-peer-deps
+	docker run --rm -v "$(PWD)/packages/api:/app" -v /tmp/api-nodemodules:/app/node_modules -w /app node:24-alpine3.22 npm install --legacy-peer-deps
 
 update.scheduler.lock:
-	docker run --rm -v $(pwd)/packages/scheduler:/app -v /tmp/scheduler-nodemodules:/app/node_modules -w /app node:20 npm install --legacy-peer-deps
+	docker run --rm -v "$(PWD)/packages/scheduler:/app" -v /tmp/scheduler-nodemodules:/app/node_modules -w /app node:24-alpine3.22 npm install --legacy-peer-deps
 
 update.workers.lock:
-	docker run --rm -v $(pwd)/packages/workers:/app -v /tmp/workers-nodemodules:/app/node_modules -w /app node:20 npm install --legacy-peer-deps
+	docker run --rm -v "$(PWD)/packages/workers:/app" -v /tmp/workers-nodemodules:/app/node_modules -w /app node:24-alpine3.22 npm install --legacy-peer-deps
 
 update.ui.lock:
-	docker run --rm -v $(pwd)/packages/ui:/app -v /tmp/ui-nodemodules:/app/node_modules -w /app node:20 npm install --legacy-peer-deps
+	docker run --rm -v "$(PWD)/packages/ui:/app" -v /tmp/ui-nodemodules:/app/node_modules -w /app node:24-alpine3.22 npm install --legacy-peer-deps
 	
 # Build targets (local builds for CI artifacts)
 build.api:

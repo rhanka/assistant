@@ -29,6 +29,12 @@ Implement a comprehensive, unified security testing strategy with intelligent pa
 - [x] Docs and validation
   - [x] Update README snippets if needed
   - [x] Run `make check` and fix guide consistency
+- [ ] **Node.js Alpine Migration**: Migrate TypeScript services to Alpine-based images
+  - [x] Migrate Dockerfiles to `node:24-alpine3.22`
+  - [x] Update Make procedures for `package-lock.json` management
+  - [x] Validate builds and security scans
+  - [ ] Hardening: Add non-root USER directives to Dockerfiles
+  - [ ] Update vulnerability register after hardening
 
 ## Commits & Progress
 - [x] docs(rules): align testing & security MDC with CI DAG and add BRANCH plan - 184aefe
@@ -125,6 +131,8 @@ Implement a comprehensive, unified security testing strategy with intelligent pa
   - [x] makefile(build.ai): update build.ai to target production - 9be7f91
 - [x] docs(readme): reflect new build/push/security commands
 - [x] ci: run `make check` and fix guide consistency
+- [x] **Commit b42eda6**: feat: implement unified security testing strategy with vulnerability management
+- [x] **Commit 864c31d**: feat: migration vers Node.js 24 Alpine et hardening des Dockerfiles
 
 ## Security Testing Strategy Implementation
 - [x] **Unified Security Testing Target**: Implement `test.security.%` with intelligent parsing - b42eda6
@@ -156,23 +164,76 @@ Implement a comprehensive, unified security testing strategy with intelligent pa
   - [x] Integrated in all CI security jobs
   - [x] Ensures tools availability before scans
 
+## Node.js Alpine Migration Implementation
+- [x] **Dockerfile Migration**: Update all TypeScript services to `node:24-alpine3.22` - 864c31d
+  - [x] API service: Migrated to Alpine, build successful, security scans pass
+  - [x] Workers service: Migrated to Alpine, build successful, security scans pass
+  - [x] Scheduler service: Migrated to Alpine, build successful, security scans pass
+  - [x] UI service: Migrated to Alpine, build successful, security scans pass
+- [x] **Package Lock Management**: Fix Make procedures for `package-lock.json` updates - 864c31d
+  - [x] Update `update.*.lock` targets to use `node:24-alpine3.22`
+  - [x] Validate all services can update dependencies via Docker
+- [x] **Vulnerability Register**: Update with SAST findings for Dockerfile hardening - 864c31d
+  - [x] Document 15 SAST findings (missing USER directives) in vulnerability register
+  - [x] All findings categorized as `planned_mitigation` with 1w timeline
+  - [x] Compliance checking operational for all security scans
+- [x] **Directives Update**: Enhance .mdc files for vulnerability register lifecycle - 864c31d
+  - [x] Update `workflow.mdc` with vulnerability register maintenance procedures
+  - [x] Update `security.mdc` with vulnerability register management rules
+  - [x] Document post-mitigation cleanup and maintenance workflows
+
+## Next Steps
+- [ ] **Dockerfile Hardening**: Add non-root USER directives to all Dockerfiles
+  - [ ] API Dockerfile: Add USER node directives for test and production stages
+  - [ ] Workers Dockerfile: Add USER node directives for test, production, and default stages
+  - [ ] Scheduler Dockerfile: Add USER node directives for test, production, and default stages
+  - [ ] UI Dockerfile: Add USER node directives for test, production, and development stages
+- [ ] **Vulnerability Register Update**: Remove resolved findings after hardening
+  - [ ] Update vulnerability register metadata (last_updated timestamp)
+  - [ ] Remove all USER-related findings after successful mitigation
+  - [ ] Verify all security scans pass after hardening
+- [ ] **Final Validation**: Ensure complete security compliance
+  - [ ] Run all security scans to confirm no new findings
+  - [ ] Validate CI pipeline passes with hardened Dockerfiles
+  - [ ] Update documentation to reflect completed hardening
+
 ## Status
-- **Progress**: 51/51 tasks completed ✅
-- **Current**: All security testing strategy tasks completed
-- **Next**: Ready for merge - all objectives achieved
+- **Progress**: 54/58 tasks completed
+- **Current**: Node.js Alpine migration completed, Dockerfile hardening pending
+- **Next**: Implement Dockerfile hardening, then final validation and merge
 
-## Final Commit Summary
-**Commit**: `b42eda6` - feat: implement unified security testing strategy with vulnerability management
+## Key Achievements for the Branch
 
-**Key Achievements**:
-- ✅ Unified security testing with intelligent parsing
-- ✅ Robust error handling (Make fails on errors)
-- ✅ Vulnerability management system with compliance checking
-- ✅ CI security jobs split for optimal performance
-- ✅ Security tools installation automation
-- ✅ All security scans operational (SAST, SCA, Container, IaC)
-- ✅ Comprehensive test coverage and integration tests
-- ✅ Multi-stage Dockerfiles with dependency gating
-- ✅ GitHub Actions CI with proper DAG dependencies
+### Security Testing Strategy Foundation
+- ✅ **Unified Security Testing**: Implemented `test.security.%` with intelligent parsing and robust error handling
+- ✅ **Comprehensive Coverage**: SAST (Semgrep), SCA (Trivy), Container (Trivy), and IaC (Trivy) scans operational
+- ✅ **Vulnerability Management**: Structured YAML-based vulnerability register with compliance checking
+- ✅ **CI Integration**: Security jobs split for optimal performance, integrated with GitHub Actions
+- ✅ **Security Tools**: Automated installation of `jq` and `yq` for CI environments
 
-**Ready for merge** - All security testing objectives achieved! 🚀✨
+### Infrastructure and Build System
+- ✅ **Multi-stage Dockerfiles**: Production-optimized images with dependency gating (`npm audit --audit-level=high`)
+- ✅ **Make Targets**: Unified build, security, and integration targets with proper dependencies
+- ✅ **Package Management**: Docker-based dependency updates with `update.*.lock` procedures
+- ✅ **Artifact Management**: Save/load targets for all services with production image targeting
+
+### Testing and Integration
+- ✅ **Unit Tests**: Harmonized test structure across all services with proper Docker targets
+- ✅ **Integration Tests**: Real P2P communication tests between services (API ↔ Scheduler ↔ Workers ↔ UI)
+- ✅ **CI Pipeline**: Optimized DAG with parallel execution and proper job dependencies
+- ✅ **Test Coverage**: Comprehensive coverage for API, Workers, Scheduler, UI, and AI services
+
+### Node.js Alpine Migration
+- ✅ **Base Image Security**: Migrated all TypeScript services from `node:20` (Debian) to `node:24-alpine3.22`
+- ✅ **Vulnerability Elimination**: Eliminated HIGH/CRITICAL vulnerabilities from base images
+- ✅ **Build Validation**: All services successfully build and pass security scans
+- ✅ **Dependency Management**: Synchronized `package-lock.json` files across all services
+- ✅ **Compliance Framework**: Operational vulnerability register with 15 documented findings
+
+### Documentation and Governance
+- ✅ **Security Rules**: Enhanced `.mdc` files with vulnerability register lifecycle management
+- ✅ **Workflow Procedures**: Documented post-mitigation cleanup and maintenance workflows
+- ✅ **Compliance Standards**: Established mandatory documentation and justification requirements
+- ✅ **Risk Management**: Structured approach to vulnerability acceptance and mitigation planning
+
+**Branch Status**: Ready for Dockerfile hardening phase, then final validation and merge! 🚀✨

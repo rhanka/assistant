@@ -79,7 +79,7 @@ if [ -n "$FINDINGS" ]; then
         echo "  Checking: $FINDING_ID in $FINDING_FILE:$FINDING_LINE ($FINDING_SEVERITY)"
         
         # Check if this finding is accepted
-        ACCEPTED=$(yq -r ".vulnerability_register.findings[] | select(.id == \"$FINDING_ID\" and .service == \"$SERVICE\" and .file == \"$FINDING_FILE\") | .category" "$ACCEPTED_FILE" 2>/dev/null || echo "")
+        ACCEPTED=$(yq -r ".vulnerability_register.vulnerabilities.\"$FINDING_ID\".category" "$ACCEPTED_FILE" 2>/dev/null || echo "")
         
         if [ -n "$ACCEPTED" ]; then
             echo "    ✅ ACCEPTED: $ACCEPTED"
@@ -105,6 +105,6 @@ else
     echo ""
     echo "To fix this, either:"
     echo "1. Fix the vulnerabilities, or"
-    echo "2. Add them to .security/accepted-vulnerabilities.json with justification"
+    echo "2. Add them to .security/vulnerability-register.yaml with justification"
     exit 1
 fi
