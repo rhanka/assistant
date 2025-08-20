@@ -50,17 +50,17 @@ tags: [security, approvals]
 ### Security Test Exit Criteria
 **All security tests MUST fail (exit with error code) if vulnerabilities are detected:**
 
-#### SAST (Semgrep) - `test.security.scan.code`
+#### SAST (Semgrep) - `test.security.sast.<service>`
 - **Exit Code**: 1 (error) if ANY findings are detected
 - **Severity**: All levels (INFO, WARNING, ERROR) trigger failure
 - **Rationale**: Code quality and security issues must be addressed before merge
 
-#### SCA (Trivy) - `test.security.scan.deps.<service>`
+#### SCA (Trivy) - `test.security.sca.<service>`
 - **Exit Code**: 1 (error) if HIGH or CRITICAL vulnerabilities are detected
 - **Severity**: HIGH and CRITICAL trigger failure, MEDIUM and LOW are warnings
 - **Rationale**: Critical/High dependency vulnerabilities block production deployment
 
-#### IaC (Trivy) - `test.security.scan.iac`
+#### IaC (Trivy) - `test.security.iac.<service>`
 - **Exit Code**: 1 (error) if HIGH or CRITICAL misconfigurations are detected
 - **Severity**: HIGH and CRITICAL trigger failure, MEDIUM and LOW are warnings
 - **Rationale**: Infrastructure misconfigurations can create security gaps
@@ -78,11 +78,12 @@ tags: [security, approvals]
 
 ### Make Targets (Naming — documentation)
 - **Docker dependency gating**: `build.<service>` (api, scheduler, workers, ui, ai) - blocks on HIGH/CRITICAL vulns
-- **Aggregates**: `test.security`, `test.security.scan`, `test.security.container`
-- **Deps scans per service**: `test.security.scan.deps.<service>` (Trivy SCA on manifests, should run after `build.<service>`)
-- **Code scan**: `test.security.scan.code` (Semgrep SAST on source code)
-- **IaC scan**: `test.security.scan.iac` (Trivy on docker-compose.yml and k8s/)
-- **Container scans**: `test.security.container.<service>` and `.all` (Trivy on built images)
+- **Unified security testing**: `test.security.<type>-<service>` where:
+  - **type**: `sast`, `sca`, `container`, `iac`
+  - **service**: `api`, `ui`, `workers`, `scheduler`, `ai`, `infra`
+- **Examples**: `test.security.sast-api`, `test.security.sca-ui`, `test.security.container-workers`, `test.security.iac-infra`
+- **Aggregates**: `test.security.sast`, `test.security.sca`, `test.security.container`, `test.security.iac`
+- **Main aggregate**: `test.security` (runs all security tests)
 - **Future functional categories** (pentest umbrella): `test.security.pentest`, with possible `auth/input/data/api/infra` sub-targets
 
 ### Vulnerability Management
