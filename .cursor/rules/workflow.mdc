@@ -75,6 +75,7 @@ After completing any task, **ALWAYS propose the next step** by following the wor
 ### Feature Completion Workflow (MANDATORY)
 After implementing all commits for a feature:
 1. **Push to GitHub** : `git push origin <branch-name>`
+2. **Tech Debt**: if any component was updated, please ensure `components.mdc` was applied and update tech debt files.
 2. **Final security validation** : Execute comprehensive security validation (see `security.mdc` for detailed workflow)
 3. **Verify CI** : Push and Monitor GitHub Actions(using `curl` or `gh` for detailed logs) 
 4. **Plan remaining actions** : If commits need additional substantial work, document in BRANCH.md - else commit --amend and git push --force <branch> until CI success
@@ -116,6 +117,40 @@ After implementing all commits for a feature:
   - `make update.api.lock` - Update API package-lock.json
   - `make update.ui.lock` - Update UI package-lock.json
 - **Clean environment**: Remove local `node_modules` if they exist outside Docker containers
+
+## Tech-Debt Management
+
+### Component Lifecycle Integration
+- **MANDATORY**: Avoid updating componants not directly related to current developpement (e.g don't change os and langage version unless upgrade required but propose it before acting)
+- **MANDATORY**: Update tech-debt files when updating components during development
+- **Scope**: All component upgrades (npm, pip, Docker images, OS versions)
+- **Location**: `.components/tech-debt-<service>.md` files
+- **Integration**: Tech-debt updates must be part of component upgrade workflow
+
+### Tech-Debt Update Workflow
+1. **Before upgrade**: Check current tech-debt status with `make audit.components.<service>`
+2. **During upgrade**: Update component version in package.json/pyproject.toml
+3. **After upgrade**: Update tech-debt file with new current version and re-audit
+4. **Validation**: Run tests to ensure upgrade doesn't break functionality
+5. **Documentation**: Update tech-debt file with new breaking change assessment
+
+### Tech-Debt Update Commands
+- **Audit current state**: `make audit.components.<service>`
+- **Check latest versions**: `make audit.npm.latest PACKAGE=<name>` or `make audit.pip.latest PACKAGE=<name>`
+- **Update tech-debt**: Manually update `.components/tech-debt-<service>.md` files
+- **Verify upgrade**: Run service tests after component upgrade
+
+### Breaking Change Assessment
+- **Major version upgrades**: Always assess for breaking changes before upgrading
+- **Documentation required**: Update breaking change section in tech-debt files
+- **Testing mandatory**: Run full test suite after major version upgrades
+- **Rollback plan**: Document rollback strategy for major upgrades
+
+### Quality Gates for Tech-Debt Updates
+- **Before commit**: Tech-debt files must reflect current component versions
+- **After upgrade**: Breaking change assessment must be updated
+- **Test validation**: All tests must pass after component upgrade
+- **Documentation sync**: Tech-debt files must match actual component versions
 
 ## Vulnerability Management Lifecycle
 
