@@ -1,5 +1,7 @@
 # Infrastructure Technical Debt
 
+Note: Alpine preferred to Debian to reduce libc vulnerabilities
+
 ## Container & Orchestration
 | Component | Current | Latest | EOL | Breaking Change | Priority | Notes |
 |-----------|---------|--------|-----|-----------------|----------|-------|
@@ -9,10 +11,10 @@
 ## Database Services & OS
 | Component | Current | Latest | EOL | Breaking Change | Priority | Notes |
 |-----------|---------|--------|-----|-----------------|----------|-------|
-| postgres | 15 | 16 | no | unknown | 1m | Major version - test compatibility |
-| postgres-os | debian:13 | debian:13 | no | no | none | Current version is latest |
-| redis | 7.0 | 7.2 | no | unknown | 1m | Minor version update |
-| redis-os | debian:12 | debian:12 | no | no | none | Current version is latest |
+| postgres | 15 | 17.6 | no | unknown | 1m | Major version - test compatibility, 18 is in beta |
+| postgres-os | debian:13 | alpine:3.22 | no | no | none | Migrate to alpine to reduce vuln scope |
+| redis | 7.0 | 8.2 | no | unknown | 1m | Minor version update |
+| redis-os | debian:12 | alpine:3.22 | no | no | none | Migrate to alpine to reduce vuln scope |
 
 ## CI/CD & Tooling
 | Component | Current | Latest | EOL | Breaking Change | Priority | Notes |
