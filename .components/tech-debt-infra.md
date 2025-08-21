@@ -11,10 +11,10 @@ Note: Alpine preferred to Debian to reduce libc vulnerabilities
 ## Database Services & OS
 | Component | Current | Latest | EOL | Breaking Change | Priority | Notes |
 |-----------|---------|--------|-----|-----------------|----------|-------|
-| postgres | 17.6 | 17.6 | no | no | none | ✅ Updated to latest stable with Alpine 3.22 |
-| postgres-os | alpine:3.22 | alpine:3.22 | no | no | none | ✅ Migrated to Alpine to reduce vuln scope |
-| redis | 8.2 | 8.2 | no | no | none | ✅ Updated to latest stable with Alpine 3.22 |
-| redis-os | alpine:3.22 | alpine:3.22 | no | no | none | ✅ Migrated to Alpine to reduce vuln scope |
+| postgres | 17.6 | 17.6 | no | no | none | Current version is latest |
+| postgres-os | alpine:3.22 | alpine:3.22 | no | no | none | Current version is latest |
+| redis | 8.2 | 8.2 | no | no | none | Current version is latest |
+| redis-os | alpine:3.22 | alpine:3.22 | no | no | none | Current version is latest |
 
 ## CI/CD & Tooling
 | Component | Current | Latest | EOL | Breaking Change | Priority | Notes |
