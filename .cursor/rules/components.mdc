@@ -192,7 +192,35 @@ make audit.docker.base-images
 - **Security**: See `security.mdc` for vulnerability management
 - **Testing**: See `testing.mdc` for validation workflow
 - **Workflow**: See `workflow.mdc` for PR and CI process
-description:
-globs:
-alwaysApply: false
----
+
+## Development Workflow Integration
+
+### Component Upgrade Process
+1. **Create feature branch**: `feat/update-<component>-<version>`
+2. **Audit current state**: `make audit.components.<service>` to get baseline
+3. **Update component**: Modify package.json/pyproject.toml/Dockerfile
+4. **Update tech-debt**: Modify `.components/tech-debt-<service>.md` with new version
+5. **Test thoroughly**: Run all service tests to validate upgrade
+6. **Update breaking changes**: Assess and document any breaking changes
+7. **Commit changes**: Include tech-debt updates in same commit as component upgrade
+8. **Validate**: Ensure all tests pass and tech-debt reflects current state
+
+### Tech-Debt Update Requirements
+- **MANDATORY**: Tech-debt files must be updated when components are upgraded
+- **Same commit**: Component upgrade and tech-debt update must be atomic
+- **Version sync**: Tech-debt current version must match actual component version
+- **Breaking change assessment**: Must be updated for major version upgrades
+- **Test validation**: All tests must pass after upgrade and tech-debt update
+
+### Quality Gates for Component Upgrades
+- **Before upgrade**: Tech-debt must reflect current component state
+- **During upgrade**: Tech-debt must be updated with new version information
+- **After upgrade**: Tech-debt must be validated against actual component versions
+- **Before commit**: All tests must pass and tech-debt must be current
+- **Before merge**: Tech-debt must be consistent across all services
+
+### Automated Validation
+- **CI integration**: GitHub Actions must validate tech-debt consistency
+- **Version check**: Automated verification that tech-debt matches actual versions
+- **Test coverage**: Ensure all upgraded components have test coverage
+- **Breaking change detection**: Automated flagging of major version upgrades

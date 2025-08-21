@@ -25,8 +25,8 @@ Implement component lifecycle management strategy with technical debt tracking a
 - [x] Update TODO.md to mark task as complete
 - [x] Identify breaking changes in major version updates (Vite 7.x, NestJS 11.x)
 - [x] Create PR with conventional commit
-- [ ] Update workflow.mdc to ensure tech-debt updates during component upgrades
-- [ ] Update components.mdc to integrate with feature workflow
+- [x] Update workflow.mdc to ensure tech-debt updates during component upgrades
+- [x] Update components.mdc to integrate with feature workflow
 - [ ] Add TODO items for major component upgrades identified in tech-debt
 
 ## Technical Approach
@@ -41,4 +41,4 @@ Implement component lifecycle management strategy with technical debt tracking a
 3. Should audit results be cached or always fresh?
 
 ## Next Step
-Update workflow.mdc and components.mdc to integrate tech-debt updates during component lifecycle management.
+Add TODO items for major component upgrades identified in tech-debt analysis.
