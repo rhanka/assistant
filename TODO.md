@@ -24,6 +24,27 @@ Note: Always read `.cursor/rules/MASTER.mdc` first, then `README.md`, then this 
 - [ ] Add (in packages/integrations) a Chrome plugin to interact with tabs and UI/API
 - [ ] Add (in packages/integrations) a Cursor AI plugin to take control remote on Cursor AI chat on an existing Cursor AI session on a laptop and interact through UI/API
 
+## Component Lifecycle Upgrades (Tech-Debt Backlog)
+
+### Critical Major Version Upgrades (Breaking Changes)
+- [ ] **Vitest 3.x Migration**: Update all Node.js services from 1.0.0 to 3.2.4 (UI, API, Scheduler, Workers) - breaking changes assessment required
+- [ ] **Vite 7.x Migration**: Update UI service from 5.3.0 to 7.1.3 - build configuration and plugin compatibility to validate
+- [ ] **NestJS 11.x Migration**: Update API service from 10.0.0 to 11.1.6 - decorator and module changes to implement
+- [ ] **Apollo Server 5.x Migration**: Update API service from 4.12.2 to 5.0.0 - GraphQL schema and resolver compatibility to validate
+- [ ] **Python 3.12 Migration**: Update AI service from 3.11.13 to 3.12 - syntax and feature compatibility to validate
+
+### Minor Version Upgrades (Low Risk)
+- [ ] **BullMQ Updates**: Update all Node.js services from 5.7.0 to 5.58.0 (UI, API, Scheduler, Workers) - minor version updates
+- [ ] **TypeScript Updates**: Update all Node.js services from 5.5.4 to 5.9.2 (UI, API, Scheduler, Workers) - language features and compatibility
+- [ ] **Pytest Updates**: Update AI service from 8.2.0 to 8.4.1 - testing framework improvements
+
+### Upgrade Workflow Requirements
+- **Before upgrade**: Run `make audit.components.<service>` to get current baseline
+- **During upgrade**: Update component version AND tech-debt file atomically
+- **After upgrade**: Run full test suite and validate functionality
+- **Breaking changes**: Document and implement required code changes
+- **Tech-debt sync**: Ensure `.components/tech-debt-<service>.md` reflects current state
+
 ## Later
 - [ ] Data import (CSV/JSON) for Plans/Tasks
 
