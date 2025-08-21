@@ -9,12 +9,12 @@
 ## Python Runtime
 | Component | Current | Latest | EOL | Breaking Change | Priority | Notes |
 |-----------|---------|--------|-----|-----------------|----------|-------|
-| python | 3.11.13 | 3.12 | no | unknown | 1m | Major version - test compatibility |
+| python | 3.11.13 | 3.13.7 | no | unknown | 1m | Major version - test compatibility - 3.14 is in .0 |
 
-## Base Images
+## Base Images (OS)
 | Component | Current | Latest | EOL | Breaking Change | Priority | Notes |
 |-----------|---------|--------|-----|-----------------|----------|-------|
-| python | 3.11.13 | 3.12 | no | unknown | 1m | Major version - test compatibility |
+| debian | bookworm | alpine:3.22 | no | unknown | 1m | Major version - migrate to alpine, until deeplearning services required |
 
 ---
 
@@ -22,12 +22,12 @@
 **EOL**: End of Life - version no longer supported
 
 ## ⚠️ Breaking Changes Identified
-- **Python**: 3.11.13 → 3.12 (Major version - test compatibility)
+- **Python**: 3.11.13 → 3.13.7 (Major version - test compatibility)
 - **Pytest**: 8.2.0 → 8.4.1 (Minor version - test compatibility)
 
 ## 🔍 Breaking Change Assessment Required
 Before updating these components:
-1. **Python 3.12**: Check for deprecated features and syntax changes
+1. **Python 3.13**: Check for deprecated features and syntax changes
 2. **FastAPI updates**: Review for breaking changes in API endpoints and middleware
 3. **Test thoroughly**: Run all AI tests after major version updates
 4. **Update incrementally**: Consider updating one major component at a time

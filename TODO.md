@@ -27,11 +27,12 @@ Note: Always read `.cursor/rules/MASTER.mdc` first, then `README.md`, then this 
 ## Component Lifecycle Upgrades (Tech-Debt Backlog)
 
 ### Critical Major Version Upgrades (Breaking Changes)
+- [ ] **Alpine 3.22 & DB upgrades**: use alpine for postgres, redis and ai, and upgrade DBs to latest versions
 - [ ] **Vitest 3.x Migration**: Update all Node.js services from 1.0.0 to 3.2.4 (UI, API, Scheduler, Workers) - breaking changes assessment required
 - [ ] **Vite 7.x Migration**: Update UI service from 5.3.0 to 7.1.3 - build configuration and plugin compatibility to validate
 - [ ] **NestJS 11.x Migration**: Update API service from 10.0.0 to 11.1.6 - decorator and module changes to implement
 - [ ] **Apollo Server 5.x Migration**: Update API service from 4.12.2 to 5.0.0 - GraphQL schema and resolver compatibility to validate
-- [ ] **Python 3.12 Migration**: Update AI service from 3.11.13 to 3.12 - syntax and feature compatibility to validate
+- [ ] **Python 3.13 Migration**: Update AI service from 3.11.13 to 3.13.7 - syntax and feature compatibility to validate
 
 ### Minor Version Upgrades (Low Risk)
 - [ ] **BullMQ Updates**: Update all Node.js services from 5.7.0 to 5.58.0 (UI, API, Scheduler, Workers) - minor version updates
