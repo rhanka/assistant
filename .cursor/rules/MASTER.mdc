@@ -3,6 +3,9 @@
 ## Overview
 This file consolidates all development rules into a single source of truth for AI assistants. All other `.mdc` files provide detailed specifications for specific domains.
 
+## Discuss with developper
+When starting a discussion the focus should be to start a TODO if no specific instruction.
+
 ## Core Architecture Principles
 
 ### Docker-First Architecture (MANDATORY)

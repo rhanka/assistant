@@ -466,9 +466,21 @@ test.security.%:
 	elif [ "$$SCAN_TYPE" = "sca" ]; then \
 		docker run --rm -v "${PWD}/packages/$$SERVICE:/src" aquasec/trivy fs --security-checks vuln --severity HIGH,CRITICAL --format json --quiet > .security/$$SCAN_TYPE-$$SERVICE.json /src || true; \
 	elif [ "$$SCAN_TYPE" = "container" ]; then \
-		docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --format json --quiet > .security/$$SCAN_TYPE-$$SERVICE.json assistant-$$SERVICE:latest || true; \
+		if [ "$$SERVICE" = "infra" ]; then \
+			echo "  📋 Scanning infrastructure container images..."; \
+			docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --format json --quiet > .security/$$SCAN_TYPE-$$SERVICE.json postgres:15 || true; \
+			docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --format json --quiet >> .security/$$SCAN_TYPE-$$SERVICE.json redis:7.0 || true; \
+		else \
+			docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --format json --quiet > .security/$$SCAN_TYPE-$$SERVICE.json assistant-$$SERVICE:latest || true; \
+		fi; \
 	elif [ "$$SCAN_TYPE" = "iac" ]; then \
-		docker run --rm -v "${PWD}:/src" aquasec/trivy config --severity HIGH,CRITICAL --format json --quiet > .security/$$SCAN_TYPE-$$SERVICE.json /src/docker-compose.yml || true; \
+		if [ "$$SERVICE" = "infra" ]; then \
+			echo "  📋 Scanning infrastructure configuration files..."; \
+			docker run --rm -v "${PWD}:/src" aquasec/trivy config --severity HIGH,CRITICAL --format json --quiet > .security/$$SCAN_TYPE-$$SERVICE.json /src/docker-compose.yml || true; \
+			docker run --rm -v "${PWD}:/src" aquasec/trivy config --severity HIGH,CRITICAL --format json --quiet >> .security/$$SCAN_TYPE-$$SERVICE.json /src/Makefile || true; \
+		else \
+			docker run --rm -v "${PWD}:/src" aquasec/trivy config --severity HIGH,CRITICAL --format json --quiet > .security/$$SCAN_TYPE-$$SERVICE.json /src/docker-compose.yml || true; \
+		fi; \
 	else \
 		echo "❌ Error: Unknown scan type '$$SCAN_TYPE'"; \
 		echo "Supported types: sast, sca, container, iac"; \
@@ -495,7 +507,7 @@ test.security.sast: test.security.sast-api test.security.sast-ui test.security.s
 	@echo "✅ All SAST tests completed"
 
 # Aggregate container scan for all services
-test.security.container: test.security.container-api test.security.container-ui test.security.container-workers test.security.container-scheduler test.security.container-ai
+test.security.container: test.security.container-api test.security.container-ui test.security.container-workers test.security.container-scheduler test.security.container-ai test.security.container-infra
 	@echo "✅ All container tests completed"
 
 # E2E tests
@@ -548,5 +560,163 @@ dev.clean:
 	@find . -name ".venv" -type d -exec rm -rf {} + 2>/dev/null || true
 	@find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
 	@echo "✅ Workspace cleaned - no local dependencies remaining"
+
+# =============================================================================
+# COMPONENT AUDIT TARGETS
+# =============================================================================
+
+# NPM Package Auditing (Service-based)
+audit.npm.versions:
+	@echo "📦 Checking package.json versions vs latest available..."
+	@echo "API packages:"
+	@docker run --rm -v "$(PWD)/packages/api:/app" -w /app node:24-alpine3.22 sh -c "cat package.json | grep -E '\"@nestjs|@apollo|@prisma|bullmq|graphql|rxjs' | head -10"
+	@echo "UI packages:"
+	@docker run --rm -v "$(PWD)/packages/ui:/app" -w /app node:24-alpine3.22 sh -c "cat package.json | grep -E '\"svelte|vite|typescript' | head -10"
+
+audit.npm.compare:
+	@echo "📦 Comparing package.json versions with latest available..."
+	@echo "Checking Vite (UI):"
+	@echo "  Package.json: ^5.3.0"
+	@docker run --rm node:24-alpine3.22 npm view vite version
+	@echo "Checking NestJS (API):"
+	@echo "  Package.json: ^10.0.0"
+	@docker run --rm node:24-alpine3.22 npm view @nestjs/core version
+	@echo "Checking Svelte (UI):"
+	@echo "  Package.json: ^5.0.0"
+	@docker run --rm node:24-alpine3.22 npm view svelte version
+
+# Service-specific component auditing (using existing Make targets)
+audit.components.%:
+	@echo "🔍 Auditing components for service: $*"
+	@if [ "$*" = "api" ]; then \
+		echo "📦 API packages:"; \
+		docker run --rm -v "$(PWD)/packages/api:/app" -w /app node:24-alpine3.22 sh -c "cat package.json | grep -E '\"@nestjs|@apollo|@prisma|bullmq|graphql|rxjs' | head -10"; \
+	elif [ "$*" = "ui" ]; then \
+		echo "📦 UI packages:"; \
+		docker run --rm -v "$(PWD)/packages/ui:/app" -w /app node:24-alpine3.22 sh -c "cat package.json | grep -E '\"svelte|vite|typescript' | head -10"; \
+	elif [ "$*" = "scheduler" ]; then \
+		echo "📦 Scheduler packages:"; \
+		docker run --rm -v "$(PWD)/packages/scheduler:/app" -w /app node:24-alpine3.22 sh -c "cat package.json | grep -E '\"bullmq|typescript' | head -10"; \
+	elif [ "$*" = "workers" ]; then \
+		echo "📦 Workers packages:"; \
+		docker run --rm -v "$(PWD)/packages/workers:/app" -w /app node:24-alpine3.22 sh -c "cat package.json | grep -E '\"bullmq|typescript' | head -10"; \
+	elif [ "$*" = "ai" ]; then \
+		echo "🐍 AI packages:"; \
+		docker run --rm -v "$(PWD)/packages/ai:/app" -w /app python:3.11-slim sh -c "cat pyproject.toml | grep -E 'fastapi|pytest' | head -10"; \
+	elif [ "$*" = "infra" ]; then \
+		echo "🏗️ Infrastructure components:"; \
+		echo "Base images: node:24-alpine3.22, python:3.11-slim, nginx:alpine"; \
+		echo "Services: postgres:15, redis:7.0"; \
+		echo "Tooling: docker, docker-compose, make"; \
+	else \
+		echo "❌ Unknown service: $*. Available: api, ui, scheduler, workers, ai, infra"; \
+		exit 1; \
+	fi
+
+audit.npm.outdated:
+	@echo "📦 Auditing NPM packages for outdated dependencies..."
+	@echo "API packages:"
+	@docker run --rm -v "$(PWD)/packages/api:/app" -w /app node:24-alpine3.22 npm outdated || echo "No outdated packages"
+	@echo "Scheduler packages:"
+	@docker run --rm -v "$(PWD)/packages/scheduler:/app" -w /app node:24-alpine3.22 npm outdated || echo "No outdated packages"
+	@echo "Workers packages:"
+	@docker run --rm -v "$(PWD)/packages/workers:/app" -w /app node:24-alpine3.22 npm outdated || echo "No outdated packages"
+	@echo "UI packages:"
+	@docker run --rm -v "$(PWD)/packages/ui:/app" -w /app node:24-alpine3.22 npm outdated || echo "No outdated packages"
+
+audit.npm.latest:
+	@if [ -z "$(PACKAGE)" ]; then \
+		echo "❌ Error: PACKAGE variable not set"; \
+		echo "Usage: make audit.npm.latest PACKAGE=<package-name>"; \
+		exit 1; \
+	fi; \
+	echo "📦 Checking latest version of $(PACKAGE)..."; \
+	docker run --rm node:24-alpine3.22 npm view $(PACKAGE) version
+
+audit.npm.info:
+	@if [ -z "$(PACKAGE)" ]; then \
+		echo "❌ Error: PACKAGE variable not set"; \
+		echo "Usage: make audit.npm.info PACKAGE=<package-name>"; \
+		exit 1; \
+	fi; \
+	echo "📦 Getting info for $(PACKAGE)..."; \
+	docker run --rm node:24-alpine3.22 npm info $(PACKAGE)
+
+# Python Package Auditing (Docker-based)
+audit.pip.outdated:
+	@echo "🐍 Auditing Python packages for outdated dependencies..."
+	@docker run --rm -v "$(PWD)/packages/ai:/app" -w /app python:3.11-slim pip list --outdated || echo "No outdated packages"
+
+audit.pip.latest:
+	@if [ -z "$(PACKAGE)" ]; then \
+		echo "❌ Error: PACKAGE variable not set"; \
+		echo "Usage: make audit.pip.latest PACKAGE=<package-name>"; \
+		exit 1; \
+	fi; \
+	echo "🐍 Checking latest version of $(PACKAGE)..."; \
+	docker run --rm python:3.11-slim pip index versions $(PACKAGE)
+
+audit.pip.info:
+	@if [ -z "$(PACKAGE)" ]; then \
+		echo "❌ Error: PACKAGE variable not set"; \
+		echo "Usage: make audit.pip.info PACKAGE=<package-name>"; \
+		exit 1; \
+	fi; \
+	echo "🐍 Getting info for $(PACKAGE)..."; \
+	docker run --rm python:3.11-slim pip show $(PACKAGE)
+
+# Docker Image & OS Auditing
+audit.docker.latest:
+	@if [ -z "$(IMAGE)" ]; then \
+		echo "❌ Error: IMAGE variable not set"; \
+		echo "Usage: make audit.docker.latest IMAGE=<image-name>"; \
+		exit 1; \
+	fi; \
+	echo "🐳 Checking latest tags for $(IMAGE)..."; \
+	docker run --rm curlimages/curl:latest sh -c "curl -s 'https://registry.hub.docker.com/v2/repositories/library/$(IMAGE)/tags/?page_size=10&page=1' | grep -o '\"name\":\"[^\"]*\"' | head -5"
+
+audit.docker.os:
+	@echo "🐧 Checking OS versions in base images..."
+	@echo "Alpine (Node.js base):"
+	@docker run --rm node:24-alpine3.22 sh -c "cat /etc/alpine-release"
+	@echo "Python slim base:"
+	@docker run --rm python:3.11-slim sh -c "cat /etc/os-release | grep VERSION"
+
+audit.docker.db-os:
+	@echo "🗄️ Checking database OS versions..."
+	@echo "PostgreSQL base (Debian):"
+	@docker run --rm postgres:15 sh -c "cat /etc/os-release | grep VERSION"
+	@echo "Redis base (Debian):"
+	@docker run --rm redis:7.0 sh -c "cat /etc/os-release | grep VERSION"
+
+audit.docker.runtimes:
+	@echo "🔧 Checking runtime versions in base images..."
+	@echo "Node.js version:"
+	@docker run --rm node:24-alpine3.22 node --version
+	@echo "Python version:"
+	@docker run --rm python:3.11-slim python --version
+	@echo "Nginx version:"
+	@docker run --rm nginx:alpine nginx -v
+
+audit.docker.base-images:
+	@echo "🐳 Auditing all base images used in project..."
+	@echo "Current base images from Dockerfiles:"
+	@echo "- node:24-alpine3.22 (api, scheduler, workers, ui)"
+	@echo "- python:3.11-slim (ai)"
+	@echo "- nginx:alpine (ui production)"
+	@echo "- alpine:3.22 (OS base)"
+	@echo ""
+	@echo "Checking for newer versions..."
+	@make audit.docker.latest IMAGE=node
+	@make audit.docker.latest IMAGE=python
+	@make audit.docker.latest IMAGE=nginx
+	@make audit.docker.latest IMAGE=alpine
+
+# Component audit aggregates
+audit.components: audit.npm.outdated audit.pip.outdated audit.docker.base-images
+	@echo "✅ Component audit completed for all package types"
+
+audit.all: audit.components audit.docker.os audit.docker.runtimes
+	@echo "✅ Complete component audit completed"
 
 
