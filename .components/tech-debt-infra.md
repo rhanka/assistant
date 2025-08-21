@@ -11,10 +11,10 @@ Note: Alpine preferred to Debian to reduce libc vulnerabilities
 ## Database Services & OS
 | Component | Current | Latest | EOL | Breaking Change | Priority | Notes |
 |-----------|---------|--------|-----|-----------------|----------|-------|
-| postgres | 15 | 17.6 | no | unknown | 1m | Major version - test compatibility, 18 is in beta |
-| postgres-os | debian:13 | alpine:3.22 | no | no | none | Migrate to alpine to reduce vuln scope |
-| redis | 7.0 | 8.2 | no | unknown | 1m | Minor version update |
-| redis-os | debian:12 | alpine:3.22 | no | no | none | Migrate to alpine to reduce vuln scope |
+| postgres | 17.6 | 17.6 | no | no | none | ✅ Updated to latest stable with Alpine 3.22 |
+| postgres-os | alpine:3.22 | alpine:3.22 | no | no | none | ✅ Migrated to Alpine to reduce vuln scope |
+| redis | 8.2 | 8.2 | no | no | none | ✅ Updated to latest stable with Alpine 3.22 |
+| redis-os | alpine:3.22 | alpine:3.22 | no | no | none | ✅ Migrated to Alpine to reduce vuln scope |
 
 ## CI/CD & Tooling
 | Component | Current | Latest | EOL | Breaking Change | Priority | Notes |
@@ -57,8 +57,8 @@ Before updating these components:
 4. **Update incrementally**: Consider updating one major component at a time
 
 **Last Security Audit**: `make test.security.iac-infra` + `make test.security.container-infra` (automatic)  
-**Last Version Audit**: 2024-01-15 (manual) - Updated with real data  
-**Next Version Audit**: 2024-01-22 (manual)
+**Last Version Audit**: 2024-12-19 (manual) - Updated with Alpine 3.22 & DB upgrades  
+**Next Version Audit**: 2024-12-26 (manual)
 
 ## Audit Commands
 ```bash
