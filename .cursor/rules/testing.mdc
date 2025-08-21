@@ -10,6 +10,27 @@ This document defines the testing strategy for the assistant project, ensuring a
 - **Keep tests isolated** - Independent and repeatable
 - **70% unit, 20% integration, 10% E2E** - Test pyramid
 
+### Quality Gates
+- All tests must pass before merge
+- Security tests must pass before merge
+- i18n coverage must be 100% (EN/FR parity) (to be)
+- Unit test coverage: minimum 70%
+- No critical security vulnerabilities without documented context
+- Vulnerability assessment required for all components
+
+## Testing commands for Developement workflow (MANDATORY, following workflow)
+
+- `make test.unit.<service>` - Unit tests (REQUIRED before commit)
+- `make test.integration.<service-A>-<service-B>` - Integration tests
+- `make test.e2e` - E2E tests (Playwright)
+- `make test.security.sast.<service>` - Semgrep SAST code scanning
+- `make test.security.sca.<service>` - Trivy SCA scanning (dependencies)
+- `make test.security.iac.infra` - Trivy IAC scanning (docker compose & k8s conf)
+- `make test.security.container.<service>` - Trivy container scanning
+To be:
+- `make test.i18n` - i18n validation
+- `make test.i18n.coverage` - Full i18n coverage
+
 ## Testing Levels
 
 ### 1. Unit Tests
