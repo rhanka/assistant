@@ -11,7 +11,7 @@ Note: Always read `.cursor/rules/MASTER.mdc` first, then `README.md`, then this 
 - [x] Enable Task to be themselves (Sub)-Plans and Plan to be categorized by Project or Activity (PR: feat/task-subplans-plan-categorization)
 - [x] Makefile: add an option and instruction to enable interactive/non-interactive switch (db.init, logs.*, etc) (PR: feat/makefile-interactive-switch)
 - [x] Add security in testing strategy : updates .mdc files - include partial or full scope coverage (e.g no critical or high vulnerability unless contextual usage is logged and has a further mitigation in Now or Next) (PR: feat/security-testing-strategy)
-- [ ] **Dockerfile Hardening**: Add non-root USER directives to all Dockerfiles
+- [x] **Dockerfile Hardening**: Add non-root USER directives to all Dockerfiles (PR: feat/dockerfile-security-hardening)
 - [ ] Makefile: add an option to trace SLOC of project based on `cloc --not-match-f='package.*json|tsconfig.json' .`
 - [ ] Workers: job "sync:github" (issues + Projects v2) scaffold
 - [ ] UI: SvelteKit layout with /en and /fr, i18n switching

@@ -36,6 +36,13 @@
 - Objective: secure images and IaC configs.
 - Tooling: Trivy (container images + IaC + SCA), Semgrep (SAST code). Falco is production-only.
 
+#### Dockerfile Hardening
+- **Non-root execution**: All services run as non-root users (nodejs:1001, nginx, python)
+- **File permissions**: Proper ownership and permissions (755 for dirs, 644 for files)
+- **Security layers**: Isolation between build stages with appropriate permissions
+- **Benefits**: Container escape protection, privilege escalation prevention, file system isolation
+- **Compliance**: OWASP Docker Security standards, CIS Docker Benchmark best practices
+
 ### CI Integration (summary)
 - See `testing.mdc` for the high-level DAG and orchestration order.
 - Build images first (dependency audits in Dockerfiles). Dependency scans in CI should reuse built images or rely on manifests.
