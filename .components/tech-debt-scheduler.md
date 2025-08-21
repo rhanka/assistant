@@ -5,6 +5,7 @@
 |-----------|---------|--------|-----|-----------------|----------|-------|
 | bullmq | 5.7.0 | 5.58.0 | no | no | 1w | Minor version updates available |
 | typescript | 5.5.4 | 5.9.2 | no | no | 1w | Minor version updates available |
+| vitest | 1.0.0 | 3.2.4 | no | **YES** | 1w | Major version update - breaking changes likely |
 | @types/node | 20.14.10 | 20.14.10 | no | no | none | Current version is latest |
 
 ## Base Images
@@ -19,14 +20,15 @@
 **EOL**: End of Life - version no longer supported
 
 ## ⚠️ Breaking Changes Identified
-- **None currently identified**
+- **Vitest**: 1.0.0 → 3.2.4 (Major version - breaking changes likely)
 
 ## 🔍 Breaking Change Assessment Required
 Before updating these components:
 1. **BullMQ updates**: Check for breaking changes in job processing and queue management
 2. **TypeScript updates**: Review for new language features and breaking changes
-3. **Test thoroughly**: Run all scheduler tests after updates
-4. **Update incrementally**: Consider updating one component at a time
+3. **Vitest 3.x**: Check changelog for breaking changes in test configuration and API
+4. **Test thoroughly**: Run all scheduler tests after updates
+5. **Update incrementally**: Consider updating one component at a time
 
 **Last Security Audit**: `make test.security.sca-scheduler` (automatic)  
 **Last Version Audit**: 2024-01-15 (manual) - Updated with real data  

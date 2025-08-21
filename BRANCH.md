@@ -4,7 +4,7 @@
 Implement component lifecycle management strategy with technical debt tracking and automated audit capabilities.
 
 ## Status
-✅ **COMPLETED** - Component lifecycle management strategy implemented
+🔄 **IN PROGRESS** - Updating workflow and component directives for tech-debt integration
 
 ## Tasks Completed
 - [x] Create `.cursor/rules/components.mdc` with lifecycle directives
@@ -25,7 +25,9 @@ Implement component lifecycle management strategy with technical debt tracking a
 - [x] Update TODO.md to mark task as complete
 - [x] Identify breaking changes in major version updates (Vite 7.x, NestJS 11.x)
 - [x] Create PR with conventional commit
-- [x] **TASK COMPLETED** - All files created and committed
+- [ ] Update workflow.mdc to ensure tech-debt updates during component upgrades
+- [ ] Update components.mdc to integrate with feature workflow
+- [ ] Add TODO items for major component upgrades identified in tech-debt
 
 ## Technical Approach
 - **Docker-first**: All audit commands execute in containers
@@ -39,4 +41,4 @@ Implement component lifecycle management strategy with technical debt tracking a
 3. Should audit results be cached or always fresh?
 
 ## Next Step
-Create Make targets for component auditing in Makefile.
+Update workflow.mdc and components.mdc to integrate tech-debt updates during component lifecycle management.
