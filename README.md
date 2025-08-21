@@ -1,7 +1,7 @@
 # Assistant is a toolset to enable to maximise use of AI in daily work
 
-## Development directives (for AI)
-See `.cursor/rules/MASTER.mdc` for consolidated rules, then relevant sub `.mdc` files
+## Development directives (for AI, MANDATORY)
+**FIRST** read and apply `.cursor/rules/MASTER.mdc` when beginning a conversation/task.
 
 ## Project Goals
 Build a principal personal assistant that can plan, delegate, and safely execute work across your devices and tools. The system must support multimodal, multi‑device interaction and cleanly separate **planning** from **execution**, based on a hierachical delegation model by projects or activities composed of tasks.

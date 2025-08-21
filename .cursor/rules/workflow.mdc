@@ -7,18 +7,13 @@
 - **THIRD**: Read `TODO.md` for current priorities and items
 - **FOURTH**: Read `RELEASE.md` for target version and scope
 - Propose a short action plan before coding. Request human approval when "⚠ approval".
-- apply `conventions.mdc` for coding practice and `testing.mdc` for testing practice
+- apply `workflow.mdc` for coding practice and `testing.mdc` for testing practice and `security.mdc`for security
 - be conform to `architecture.mdc` architecture directives
 
-## BOOT (first run)
-1. Open `TODO.md` and focus on **Now** items.
-2. For each **Now** item, create a branch `boot/<slug>`.
-3. Generate missing skeleton files or services.
-4. Open a PR with a checklist. Wait for approval.
 
 ## FEATURE
 1. Read the target `TODO.md` item (**Next** or **Now**).
-2. **Create feature branch** with `BRANCH.md` documenting plan and tasks.
+2. **Create feature branch** with `BRANCH.md` documenting plan and tasks, asking relevant question before to start
 3. Post a 3–6 step plan as the first PR comment.
 4. Implement with guardrails (preview, dry-run, logs).
 5. **Test before commit** - ensure all changes work as expected.
@@ -63,7 +58,8 @@
 6. **Commit with context** : Include clear description of what changed and why
 7. **ONE task per commit** : Complete ONE logical task, then commit. Do NOT chain multiple tasks without committing.
 8. **File count limit** : Maximum 10-15 files per commit - split large changes into multiple commits
-9. **Consolidate CI debug commits (MANDATORY)**: When experimenting with CI workflows (e.g., tweaking `.github/workflows/*.yml`), avoid piling multiple temporary `fix:`/`test:` commits.
+9. **Update current work**: update BRANCH.md and commit it to be sure of remaining work at every step
+10. **Consolidate CI debug commits (MANDATORY)**: When experimenting with CI workflows (e.g., tweaking `.github/workflows/*.yml`), avoid piling multiple temporary `fix:`/`test:` commits.
    - Small last-commit adjustments: prefer `git commit --amend --no-edit` (or edit message as needed).
    - Multiple debug commits: use `git commit --amend --no-edit`, stage intentionally with `git add <files> && git rm <removed-files>`, and create ONE clean commit.
    - After amending or soft reset (history rewrite), you MUST push with `git push --force-with-lease` to update the remote safely.
