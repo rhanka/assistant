@@ -10,6 +10,7 @@
 ## Automation & Testing
 | Component | Current | Latest | EOL | Breaking Change | Priority | Notes |
 |-----------|---------|--------|-----|-----------------|----------|-------|
+| vitest | 1.0.0 | 3.2.4 | no | **YES** | 1w | Major version update - breaking changes likely |
 | playwright | 1.40.0 | 1.41.0 | no | no | 1m | Minor version update |
 
 ## Base Images
@@ -24,15 +25,16 @@
 **EOL**: End of Life - version no longer supported
 
 ## ⚠️ Breaking Changes Identified
-- **None currently identified**
+- **Vitest**: 1.0.0 → 3.2.4 (Major version - breaking changes likely)
 
 ## 🔍 Breaking Change Assessment Required
 Before updating these components:
 1. **BullMQ updates**: Check for breaking changes in job processing and worker management
 2. **Playwright updates**: Review for breaking changes in browser automation and testing
 3. **TypeScript updates**: Review for new language features and breaking changes
-4. **Test thoroughly**: Run all worker tests after updates
-5. **Update incrementally**: Consider updating one component at a time
+4. **Vitest 3.x**: Check changelog for breaking changes in test configuration and API
+5. **Test thoroughly**: Run all worker tests after updates
+6. **Update incrementally**: Consider updating one component at a time
 
 **Last Security Audit**: `make test.security.sca-workers` (automatic)  
 **Last Version Audit**: 2024-01-15 (manual) - Updated with real data  

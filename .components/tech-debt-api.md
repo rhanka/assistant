@@ -8,6 +8,7 @@
 | bullmq | 5.7.0 | 5.58.0 | no | no | 1w | Minor version updates available |
 | graphql | 16.11.0 | 16.11.0 | no | no | none | Current version is latest |
 | apollo-server | 4.12.2 | 5.0.0 | no | **YES** | 1m | Major version update - breaking changes likely |
+| vitest | 1.0.0 | 3.2.4 | no | **YES** | 1w | Major version update - breaking changes likely |
 | rxjs | 7.8.1 | 7.8.1 | no | no | none | Current version is latest |
 
 ## Base Images
@@ -24,13 +25,15 @@
 ## ⚠️ Breaking Changes Identified
 - **NestJS**: 10.0.0 → 11.1.6 (Major version - breaking changes likely)
 - **Apollo Server**: 4.12.2 → 5.0.0 (Major version - breaking changes likely)
+- **Vitest**: 1.0.0 → 3.2.4 (Major version - breaking changes likely)
 
 ## 🔍 Breaking Change Assessment Required
 Before updating these components:
 1. **NestJS 11.x**: Review migration guide for decorator changes, module updates, and dependency changes
 2. **Apollo Server 5.x**: Check changelog for GraphQL schema and resolver changes
-3. **Test thoroughly**: Run all API tests after major version updates
-4. **Update incrementally**: Consider updating one major component at a time
+3. **Vitest 3.x**: Check changelog for breaking changes in test configuration and API
+4. **Test thoroughly**: Run all API tests after major version updates
+5. **Update incrementally**: Consider updating one major component at a time
 
 **Last Security Audit**: `make test.security.sca-api` (automatic)  
 **Last Version Audit**: 2024-01-15 (manual) - Updated with real data  
