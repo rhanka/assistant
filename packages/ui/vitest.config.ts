@@ -9,7 +9,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test-setup.ts'],
-    run: true,
-    watch: false,
+    // Vitest 3.x: removed 'run' and 'watch' options from config
+    // These are now CLI options only
   },
 })

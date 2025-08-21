@@ -13,6 +13,13 @@ Note: Always read `.cursor/rules/MASTER.mdc` first, then `README.md`, then this 
 - [x] Add security in testing strategy : updates .mdc files - include partial or full scope coverage (e.g no critical or high vulnerability unless contextual usage is logged and has a further mitigation in Now or Next) (PR: feat/security-testing-strategy)
 - [x] **Dockerfile Hardening**: Add non-root USER directives to all Dockerfiles (PR: feat/dockerfile-security-hardening)
 - [x] Tech debt : all libs must be the most up to date to limit security vuln. Build relevant directive .mdc to enable component lifecycle assessement and always have an up-to-date backlog of technical components and include upgrades in TODO (e.g vite is not up to date). (PR: feat/component-lifecycle-management)
+- [ ] Initial stack upgrade
+    - [ ] **Alpine 3.22 & DB upgrades**: use alpine for postgres, redis and ai, and upgrade DBs to latest versions
+    - [ ] **Vitest 3.x Migration**: Update all Node.js services from 1.0.0 to 3.2.4 (UI, API, Scheduler, Workers) - breaking changes assessment required
+    - [ ] **Vite 7.x Migration**: Update UI service from 5.3.0 to 7.1.3 - build configuration and plugin compatibility to validate
+    - [ ] **NestJS 11.x Migration**: Update API service from 10.0.0 to 11.1.6 - decorator and module changes to implement
+    - [ ] **Apollo Server 5.x Migration**: Update API service from 4.12.2 to 5.0.0 - GraphQL schema and resolver compatibility to validate
+    - [ ] **Python 3.13 Migration**: Update AI service from 3.11.13 to 3.13.7 - syntax and feature compatibility to validate
 - [ ] Makefile: add an option to trace SLOC of project based on `cloc --not-match-f='package.*json|tsconfig.json' .`
 - [ ] Workers: job "sync:github" (issues + Projects v2) scaffold
 - [ ] UI: SvelteKit layout with /en and /fr, i18n switching
@@ -27,12 +34,7 @@ Note: Always read `.cursor/rules/MASTER.mdc` first, then `README.md`, then this 
 ## Component Lifecycle Upgrades (Tech-Debt Backlog)
 
 ### Critical Major Version Upgrades (Breaking Changes)
-- [ ] **Alpine 3.22 & DB upgrades**: use alpine for postgres, redis and ai, and upgrade DBs to latest versions
-- [ ] **Vitest 3.x Migration**: Update all Node.js services from 1.0.0 to 3.2.4 (UI, API, Scheduler, Workers) - breaking changes assessment required
-- [ ] **Vite 7.x Migration**: Update UI service from 5.3.0 to 7.1.3 - build configuration and plugin compatibility to validate
-- [ ] **NestJS 11.x Migration**: Update API service from 10.0.0 to 11.1.6 - decorator and module changes to implement
-- [ ] **Apollo Server 5.x Migration**: Update API service from 4.12.2 to 5.0.0 - GraphQL schema and resolver compatibility to validate
-- [ ] **Python 3.13 Migration**: Update AI service from 3.11.13 to 3.13.7 - syntax and feature compatibility to validate
+cf TODO Now
 
 ### Minor Version Upgrades (Low Risk)
 - [ ] **BullMQ Updates**: Update all Node.js services from 5.7.0 to 5.58.0 (UI, API, Scheduler, Workers) - minor version updates
