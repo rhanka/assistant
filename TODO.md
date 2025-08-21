@@ -12,7 +12,7 @@ Note: Always read `.cursor/rules/MASTER.mdc` first, then `README.md`, then this 
 - [x] Makefile: add an option and instruction to enable interactive/non-interactive switch (db.init, logs.*, etc) (PR: feat/makefile-interactive-switch)
 - [x] Add security in testing strategy : updates .mdc files - include partial or full scope coverage (e.g no critical or high vulnerability unless contextual usage is logged and has a further mitigation in Now or Next) (PR: feat/security-testing-strategy)
 - [x] **Dockerfile Hardening**: Add non-root USER directives to all Dockerfiles (PR: feat/dockerfile-security-hardening)
-- [ ] Tech debt : all libs must be the most up to date to limit security vuln. Build relevant directive .mdc to enable component lifecycle assessement and always have an up-to-date backlog of technical components and include upgrades in TODO (e.g vite is not up to date).
+- [x] Tech debt : all libs must be the most up to date to limit security vuln. Build relevant directive .mdc to enable component lifecycle assessement and always have an up-to-date backlog of technical components and include upgrades in TODO (e.g vite is not up to date). (PR: feat/component-lifecycle-management)
 - [ ] Makefile: add an option to trace SLOC of project based on `cloc --not-match-f='package.*json|tsconfig.json' .`
 - [ ] Workers: job "sync:github" (issues + Projects v2) scaffold
 - [ ] UI: SvelteKit layout with /en and /fr, i18n switching
