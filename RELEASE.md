@@ -11,12 +11,14 @@
 - [x] API GraphQL schema Plan/Task/Step (PR: feat/api-graphql-schema, commit: 192a012)
 - [x] Scheduler: compile Plan → DAG and enqueue jobs (PR: feat/scheduler-plan-dag-execution, commit: 822235f)
 - [x] Task Sub-Plans and Plan Categorization (PR: feat/task-subplans-plan-categorization, commit: pending)
+- [x] Security Testing Strategy with Vulnerability Management (PR: feat/security-testing-strategy, commit: 0571404)
 
 ## Features In Progress 🔄
 - [ ] Workers: job "sync:github" (issues + Projects v2) scaffold
 - [ ] UI: SvelteKit layout with /en and /fr, i18n switching
 - [ ] Scripts: db:init db:migrate db:reset (packages/scripts)
 - [ ] Test strategy: .mdc + Make commands + GitHub Actions
+- [ ] **Dockerfile Hardening**: Add non-root USER directives to all Dockerfiles
 
 ## Consolidation Completed ✅
 - [x] Architecture directives consolidated (MASTER.mdc)
@@ -24,11 +26,12 @@
 - [x] Testing strategy + E2E + implementation (testing.mdc)
 - [x] Architecture + UI + language policy (architecture.mdc)
 - [x] Guide validation consistent (validate_guides.sh)
+- [x] Security testing strategy + vulnerability management (security.mdc)
 
 ## Progress
-- **Features developed & merged** : 3/8 (37.5%)
-- **Features in progress** : 5/8 (62.5%)
-- **System consolidation** : 5/5 (100%)
+- **Features developed & merged** : 4/8 (50%)
+- **Features in progress** : 4/8 (50%)
+- **System consolidation** : 6/6 (100%)
 - **Ready for release** : ❌ (features not complete)
 
 ## Checklist
