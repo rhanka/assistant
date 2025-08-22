@@ -12,6 +12,7 @@
 - [x] Scheduler: compile Plan → DAG and enqueue jobs (PR: feat/scheduler-plan-dag-execution, commit: 822235f)
 - [x] Task Sub-Plans and Plan Categorization (PR: feat/task-subplans-plan-categorization, commit: pending)
 - [x] Security Testing Strategy with Vulnerability Management (PR: feat/security-testing-strategy, commit: 0571404)
+- [x] **Initial Stack Upgrade**: Alpine 3.22 + Python 3.13 + Node.js 24 + Vitest 3.x + Vite 7.x + NestJS 11.x (PR: feat/stack-upgrade-initial, commit: 13385c9)
 
 ## Features In Progress 🔄
 - [ ] Workers: job "sync:github" (issues + Projects v2) scaffold
