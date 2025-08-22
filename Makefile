@@ -37,6 +37,10 @@ export GITHUB_TOKEN ?= your-github-token-here
 export GITHUB_OWNER ?= your-org-or-user
 export GITHUB_REPO ?= your-repo
 
+# Infrastructure versions (matching docker-compose.yml)
+export POSTGRES_VERSION ?= postgres:17.6-alpine3.22
+export REDIS_VERSION ?= redis:8.2-alpine3.22
+
 # Docker image configuration (for local builds and CI artifacts)
 
 # Interactive mode control (default: non-interactive for CI)
@@ -466,8 +470,8 @@ test.security.%:
 	elif [ "$$SCAN_TYPE" = "container" ]; then \
 		if [ "$$SERVICE" = "infra" ]; then \
 			echo "  📋 Scanning infrastructure container images..."; \
-			docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --format json --quiet > .security/$$SCAN_TYPE-$$SERVICE.json postgres:15 || true; \
-			docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --format json --quiet >> .security/$$SCAN_TYPE-$$SERVICE.json redis:7.0 || true; \
+			docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --format json --quiet > .security/$$SCAN_TYPE-$$SERVICE.json $(POSTGRES_VERSION) || true; \
+			docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --format json --quiet >> .security/$$SCAN_TYPE-$$SERVICE.json $(REDIS_VERSION) || true; \
 		else \
 			docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --format json --quiet > .security/$$SCAN_TYPE-$$SERVICE.json assistant-$$SERVICE:latest || true; \
 		fi; \
