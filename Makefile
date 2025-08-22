@@ -385,10 +385,7 @@ scripts.check-branch-files:
 check: scripts.i18n scripts.validate-guides scripts.check-branch-files
 
 # Testing (Docker-based)
-test.unit:
-	docker compose run --rm scheduler npm run test:unit
-	docker compose run --rm workers npm run test:unit
-	docker compose run --rm ai pytest tests/
+test.unit: test.unit.api test.unit.ui test.unit.scheduler test.unit.workers test.unit.ai
 
 # Package-specific unit tests
 test.unit.api:
@@ -415,6 +412,7 @@ test.unit.ai:
 
 # Integration tests
 test.integration.api:
+	# TODO: Fix this test, not used in CI
 	docker compose run --rm api npm run test:integration
 
 test.integration.scheduler-api:
