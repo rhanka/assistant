@@ -33,6 +33,11 @@ RUN npm ci --legacy-peer-deps
 USER nodejs
 CMD ["npm", "run", "test:unit"]
 
+# Development stage
+FROM base AS dev
+USER nodejs
+CMD ["npm", "run", "dev"]
+
 # Production stage
 FROM node:24-alpine3.22 AS production
 WORKDIR /app
