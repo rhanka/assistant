@@ -13,6 +13,11 @@
 - [x] Task Sub-Plans and Plan Categorization (PR: feat/task-subplans-plan-categorization, commit: pending)
 - [x] Security Testing Strategy with Vulnerability Management (PR: feat/security-testing-strategy, commit: 0571404)
 - [x] **Initial Stack Upgrade**: Alpine 3.22 + Python 3.13 + Node.js 24 + Vitest 3.x + Vite 7.x + NestJS 11.x (PR: feat/stack-upgrade-initial, commit: 13385c9)
+- [x] **Makefile SLOC Metrics**: Project size analysis with cloc integration (PR: feat/makefile-sloc-metrics, commit: 8a80143)
+  - **New commands**: `metrics.sloc`, `metrics.sloc.api`, `metrics.sloc.services`
+  - **Features**: Automatic cloc installation, service breakdown, config file exclusions
+  - **Current metrics**: 8,293 total SLOC, 1,492 TypeScript, 5,617 configuration
+  - **Architecture**: Maintains Docker-first approach, cross-platform support
 
 ## Features In Progress 🔄
 - [ ] Workers: job "sync:github" (issues + Projects v2) scaffold
@@ -30,8 +35,8 @@
 - [x] Security testing strategy + vulnerability management (security.mdc)
 
 ## Progress
-- **Features developed & merged** : 4/8 (50%)
-- **Features in progress** : 4/8 (50%)
+- **Features developed & merged** : 5/8 (62.5%)
+- **Features in progress** : 3/8 (37.5%)
 - **System consolidation** : 6/6 (100%)
 - **Ready for release** : ❌ (features not complete)
 
