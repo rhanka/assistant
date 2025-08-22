@@ -714,6 +714,88 @@ audit.docker.base-images:
 	@make audit.docker.latest IMAGE=nginx
 	@make audit.docker.latest IMAGE=alpine
 
+# =============================================================================
+# PROJECT METRICS TARGETS
+# =============================================================================
+
+# Source Lines of Code (SLOC) analysis
+metrics.sloc:
+	@echo "📊 Analyzing Source Lines of Code (SLOC)..."
+	@echo "Excluding configuration files (package.json, tsconfig.json, etc.)..."
+	@if command -v cloc >/dev/null 2>&1; then \
+		cloc --not-match-f='package.*json|tsconfig.json|Dockerfile|docker-compose.yml|Makefile|README.md|LICENSE|\.gitignore|\.env|\.mdc|\.md' .; \
+	else \
+		echo "❌ cloc not found. Installing cloc..."; \
+		if command -v apt-get >/dev/null 2>&1; then \
+			sudo apt-get update && sudo apt-get install -y cloc; \
+		elif command -v yum >/dev/null 2>&1; then \
+			sudo yum install -y cloc; \
+		elif command -v brew >/dev/null 2>&1; then \
+			brew install cloc; \
+		else \
+			echo "❌ Cannot install cloc automatically. Please install it manually:"; \
+			echo "  Ubuntu/Debian: sudo apt-get install cloc"; \
+			echo "  CentOS/RHEL: sudo yum install cloc"; \
+			echo "  macOS: brew install cloc"; \
+			exit 1; \
+		fi; \
+		echo "✅ cloc installed successfully. Running analysis..."; \
+		cloc --not-match-f='package.*json|tsconfig.json|Dockerfile|docker-compose.yml|Makefile|README.md|LICENSE|\.gitignore|\.env|\.mdc|\.md' .; \
+	fi
+
+# Service-specific SLOC analysis
+metrics.sloc.api:
+	@echo "📊 API Service SLOC Analysis..."
+	@if command -v cloc >/dev/null 2>&1; then \
+		cloc --not-match-f='package.*json|tsconfig.json|Dockerfile' packages/api/; \
+	else \
+		echo "❌ cloc not found. Run 'make metrics.sloc' to install it first."; \
+	fi
+
+metrics.sloc.ui:
+	@echo "📊 UI Service SLOC Analysis..."
+	@if command -v cloc >/dev/null 2>&1; then \
+		cloc --not-match-f='package.*json|tsconfig.json|Dockerfile|Dockerfile.e2e' packages/ui/; \
+	else \
+		echo "❌ cloc not found. Run 'make metrics.sloc' to install it first."; \
+	fi
+
+metrics.sloc.scheduler:
+	@echo "📊 Scheduler Service SLOC Analysis..."
+	@if command -v cloc >/dev/null 2>&1; then \
+		cloc --not-match-f='package.*json|tsconfig.json|Dockerfile' packages/scheduler/; \
+	else \
+		echo "❌ cloc not found. Run 'make metrics.sloc' to install it first."; \
+	fi
+
+metrics.sloc.workers:
+	@echo "📊 Workers Service SLOC Analysis..."
+	@if command -v cloc >/dev/null 2>&1; then \
+		cloc --not-match-f='package.*json|tsconfig.json|Dockerfile' packages/workers/; \
+	else \
+		echo "❌ cloc not found. Run 'make metrics.sloc' to install it first."; \
+	fi
+
+metrics.sloc.ai:
+	@echo "📊 AI Service SLOC Analysis..."
+	@if command -v cloc >/dev/null 2>&1; then \
+		cloc --not-match-f='pyproject.toml|Dockerfile' packages/ai/; \
+	else \
+		echo "❌ cloc not found. Run 'make metrics.sloc' to install it first."; \
+	fi
+
+# Aggregate SLOC analysis for all services
+metrics.sloc.services: metrics.sloc.api metrics.sloc.ui metrics.sloc.scheduler metrics.sloc.workers metrics.sloc.ai
+	@echo "✅ Service-specific SLOC analysis completed"
+
+# Project size summary
+metrics.summary: metrics.sloc
+	@echo ""
+	@echo "📈 PROJECT METRICS SUMMARY"
+	@echo "=========================="
+	@echo "Run 'make metrics.sloc' for detailed SLOC breakdown"
+	@echo "Run 'make metrics.sloc.services' for service-by-service analysis"
+
 # Component audit aggregates
 audit.components: audit.npm.outdated audit.pip.outdated audit.docker.base-images
 	@echo "✅ Component audit completed for all package types"
