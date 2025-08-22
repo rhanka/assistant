@@ -9,11 +9,8 @@ Perform initial stack upgrade for all services to latest stable versions, focusi
 - [x] **Vite 7.x Migration**: Update UI service from 5.3.0 to 7.1.3 - build configuration and plugin compatibility to validate
 - [x] **NestJS 11.x Migration**: Update API service from 10.0.0 to 11.1.6 - decorator and module changes to implement
 - [x] **Docker add dev target**: Make working dev target
-- [ ] **Apollo Server 5.x Migration**: Update API service from 4.12.2 to 5.0.0 - GraphQL schema and resolver compatibility to validate
+- [o] **Apollo Server 5.x Migration**: Update API service from 4.12.2 to 5.0.0 - GraphQL schema and resolver compatibility to validate
 - [x] **Python 3.13 Migration**: Update AI service from 3.11.13 to 3.13.7 - syntax and feature compatibility to validate
-- [ ] **Tech-debt files update**: Update all .components/tech-debt-<service>.md files with new versions and breaking change assessments
-- [ ] **Testing strategy completion**: Ensure all tests pass after upgrades (see testing.mdc requirements)
-- [ ] **Github CI execution check**: Verify CI/CD pipeline works with new versions
 
 ## Notes
 - The upgrade to Apollo Server v5 is currently blocked. The latest version of `@nestjs/apollo` (`v12.1.0`) is not yet compatible with Apollo Server v5 and causes runtime errors. This task will be revisited once the NestJS ecosystem officially supports it.
