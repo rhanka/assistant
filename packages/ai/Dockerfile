@@ -1,7 +1,9 @@
-FROM python:3.11-slim
+FROM python:3.13.7-alpine3.22
 WORKDIR /app
-# Security: Create non-root user
-RUN groupadd -r python && useradd -r -g python python
+# Security: Install required packages and create non-root user
+RUN apk add --no-cache shadow && \
+    addgroup -S python && \
+    adduser -D -s /bin/sh -G python python
 COPY packages/ai/pyproject.toml ./
 COPY packages/ai/app ./app
 COPY packages/ai/tests ./tests

@@ -9,8 +9,8 @@ Perform initial stack upgrade for all services to latest stable versions, focusi
 - [x] **Vite 7.x Migration**: Update UI service from 5.3.0 to 7.1.3 - build configuration and plugin compatibility to validate
 - [x] **NestJS 11.x Migration**: Update API service from 10.0.0 to 11.1.6 - decorator and module changes to implement
 - [x] **Docker add dev target**: Make working dev target
-- [x] **Apollo Server 5.x Migration**: Update API service from 4.12.2 to 5.0.0 - GraphQL schema and resolver compatibility to validate
-- [ ] **Python 3.13 Migration**: Update AI service from 3.11.13 to 3.13.7 - syntax and feature compatibility to validate
+- [ ] **Apollo Server 5.x Migration**: Update API service from 4.12.2 to 5.0.0 - GraphQL schema and resolver compatibility to validate
+- [x] **Python 3.13 Migration**: Update AI service from 3.11.13 to 3.13.7 - syntax and feature compatibility to validate
 - [ ] **Tech-debt files update**: Update all .components/tech-debt-<service>.md files with new versions and breaking change assessments
 - [ ] **Testing strategy completion**: Ensure all tests pass after upgrades (see testing.mdc requirements)
 - [ ] **Github CI execution check**: Verify CI/CD pipeline works with new versions
@@ -20,12 +20,13 @@ Perform initial stack upgrade for all services to latest stable versions, focusi
 
 ## Commits & Progress
 - [x] **Commit 1** (be669f0): Task 1 completed.
-- [ ] **Commit 2**: Task 2 in progress.
+- [x] **Commit 2** (ef2b7f8): Documentation updates for Apollo v5 blocker.
+- [x] **Commit 3** (current): Python 3.13 migration completed.
 
 ## Status
-- **Progress**: 1/2 tasks completed
-- **Current**: Completed Task 1
-- **Next**: Documenting the Apollo v5 upgrade blocker.
+- **Progress**: 2/2 tasks completed
+- **Current**: Completed Task 1 and Python 3.13 migration
+- **Next**: Update tech-debt files and complete testing strategy
 
 ## Current Status
 ✅ **Alpine 3.22 & DB upgrades**: Completed and pushed to PR #13
@@ -37,8 +38,10 @@ Perform initial stack upgrade for all services to latest stable versions, focusi
 ✅ **Makefile Modernization**: All build/test targets updated to use docker compose + BUILD_TARGET
 ✅ **CI Workflow Updates**: CI modified to use BUILD_TARGET=prod for production builds
 ✅ **Security Targets**: All save/load/security targets properly configured and tested
+✅ **Python 3.13 Migration**: AI service successfully migrated and tested
+✅ **Alpine 3.22 Migration**: AI service successfully migrated from Debian to Alpine
 🔄 **CI Status**: Ready for push and CI validation
-⏳ **Next**: Python 3.13 Migration (AI service)
+⏳ **Next**: Tech-debt files update and testing strategy completion
 
 ## Breaking Changes Assessment
 - Vitest 3.x: Major breaking changes expected, requires test configuration updates
