@@ -1,4 +1,4 @@
-FROM node:20 AS base
+FROM node:24-slim AS base
 WORKDIR /app
 COPY packages/ui/package.e2e.json ./package.json
 

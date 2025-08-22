@@ -9,7 +9,7 @@
 | vite | 7.1.3 | 7.1.3 | no | no | none | ✅ Current version is latest - migration completed |
 | vitest | 3.2.4 | 3.2.4 | no | no | none | ✅ Current version is latest - migration completed |
 | typescript | 5.5.4 | 5.5.4 | no | no | none | Current version is latest |
-| playwright | 1.40.0 | 1.40.0 | no | no | none | Current version is latest |
+| playwright | 1.55.0 | 1.55.0 | no | no | none | Current version is latest, dep to OS debian |
 
 ## Base Images
 | Component | Current | Latest | EOL | Breaking Change | Priority | Notes |

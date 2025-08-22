@@ -14,12 +14,12 @@ Note: Always read `.cursor/rules/MASTER.mdc` first, then `README.md`, then this 
 - [x] **Dockerfile Hardening**: Add non-root USER directives to all Dockerfiles (PR: feat/dockerfile-security-hardening)
 - [x] Tech debt : all libs must be the most up to date to limit security vuln. Build relevant directive .mdc to enable component lifecycle assessement and always have an up-to-date backlog of technical components and include upgrades in TODO (e.g vite is not up to date). (PR: feat/component-lifecycle-management)
 - [ ] Initial stack upgrade
-    - [ ] **Alpine 3.22 & DB upgrades**: use alpine for postgres, redis and ai, and upgrade DBs to latest versions
-    - [ ] **Vitest 3.x Migration**: Update all Node.js services from 1.0.0 to 3.2.4 (UI, API, Scheduler, Workers) - breaking changes assessment required
-    - [ ] **Vite 7.x Migration**: Update UI service from 5.3.0 to 7.1.3 - build configuration and plugin compatibility to validate
-    - [ ] **NestJS 11.x Migration**: Update API service from 10.0.0 to 11.1.6 - decorator and module changes to implement
-    - [ ] **Apollo Server 5.x Migration**: Update API service from 4.12.2 to 5.0.0 - GraphQL schema and resolver compatibility to validate
-    - [ ] **Python 3.13 Migration**: Update AI service from 3.11.13 to 3.13.7 - syntax and feature compatibility to validate
+    - [x] **Alpine 3.22 & DB upgrades**: use alpine for postgres, redis and ai, and upgrade DBs to latest versions (PR: feat/stack-upgrade-initial)
+    - [x] **Vitest 3.x Migration**: Update all Node.js services from 1.0.0 to 3.2.4 (UI, API, Scheduler, Workers) - breaking changes assessment required (PR: feat/stack-upgrade-initial)
+    - [x] **Vite 7.x Migration**: Update UI service from 5.3.0 to 7.1.3 - build configuration and plugin compatibility to validate (PR: feat/stack-upgrade-initial)
+    - [x] **NestJS 11.x Migration**: Update API service from 10.0.0 to 11.1.6 - decorator and module changes to implement (PR: feat/stack-upgrade-initial)
+    - [ ] **Apollo Server 5.x Migration**: Update API service from 4.12.2 to 5.0.0 - GraphQL schema and resolver compatibility to validate (BLOCKED - @nestjs/apollo compatibility issue)
+    - [x] **Python 3.13 Migration**: Update AI service from 3.11.13 to 3.13.7 - syntax and feature compatibility to validate (PR: feat/stack-upgrade-initial)
 - [ ] Makefile: add an option to trace SLOC of project based on `cloc --not-match-f='package.*json|tsconfig.json' .`
 - [ ] Workers: job "sync:github" (issues + Projects v2) scaffold
 - [ ] UI: SvelteKit layout with /en and /fr, i18n switching
