@@ -7,7 +7,7 @@
 | prisma | 6.0.0 | 6.14.0 | no | no | 1w | Minor version updates available |
 | bullmq | 5.7.0 | 5.58.0 | no | no | 1w | Minor version updates available |
 | graphql | 16.11.0 | 16.11.0 | no | no | none | Current version is latest |
-| apollo-server | 4.12.2 | 5.0.0 | no | **YES** | 1m | Major version update - breaking changes likely |
+| apollo-server | 4.12.2 | 5.0.0 | no | **YES** | 1m | apollo 5 not ready yet for NestJs |
 | vitest | 3.2.4 | 3.2.4 | no | no | none | Current version is latest |
 | rxjs | 7.8.1 | 7.8.1 | no | no | none | Current version is latest |
 
