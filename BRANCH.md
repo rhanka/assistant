@@ -15,6 +15,9 @@ Perform initial stack upgrade for all services to latest stable versions, focusi
 - [ ] **Testing strategy completion**: Ensure all tests pass after upgrades (see testing.mdc requirements)
 - [ ] **Github CI execution check**: Verify CI/CD pipeline works with new versions
 
+## Notes
+- The upgrade to Apollo Server v5 is currently blocked. The latest version of `@nestjs/apollo` (`v12.1.0`) is not yet compatible with Apollo Server v5 and causes runtime errors. This task will be revisited once the NestJS ecosystem officially supports it.
+
 ## Commits & Progress
 - [x] **Commit 1** (be669f0): Task 1 completed.
 - [ ] **Commit 2**: Task 2 in progress.
@@ -22,7 +25,7 @@ Perform initial stack upgrade for all services to latest stable versions, focusi
 ## Status
 - **Progress**: 1/2 tasks completed
 - **Current**: Completed Task 1
-- **Next**: Start Task 2
+- **Next**: Documenting the Apollo v5 upgrade blocker.
 
 ## Current Status
 ✅ **Alpine 3.22 & DB upgrades**: Completed and pushed to PR #13
