@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>MTC Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 16px; }
+      header { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+      .row { display: flex; gap: 12px; align-items: center; margin: 8px 0; }
+      .preview { width: 480px; height: 270px; background: #f2f2f2; object-fit: contain; border: 1px solid #ddd; }
+      button { padding: 6px 10px; }
+      label { min-width: 140px; display: inline-block; }
+      small { color: #666; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1 style="margin:0;">MTC — Manager</h1>
+      <span title="FR : Gestionnaire d'onglet cible">EN/FR UI</span>
+    </header>
+
+    <section>
+      <div class="row">
+        <label>Target Tab ID</label>
+        <input id="tabId" type="number" min="1" style="width:120px;" />
+        <button id="btnPick">Pick Active</button>
+        <button id="btnFocus">Focus</button>
+      </div>
+      <div class="row">
+        <label>Capture</label>
+        <button id="btnStart" title="Démarrer">Start / Démarrer</button>
+        <button id="btnStop" title="Arrêter">Stop / Arrêter</button>
+        <label style="margin-left:12px;">FPS</label>
+        <input id="fps" type="number" min="1" max="12" value="2" style="width:60px;" />
+        <label style="margin-left:12px;">Quality</label>
+        <input id="quality" type="number" min="0.1" max="0.95" step="0.05" value="0.6" style="width:70px;" />
+      </div>
+      <div class="row">
+        <label>Last Frame</label>
+        <img id="preview" class="preview" alt="preview" />
+        <div>
+          <div><b id="status">idle</b></div>
+          <div><small id="meta">—</small></div>
+        </div>
+      </div>
+      <hr/>
+      <div class="row">
+        <label>Remote input</label>
+        <button id="btnClick">Click</button>
+        <button id="btnDblClick">Double-click</button>
+        <button id="btnScrollDown">Scroll Down</button>
+        <button id="btnScrollUp">Scroll Up</button>
+        <input id="keyText" placeholder="Key (e.g. Enter)" />
+        <button id="btnKey">Send Key</button>
+      </div>
+    </section>
+
+    <script type="module" src="manager.js"></script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "@assistant/extension-mtc",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node ./scripts/build.mjs",
+    "clean": "node -e \"import('fs').then(fs=>fs.promises.rm('dist',{recursive:true,force:true}))\"",
+    "dev": "npm run build -- --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}
