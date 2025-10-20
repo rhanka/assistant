@@ -20,7 +20,7 @@
     "vite": "^7.1.3"
   },
   "devDependencies": {
-    "@playwright/test": "^1.40.0",
+    "@playwright/test": "^1.56.1",
     "vitest": "^3.2.4",
     "@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
     "@sveltejs/adapter-auto": "^3.0.0",
