@@ -14,7 +14,7 @@
     "test:integration:api": "vitest run tests/integration/api.spec.ts"
   },
   "dependencies": {
-    "@sveltejs/kit": "^2.5.0",
+    "@sveltejs/kit": "^2.57.1",
     "svelte": "^5.0.0",
     "svelte-i18n": "^4.0.1",
     "vite": "^7.1.3"
